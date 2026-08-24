@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>.ricky — Unzip the Vision</title>
+  <meta name="description"
+    content=".ricky — a working archive. Systems, security, web, frames, models. Unzip the vision.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Karla:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0B0D10;
+      --ink-raised: #13161C;
+      --navy: #1B2A4A;
+      --navy-lift: #2C4271;
+      --gold: #C9973F;
+      --gold-hi: #E4B85C;
+      --bone: #E7E3DA;
+      --mute: #79839A;
+      --rule: rgba(231, 227, 218, .10);
+      --display: "Archivo", -apple-system, "Segoe UI", sans-serif;
+      --body: "Karla", -apple-system, "Segoe UI", sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+      --pad: clamp(1.25rem, 5vw, 4.5rem);
+      --open: 0;
+      --z: 0;
+      --split: 54%;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      background: var(--ink);
+      color: var(--bone);
+      font-family: var(--body);
+      font-size: clamp(1rem, .95rem + .2vw, 1.1rem);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(120% 70% at 50% -10%, rgba(44, 66, 113, .30), transparent 60%),
+        radial-gradient(70% 50% at 100% 100%, rgba(201, 151, 63, .07), transparent 70%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding-inline: var(--pad)
+    }
+
+    a {
+      color: inherit
+    }
+
+    ::selection {
+      background: var(--gold);
+      color: var(--ink)
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--gold-hi);
+      outline-offset: 4px;
+      border-radius: 2px
+    }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: .72rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+
+    /* ── nav ─────────────────────────────── */
+    .nav {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-block: 1.6rem;
+    }
+
+    .nav-mark {
+      font-family: var(--display);
+      font-variation-settings: "wdth" 118;
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: -.02em;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: clamp(1rem, 3vw, 2rem)
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: .74rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--mute);
+      text-decoration: none;
+      transition: color .3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--bone)
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      border: 1px solid var(--rule);
+      border-radius: 100px;
+      padding: .35rem .75rem;
+      font-family: var(--mono);
+      font-size: .68rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--bone);
+      white-space: nowrap;
+    }
+
+    .chip i {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: blip 2.6s ease-in-out infinite
+    }
+
+    @keyframes blip {
+
+      0%,
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(201, 151, 63, .5)
+      }
+
+      50% {
+        opacity: .6;
+        box-shadow: 0 0 0 5px rgba(201, 151, 63, 0)
+      }
+    }
+
+    /* ── hero ────────────────────────────── */
+    .hero {
+      padding-block: clamp(3rem, 11vh, 7rem) clamp(4rem, 12vh, 8rem)
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: clamp(2rem, 6vh, 3.5rem)
+    }
+
+    .mark {
+      position: relative;
+      isolation: isolate
+    }
+
+    .mark-face {
+      font-family: var(--display);
+      font-variation-settings: "wdth" 122;
+      font-weight: 800;
+      font-size: clamp(3.4rem, 15.5vw, 10.5rem);
+      line-height: .86;
+      letter-spacing: -.045em;
+      white-space: nowrap;
+    }
+
+    .mark-face .dot {
+      color: var(--gold)
+    }
+
+    .mark-half {
+      position: absolute;
+      inset: 0;
+      will-change: transform
+    }
+
+    .mark-half.is-top {
+      clip-path: inset(0 0 calc(100% - var(--split)) 0);
+      transform: translateY(calc(var(--open) * -20px));
+    }
+
+    .mark-half.is-bot {
+      clip-path: inset(var(--split) 0 0 0);
+      transform: translateY(calc(var(--open) * 20px));
+    }
+
+    .mark-ghost {
+      visibility: hidden
+    }
+
+    .zip {
+      position: absolute;
+      left: -4%;
+      right: -4%;
+      top: var(--split);
+      height: 0;
+      z-index: 2
+    }
+
+    .zip-line {
+      position: absolute;
+      left: 0;
+      top: -1px;
+      height: 1px;
+      width: calc(var(--z) * 100%);
+      background: linear-gradient(90deg, rgba(201, 151, 63, 0), var(--gold));
+    }
+
+    .zip-row {
+      position: absolute;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 4px
+    }
+
+    .zip-row.is-top {
+      bottom: 0
+    }
+
+    .zip-row.is-bot {
+      top: 0
+    }
+
+    .tooth {
+      flex: 1 1 auto;
+      max-width: 9px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--gold);
+      opacity: .85;
+      transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .45s ease;
+    }
+
+    .is-top .tooth {
+      transform: translateY(5px)
+    }
+
+    .is-bot .tooth {
+      transform: translateY(-5px)
+    }
+
+    .is-top .tooth.open {
+      transform: translateY(-17px) rotate(-11deg);
+      opacity: .5
+    }
+
+    .is-bot .tooth.open {
+      transform: translateY(17px) rotate(11deg);
+      opacity: .5
+    }
+
+    .slider {
+      position: absolute;
+      top: 0;
+      left: calc(var(--z) * 100%);
+      transform: translate(-50%, -50%);
+      width: 30px;
+      height: 17px;
+      border-radius: 5px;
+      background: linear-gradient(180deg, var(--gold-hi), var(--gold));
+      box-shadow: 0 0 22px rgba(201, 151, 63, .45);
+    }
+
+    .slider::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      width: 2px;
+      height: 15px;
+      border-radius: 2px;
+      background: var(--gold);
+      transform: translateX(-50%);
+      opacity: .8;
+    }
+
+    .hero-say {
+      margin-top: clamp(2.2rem, 7vh, 3.4rem);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.1rem;
+      max-width: 52ch;
+    }
+
+    .tagline {
+      font-family: var(--display);
+      font-variation-settings: "wdth" 105;
+      font-weight: 500;
+      font-size: clamp(1.35rem, 3.2vw, 2.1rem);
+      line-height: 1.15;
+      letter-spacing: -.02em;
+    }
+
+    .tagline em {
+      font-style: normal;
+      color: var(--gold)
+    }
+
+    .hero-sub {
+      color: var(--mute);
+      max-width: 44ch
+    }
+
+    .replay {
+      margin-top: .4rem;
+      background: none;
+      border: 0;
+      cursor: pointer;
+      color: var(--mute);
+      font-family: var(--mono);
+      font-size: .72rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: 0;
+      transition: color .3s ease;
+      justify-self: start;
+    }
+
+    .replay:hover {
+      color: var(--gold)
+    }
+
+    /* ── shared section rhythm ───────────── */
+    .band {
+      padding-block: clamp(3.5rem, 9vh, 6rem);
+      border-top: 1px solid var(--rule)
+    }
+
+    .band-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 2.2rem;
+      flex-wrap: wrap
+    }
+
+    .band-title {
+      font-family: var(--display);
+      font-variation-settings: "wdth" 108;
+      font-weight: 600;
+      font-size: clamp(1.1rem, 2.4vw, 1.45rem);
+      letter-spacing: -.015em;
+    }
+
+    /* ── manifest ────────────────────────── */
+    .manifest {
+      border-top: 1px solid var(--rule)
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: minmax(8.5rem, 1.1fr) minmax(0, 2.6fr) auto;
+      gap: clamp(.8rem, 3vw, 2rem);
+      align-items: baseline;
+      padding: 1.15rem .9rem;
+      border-bottom: 1px solid var(--rule);
+      position: relative;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .7s ease, transform .7s cubic-bezier(.2, .8, .2, 1), background-color .35s ease;
+    }
+
+    .row.seen {
+      opacity: 1;
+      transform: none
+    }
+
+    .row::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--gold);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform .4s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .row:hover {
+      background: rgba(231, 227, 218, .03)
+    }
+
+    .row:hover::before {
+      transform: scaleY(1)
+    }
+
+    .row-name {
+      font-family: var(--mono);
+      font-size: .95rem;
+      color: var(--bone)
+    }
+
+    .row-note {
+      color: var(--mute);
+      font-size: .97rem
+    }
+
+    .row-size {
+      font-family: var(--mono);
+      font-size: .76rem;
+      letter-spacing: .08em;
+      color: var(--mute);
+      text-align: right;
+      white-space: nowrap;
+      transition: color .35s ease;
+    }
+
+    .row:hover .row-size {
+      color: var(--gold)
+    }
+
+    /* ── note ────────────────────────────── */
+    .note {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.4rem;
+      max-width: 60ch
+    }
+
+    .note p {
+      font-size: clamp(1.05rem, 2.1vw, 1.3rem);
+      line-height: 1.55
+    }
+
+    .note p+p {
+      color: var(--mute);
+      font-size: 1rem
+    }
+
+    /* ── contact ─────────────────────────── */
+    .contact-line {
+      font-family: var(--display);
+      font-variation-settings: "wdth" 110;
+      font-weight: 600;
+      font-size: clamp(1.6rem, 4.4vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: -.025em;
+      margin-bottom: 1.6rem;
+      max-width: 18ch;
+    }
+
+    .mail {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: clamp(1rem, 2.6vw, 1.5rem);
+      text-decoration: none;
+      color: var(--bone);
+      padding-bottom: .35rem;
+      position: relative;
+    }
+
+    .mail::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 1px;
+      width: 100%;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .5s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .mail:hover {
+      color: var(--gold-hi)
+    }
+
+    .mail:hover::after {
+      transform: scaleX(1)
+    }
+
+    /* ── footer ──────────────────────────── */
+    .foot {
+      border-top: 1px solid var(--rule);
+      padding-block: 1.8rem 2.6rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-family: var(--mono);
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+
+    /* ── entrance ────────────────────────── */
+    .rise {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .8s ease, transform .8s cubic-bezier(.2, .8, .2, 1)
+    }
+
+    .rise.in {
+      opacity: 1;
+      transform: none
+    }
+
+    @media (max-width:680px) {
+      .row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        row-gap: .35rem
+      }
+
+      .row-note {
+        grid-column: 1 / -1
+      }
+
+      .nav-links a[href="#contents"] {
+        display: none
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      html {
+        scroll-behavior: auto
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important
+      }
+
+      .rise {
+        opacity: 1;
+        transform: none
+      }
+
+      .row {
+        opacity: 1;
+        transform: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wrap">
+    <nav class="nav">
+      <a class="nav-mark" href="#top"><span style="color:var(--gold)">.</span>ricky</a>
+      <div class="nav-links">
+        <a href="#contents">Contents</a>
+        <a href="#contact">Contact</a>
+        <span class="chip"><i></i>Open for work</span>
+      </div>
+    </nav>
+  </div>
+
+  <header class="wrap hero" id="top">
+    <div class="hero-top rise" data-delay="80">
+      <span class="eyebrow">Package · .ricky</span>
+      <span class="eyebrow">Kolkata → anywhere</span>
+    </div>
+
+    <div class="mark rise" data-delay="240">
+      <div class="mark-face mark-ghost" aria-hidden="true"><span class="dot">.</span>ricky</div>
+      <h1 class="mark-face mark-half is-top" aria-label=".ricky"><span class="dot" aria-hidden="true">.</span><span
+          aria-hidden="true">ricky</span></h1>
+      <div class="mark-face mark-half is-bot" aria-hidden="true"><span class="dot">.</span>ricky</div>
+      <div class="zip" aria-hidden="true">
+        <div class="zip-line"></div>
+        <div class="zip-row is-top" data-teeth></div>
+        <div class="zip-row is-bot" data-teeth></div>
+        <div class="slider"></div>
+      </div>
+    </div>
+
+    <div class="hero-say">
+      <p class="tagline rise" data-delay="1900"><em>Unzip the vision.</em> One person, a few disciplines, and a habit of
+        shipping the thing nobody else wanted to touch.</p>
+      <p class="hero-sub rise" data-delay="2050">Cloud and security by trade. Sites, apps and cameras by choice. Most of
+        it ships quietly — a little of it ends up here.</p>
+      <button class="replay rise" data-delay="2200" type="button">↻ Unzip again</button>
+    </div>
+  </header>
+
+  <section class="wrap band" id="contents">
+    <div class="band-head">
+      <h2 class="band-title">What's inside</h2>
+      <span class="eyebrow">7 entries</span>
+    </div>
+    <div class="manifest">
+      <div class="row"><span class="row-name">systems/</span><span class="row-note">Cloud and networks — the plumbing
+          nobody notices until it stops.</span><span class="row-size">6.8 yrs</span></div>
+      <div class="row"><span class="row-name">secure/</span><span class="row-note">Locks, keys, and the habit of asking
+          who else is holding one.</span><span class="row-size">always on</span></div>
+      <div class="row"><span class="row-name">build/</span><span class="row-note">Websites and apps, end to end — for
+          people who deserve better than a template.</span><span class="row-size">taking work</span></div>
+      <div class="row"><span class="row-name">frames/</span><span class="row-note">Photography and video, whatever the
+          format asks for. Light first, gear a distant second.</span><span class="row-size">multi-format</span></div>
+      <div class="row"><span class="row-name">models/</span><span class="row-note">AI pointed at real problems instead
+          of demos.</span><span class="row-size">in progress</span></div>
+      <div class="row"><span class="row-name">unreleased/</span><span class="row-note">Ideas for making ordinary things
+          less hard. Some of them are bigger than me.</span><span class="row-size">several</span></div>
+      <div class="row"><span class="row-name">crease/</span><span class="row-note">Cricket. The one folder that isn't
+          work.</span><span class="row-size">weekends</span></div>
+    </div>
+  </section>
+
+  <section class="wrap band">
+    <div class="band-head">
+      <h2 class="band-title">The short version</h2><span class="eyebrow">read me</span>
+    </div>
+    <div class="note">
+      <p class="rise">I build and defend infrastructure for a living, across four countries, for people who don't get a
+        second attempt at going live.</p>
+      <p class="rise">The rest of my time goes into sites, apps and ideas aimed at the same thing: making something that
+        was hard slightly easier for the people using it. A few are small. A few are not. The full archive opens on
+        request.</p>
+    </div>
+  </section>
+
+  <section class="wrap band" id="contact">
+    <span class="eyebrow">Contact</span>
+    <p class="contact-line" style="margin-top:1.4rem">Got something worth unzipping?</p>
+    <a class="mail" href="mailto:hello@dotricky.me">hello@dotricky.me</a>
+  </section>
+
+  <div class="wrap">
+    <footer class="foot">
+      <span>.ricky — Unzip the Vision</span>
+      <span>dotricky.me</span>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var root = document.documentElement;
+
+      /* build zipper teeth, density based on width */
+      var count = Math.max(18, Math.min(52, Math.round(window.innerWidth / 26)));
+      var rows = document.querySelectorAll('[data-teeth]');
+      rows.forEach(function (row) {
+        var frag = document.createDocumentFragment();
+        for (var i = 0; i < count; i++) {
+          var t = document.createElement('span');
+          t.className = 'tooth';
+          frag.appendChild(t);
+        }
+        row.appendChild(frag);
+      });
+      var teeth = Array.prototype.slice.call(document.querySelectorAll('.tooth'));
+
+      function paint(p) {
+        root.style.setProperty('--z', p);
+        root.style.setProperty('--open', p < .12 ? 0 : (p - .12) / .88);
+        teeth.forEach(function (t, i) {
+          var threshold = (i % count) / count;
+          t.classList.toggle('open', p > threshold);
+        });
+      }
+
+      var raf;
+      function unzip() {
+        cancelAnimationFrame(raf);
+        if (reduce) { paint(1); return; }
+        var start = null, dur = 1500;
+        function frame(ts) {
+          if (start === null) start = ts;
+          var p = Math.min(1, (ts - start) / dur);
+          paint(1 - Math.pow(1 - p, 3));
+          if (p < 1) raf = requestAnimationFrame(frame);
+        }
+        paint(0);
+        raf = requestAnimationFrame(frame);
+      }
+
+      /* staggered entrance */
+      document.querySelectorAll('.rise[data-delay]').forEach(function (el) {
+        setTimeout(function () { el.classList.add('in'); }, reduce ? 0 : +el.dataset.delay);
+      });
+      setTimeout(unzip, reduce ? 0 : 900);
+      document.querySelector('.replay').addEventListener('click', unzip);
+
+      /* scroll reveals */
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e, i) {
+          if (!e.isIntersecting) return;
+          var el = e.target;
+          setTimeout(function () { el.classList.add(el.classList.contains('row') ? 'seen' : 'in'); }, reduce ? 0 : i * 90);
+          io.unobserve(el);
+        });
+      }, { threshold: .2, rootMargin: '0px 0px -8% 0px' });
+      document.querySelectorAll('.row, .note .rise').forEach(function (el) { io.observe(el); });
+    })();
+  </script>
+</body>
+
+</html>

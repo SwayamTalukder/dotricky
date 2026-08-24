@@ -1,2 +1,1 @@
 # dotricky
-#comming soon
