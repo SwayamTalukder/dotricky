@@ -60,6 +60,13 @@
       max-width: 100vw;
     }
 
+    html.modal-open,
+    body.modal-open {
+      overflow: hidden !important;
+      height: 100vh !important;
+      touch-action: none;
+    }
+
     body {
       background: var(--ink);
       color: var(--bone);
@@ -300,9 +307,8 @@
 
     /* ── Hero Section ────────────────────────────── */
     .hero {
-      padding-block: clamp(2.5rem, 8vh, 6rem) clamp(3.5rem, 9vh, 7rem);
+      padding-block: clamp(2.5rem, 7vh, 5.5rem) clamp(3.5rem, 8vh, 6.5rem);
       position: relative;
-      overflow: hidden;
     }
 
     .hero-top {
@@ -311,7 +317,7 @@
       align-items: center;
       gap: .75rem;
       flex-wrap: wrap;
-      margin-bottom: clamp(1.75rem, 5vh, 3.2rem);
+      margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
       padding-bottom: .75rem;
       border-bottom: 1px solid rgba(234, 230, 223, 0.05);
     }
@@ -336,16 +342,16 @@
       font-size: 0.9em;
     }
 
-    /* Mobile telemetry badge inside hero */
     .hero-mobile-time {
       display: none;
     }
 
-    /* ── The Zipper Wordmark ────────────────────────────── */
+    /* ── The Zipper Wordmark (No Clipping Fix) ────────────────────────────── */
     .mark-container {
       width: 100%;
-      overflow: hidden;
-      padding-block: 0.5rem;
+      overflow: visible;
+      padding-block: clamp(1.8rem, 4vw, 2.8rem);
+      position: relative;
     }
 
     .mark {
@@ -356,7 +362,7 @@
       touch-action: pan-y;
       width: 100%;
       max-width: 100%;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .mark-face {
@@ -364,7 +370,7 @@
       font-variation-settings: "wdth" 120;
       font-weight: 850;
       font-size: clamp(3.2rem, 15.5vw, 10.5rem);
-      line-height: .86;
+      line-height: .88;
       letter-spacing: -.045em;
       white-space: nowrap;
       color: var(--bone-bright);
@@ -385,12 +391,12 @@
 
     .mark-half.is-top {
       clip-path: inset(0 0 calc(100% - var(--split)) 0);
-      transform: translateY(calc(var(--open) * -20px));
+      transform: translateY(calc(var(--open) * -22px));
     }
 
     .mark-half.is-bot {
       clip-path: inset(var(--split) 0 0 0);
-      transform: translateY(calc(var(--open) * 20px));
+      transform: translateY(calc(var(--open) * 22px));
     }
 
     .mark-ghost {
@@ -793,17 +799,19 @@
     .drawer-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(7, 9, 13, 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(7, 9, 13, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       z-index: 100;
       opacity: 0;
       visibility: hidden;
-      transition: opacity .35s ease, visibility .35s ease;
+      transition: opacity .3s ease, visibility .3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: clamp(0.75rem, 3vw, 1.5rem);
+      overscroll-behavior: contain;
+      touch-action: pan-y;
     }
 
     .drawer-overlay.is-active {
@@ -819,11 +827,12 @@
       max-width: 680px;
       max-height: 88vh;
       overflow-y: auto;
-      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(212, 175, 55, 0.12);
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.85), 0 0 40px rgba(212, 175, 55, 0.12);
       transform: translateY(20px) scale(0.97);
       transition: transform .35s cubic-bezier(.2, .8, .2, 1);
       position: relative;
-      -webkit-overflow-scrolling: touch;
     }
 
     .drawer-overlay.is-active .drawer-card {
@@ -1097,30 +1106,36 @@
       box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
     }
 
+    /* ── Perfectly Centered Copy Toast (No Spilling Fix) ────────────────────────────── */
     .copy-toast {
       position: fixed;
-      bottom: 2rem;
-      right: 2rem;
+      bottom: clamp(1.5rem, 4vh, 2.5rem);
+      left: 50%;
+      transform: translate(-50%, 25px);
       background: var(--ink-surface);
       border: 1px solid var(--gold);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px var(--gold-glow);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 20px var(--gold-glow);
       color: var(--gold-hi);
       font-family: var(--mono);
-      font-size: .78rem;
+      font-size: clamp(0.72rem, 2vw, 0.8rem);
       letter-spacing: .12em;
       text-transform: uppercase;
-      padding: .7rem 1.3rem;
+      padding: .65rem 1.25rem;
       border-radius: 6px;
-      z-index: 200;
+      z-index: 250;
       opacity: 0;
-      transform: translateY(20px);
+      visibility: hidden;
       pointer-events: none;
-      transition: all .35s cubic-bezier(.2, .8, .2, 1);
+      white-space: nowrap;
+      max-width: calc(100vw - 2rem);
+      text-align: center;
+      transition: opacity .3s ease, transform .3s cubic-bezier(.2, .8, .2, 1), visibility .3s;
     }
 
     .copy-toast.is-visible {
       opacity: 1;
-      transform: translateY(0);
+      visibility: visible;
+      transform: translate(-50%, 0);
     }
 
     /* ── Footer ────────────────────────────── */
@@ -1168,20 +1183,18 @@
 
     /* ── Responsive / Mobile Specific Optimizations ────────────────────────────── */
     @media (max-width: 768px) {
-      /* Navbar: clean 2-column layout (Logo on left, Work badge on right) */
       .nav {
         padding-block: 1.1rem;
       }
 
       .nav-center {
-        display: none; /* Hide middle badge on mobile so it doesn't cause clutter */
+        display: none;
       }
 
       .nav-links a {
-        display: none; /* Hide text links on mobile */
+        display: none;
       }
 
-      /* Hero: Show JNB time cleanly inside hero coordinate bar */
       .hero-mobile-time {
         display: inline-flex;
       }
@@ -1192,7 +1205,6 @@
         gap: .5rem;
       }
 
-      /* Manifest Row Mobile 2-Tier Layout */
       .row {
         grid-template-columns: 1fr auto;
         row-gap: .35rem;
@@ -1212,12 +1224,10 @@
         font-size: .68rem;
       }
 
-      /* Gallery inside Drawer */
       .frames-gallery {
         grid-template-columns: 1fr;
       }
 
-      /* Contact Actions Stack */
       .mail-action-wrap {
         flex-direction: column;
         align-items: stretch;
@@ -1233,18 +1243,6 @@
         padding-block: .6rem;
       }
 
-      /* Toast Notification: Center at bottom */
-      .copy-toast {
-        left: 50%;
-        right: auto;
-        bottom: 1.5rem;
-        transform: translateX(-50%) translateY(20px);
-        width: calc(100% - 2rem);
-        max-width: 340px;
-        text-align: center;
-      }
-
-      /* Footer */
       .foot {
         flex-direction: column;
         align-items: flex-start;
@@ -1558,7 +1556,7 @@
     </div>
   </div>
 
-  <!-- Toast Notification -->
+  <!-- Toast Notification (Fixed Centering) -->
   <div class="copy-toast" id="copyToast">[ ✓ COPIED: hello@dotricky.me ]</div>
 
   <script>
@@ -1730,7 +1728,7 @@
         });
       });
 
-      /* ── Interactive Modal Drawer for Archive Folders ───── */
+      /* ── Interactive Modal Drawer for Archive Folders (Scroll Locking) ───── */
       var overlay = document.getElementById('drawerOverlay');
       var modalCloseBtn = document.getElementById('modalCloseBtn');
       var modalPath = document.getElementById('modalPath');
@@ -1795,13 +1793,15 @@
 
         overlay.classList.add('is-active');
         overlay.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
+        document.documentElement.classList.add('modal-open');
+        document.body.classList.add('modal-open');
       }
 
       function closeFolderModal() {
         overlay.classList.remove('is-active');
         overlay.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
+        document.documentElement.classList.remove('modal-open');
+        document.body.classList.remove('modal-open');
       }
 
       document.querySelectorAll('.row').forEach(function (row) {
@@ -1821,7 +1821,7 @@
         }
       });
 
-      /* ── 1-Click Copy Email + Toast Notification ────────── */
+      /* ── 1-Click Copy Email + Centered Toast Notification ────────── */
       var copyBtn = document.getElementById('copyMailBtn');
       var toast = document.getElementById('copyToast');
 
