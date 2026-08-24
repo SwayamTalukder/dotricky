@@ -6,40 +6,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>.ricky — Unzip the Vision</title>
   <meta name="description"
-    content=".ricky — a working archive. Systems, security, web, frames, models. Unzip the vision.">
+    content=".ricky — an archive of systems, security, web engineering, visual frames, AI models and craft. Unzip the vision.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Karla:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Karla:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"
     rel="stylesheet">
   <style>
     :root {
-      --ink: #0B0D10;
-      --ink-raised: #13161C;
-      --navy: #1B2A4A;
-      --navy-lift: #2C4271;
-      --gold: #C9973F;
-      --gold-hi: #E4B85C;
-      --bone: #E7E3DA;
-      --mute: #79839A;
-      --rule: rgba(231, 227, 218, .10);
-      --display: "Archivo", -apple-system, "Segoe UI", sans-serif;
-      --body: "Karla", -apple-system, "Segoe UI", sans-serif;
+      --ink: #07090D;
+      --ink-raised: #0E1219;
+      --ink-surface: #141923;
+      --ink-glass: rgba(14, 18, 25, 0.75);
+      --navy: #152238;
+      --navy-lift: #1E355B;
+      --navy-glow: rgba(30, 58, 110, 0.35);
+      --gold: #D4AF37;
+      --gold-hi: #F5D061;
+      --gold-glow: rgba(212, 175, 55, 0.4);
+      --gold-dim: rgba(212, 175, 55, 0.12);
+      --cyan: #5DE2E7;
+      --bone: #EAE6DF;
+      --bone-bright: #FFFFFF;
+      --mute: #828E9E;
+      --mute-dark: #434B58;
+      --rule: rgba(234, 230, 223, 0.08);
+      --rule-gold: rgba(212, 175, 55, 0.22);
+      
+      --display: "Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --body: "Karla", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       --mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+      
       --pad: clamp(1.25rem, 5vw, 4.5rem);
       --open: 0;
       --z: 0;
       --split: 54%;
+      --mouse-x: 50vw;
+      --mouse-y: 30vh;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
-      padding: 0
+      padding: 0;
     }
 
     html {
-      scroll-behavior: smooth
+      scroll-behavior: smooth;
+      background-color: var(--ink);
+      color-scheme: dark;
     }
 
     body {
@@ -47,77 +62,179 @@
       color: var(--bone);
       font-family: var(--body);
       font-size: clamp(1rem, .95rem + .2vw, 1.1rem);
-      line-height: 1.6;
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
     }
 
-    body::before {
-      content: "";
+    /* ── Ambient Futuristic Gradient & Matrix Background ──────────────── */
+    .ambient-bg {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 0;
+      overflow: hidden;
+    }
+
+    .ambient-mesh {
+      position: absolute;
+      inset: 0;
       background:
-        radial-gradient(120% 70% at 50% -10%, rgba(44, 66, 113, .30), transparent 60%),
-        radial-gradient(70% 50% at 100% 100%, rgba(201, 151, 63, .07), transparent 70%);
+        radial-gradient(1000px circle at 50% -10%, rgba(30, 58, 110, 0.38), transparent 60%),
+        radial-gradient(800px circle at 85% 80%, rgba(212, 175, 55, 0.08), transparent 65%),
+        radial-gradient(600px circle at 15% 90%, rgba(21, 34, 56, 0.45), transparent 70%),
+        linear-gradient(180deg, #07090D 0%, #090C12 50%, #07090D 100%);
+    }
+
+    .ambient-cursor-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.045) 0%, rgba(30, 58, 110, 0.035) 45%, transparent 70%);
+      transform: translate(-50%, -50%);
+      top: var(--mouse-y);
+      left: var(--mouse-x);
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      will-change: top, left;
+    }
+
+    .ambient-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(234, 230, 223, 0.022) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(234, 230, 223, 0.022) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 85%);
+      -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 85%);
+    }
+
+    .ambient-noise {
+      position: absolute;
+      inset: 0;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     }
 
     .wrap {
       position: relative;
       z-index: 1;
-      max-width: 1180px;
+      max-width: 1160px;
       margin: 0 auto;
-      padding-inline: var(--pad)
+      padding-inline: var(--pad);
     }
 
     a {
-      color: inherit
+      color: inherit;
+      text-decoration: none;
     }
 
     ::selection {
       background: var(--gold);
-      color: var(--ink)
+      color: var(--ink);
     }
 
     :focus-visible {
       outline: 2px solid var(--gold-hi);
       outline-offset: 4px;
-      border-radius: 2px
+      border-radius: 2px;
     }
 
     .eyebrow {
       font-family: var(--mono);
       font-size: .72rem;
-      letter-spacing: .22em;
+      letter-spacing: .24em;
       text-transform: uppercase;
       color: var(--mute);
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
     }
 
-    /* ── nav ─────────────────────────────── */
+    .eyebrow-accent {
+      color: var(--gold);
+    }
+
+    /* ── Header / Navigation ─────────────────────────────── */
     .nav {
       position: relative;
-      z-index: 3;
+      z-index: 20;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-      padding-block: 1.6rem;
+      gap: 1.25rem;
+      padding-block: 1.75rem;
+      border-bottom: 1px solid var(--rule);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
     .nav-mark {
       font-family: var(--display);
-      font-variation-settings: "wdth" 118;
+      font-variation-settings: "wdth" 120;
       font-weight: 800;
-      font-size: 1.05rem;
+      font-size: 1.15rem;
       letter-spacing: -.02em;
-      text-decoration: none;
+      color: var(--bone-bright);
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      transition: transform .3s ease;
+    }
+
+    .nav-mark:hover {
+      transform: scale(1.03);
+    }
+
+    .nav-mark .dot {
+      color: var(--gold);
+      text-shadow: 0 0 12px var(--gold-glow);
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      padding: .35rem .85rem;
+      background: rgba(14, 18, 25, 0.6);
+      border: 1px solid var(--rule);
+      border-radius: 100px;
+      font-family: var(--mono);
+      font-size: .68rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--bone);
+    }
+
+    .live-badge .pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #34D399;
+      box-shadow: 0 0 8px rgba(52, 211, 153, 0.8);
+      animation: pulse-green 2.5s infinite;
+    }
+
+    @keyframes pulse-green {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.35); opacity: 0.6; }
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: clamp(1rem, 3vw, 2rem)
+      gap: clamp(1rem, 2.5vw, 2rem);
     }
 
     .nav-links a {
@@ -126,120 +243,160 @@
       letter-spacing: .14em;
       text-transform: uppercase;
       color: var(--mute);
-      text-decoration: none;
-      transition: color .3s ease;
+      transition: color .25s ease, text-shadow .25s ease;
+      position: relative;
     }
 
     .nav-links a:hover {
-      color: var(--bone)
+      color: var(--gold-hi);
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
     }
 
-    .chip {
+    .chip-work {
       display: inline-flex;
       align-items: center;
       gap: .5rem;
-      border: 1px solid var(--rule);
+      border: 1px solid var(--rule-gold);
+      background: rgba(212, 175, 55, 0.05);
       border-radius: 100px;
-      padding: .35rem .75rem;
+      padding: .35rem .85rem;
       font-family: var(--mono);
       font-size: .68rem;
       letter-spacing: .12em;
       text-transform: uppercase;
-      color: var(--bone);
+      color: var(--gold-hi);
       white-space: nowrap;
+      transition: all .3s ease;
     }
 
-    .chip i {
+    .chip-work:hover {
+      background: rgba(212, 175, 55, 0.12);
+      border-color: var(--gold);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+    }
+
+    .chip-work i {
       width: 6px;
       height: 6px;
       border-radius: 50%;
       background: var(--gold);
-      animation: blip 2.6s ease-in-out infinite
+      box-shadow: 0 0 8px var(--gold);
+      animation: blip 2.4s ease-in-out infinite;
     }
 
     @keyframes blip {
-
-      0%,
-      100% {
-        opacity: 1;
-        box-shadow: 0 0 0 0 rgba(201, 151, 63, .5)
-      }
-
-      50% {
-        opacity: .6;
-        box-shadow: 0 0 0 5px rgba(201, 151, 63, 0)
-      }
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(212, 175, 55, .6); }
+      50% { opacity: .5; box-shadow: 0 0 0 6px rgba(212, 175, 55, 0); }
     }
 
-    /* ── hero ────────────────────────────── */
+    /* ── Hero Section ────────────────────────────── */
     .hero {
-      padding-block: clamp(3rem, 11vh, 7rem) clamp(4rem, 12vh, 8rem)
+      padding-block: clamp(3rem, 10vh, 6.5rem) clamp(4rem, 11vh, 7.5rem);
+      position: relative;
     }
 
     .hero-top {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
+      align-items: center;
       gap: 1rem;
       flex-wrap: wrap;
-      margin-bottom: clamp(2rem, 6vh, 3.5rem)
+      margin-bottom: clamp(2rem, 5vh, 3.5rem);
+      padding-bottom: .8rem;
+      border-bottom: 1px solid rgba(234, 230, 223, 0.04);
     }
 
+    .hero-coord {
+      font-family: var(--mono);
+      font-size: .72rem;
+      letter-spacing: .18em;
+      color: var(--mute);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .hero-coord-tag {
+      padding: 2px 6px;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      background: var(--ink-raised);
+      color: var(--gold);
+    }
+
+    /* ── The Zipper Wordmark ────────────────────────────── */
     .mark {
       position: relative;
-      isolation: isolate
+      isolation: isolate;
+      user-select: none;
+      cursor: ew-resize;
     }
 
     .mark-face {
       font-family: var(--display);
       font-variation-settings: "wdth" 122;
-      font-weight: 800;
-      font-size: clamp(3.4rem, 15.5vw, 10.5rem);
+      font-weight: 850;
+      font-size: clamp(3.6rem, 16vw, 11rem);
       line-height: .86;
-      letter-spacing: -.045em;
+      letter-spacing: -.048em;
       white-space: nowrap;
+      color: var(--bone-bright);
+      text-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
     }
 
     .mark-face .dot {
-      color: var(--gold)
+      color: var(--gold);
+      text-shadow: 0 0 35px var(--gold-glow);
     }
 
     .mark-half {
       position: absolute;
       inset: 0;
-      will-change: transform
+      will-change: transform;
+      transition: transform 0.1s linear;
     }
 
     .mark-half.is-top {
       clip-path: inset(0 0 calc(100% - var(--split)) 0);
-      transform: translateY(calc(var(--open) * -20px));
+      transform: translateY(calc(var(--open) * -22px));
     }
 
     .mark-half.is-bot {
       clip-path: inset(var(--split) 0 0 0);
-      transform: translateY(calc(var(--open) * 20px));
+      transform: translateY(calc(var(--open) * 22px));
     }
 
     .mark-ghost {
-      visibility: hidden
+      visibility: hidden;
     }
 
     .zip {
       position: absolute;
-      left: -4%;
-      right: -4%;
+      left: -3%;
+      right: -3%;
       top: var(--split);
       height: 0;
-      z-index: 2
+      z-index: 5;
+      pointer-events: auto;
+    }
+
+    .zip-laser-track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -1px;
+      height: 1px;
+      background: rgba(234, 230, 223, 0.08);
     }
 
     .zip-line {
       position: absolute;
       left: 0;
       top: -1px;
-      height: 1px;
+      height: 2px;
       width: calc(var(--z) * 100%);
-      background: linear-gradient(90deg, rgba(201, 151, 63, 0), var(--gold));
+      background: linear-gradient(90deg, rgba(212, 175, 55, 0) 0%, rgba(212, 175, 55, 0.6) 70%, var(--gold-hi) 100%);
+      box-shadow: 0 0 12px var(--gold);
     }
 
     .zip-row {
@@ -248,43 +405,47 @@
       right: 0;
       display: flex;
       justify-content: space-between;
-      gap: 4px
+      gap: 4px;
+      pointer-events: none;
     }
 
     .zip-row.is-top {
-      bottom: 0
+      bottom: 0;
     }
 
     .zip-row.is-bot {
-      top: 0
+      top: 0;
     }
 
     .tooth {
       flex: 1 1 auto;
-      max-width: 9px;
-      height: 8px;
+      max-width: 8px;
+      height: 7px;
       border-radius: 2px;
-      background: var(--gold);
+      background: linear-gradient(180deg, var(--gold-hi), var(--gold));
       opacity: .85;
-      transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .45s ease;
+      transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .45s ease, background-color .3s;
+      box-shadow: 0 0 4px rgba(212, 175, 55, 0.2);
     }
 
     .is-top .tooth {
-      transform: translateY(5px)
+      transform: translateY(4px);
     }
 
     .is-bot .tooth {
-      transform: translateY(-5px)
+      transform: translateY(-4px);
     }
 
     .is-top .tooth.open {
-      transform: translateY(-17px) rotate(-11deg);
-      opacity: .5
+      transform: translateY(-18px) rotate(-14deg);
+      opacity: .4;
+      background: var(--navy-lift);
     }
 
     .is-bot .tooth.open {
-      transform: translateY(17px) rotate(11deg);
-      opacity: .5
+      transform: translateY(18px) rotate(14deg);
+      opacity: .4;
+      background: var(--navy-lift);
     }
 
     .slider {
@@ -292,11 +453,20 @@
       top: 0;
       left: calc(var(--z) * 100%);
       transform: translate(-50%, -50%);
-      width: 30px;
-      height: 17px;
-      border-radius: 5px;
-      background: linear-gradient(180deg, var(--gold-hi), var(--gold));
-      box-shadow: 0 0 22px rgba(201, 151, 63, .45);
+      width: 32px;
+      height: 18px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #FFF0B8 0%, var(--gold-hi) 40%, var(--gold) 100%);
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.75), 0 0 6px #FFF;
+      cursor: grab;
+      z-index: 10;
+      transition: transform .15s ease, box-shadow .2s ease;
+    }
+
+    .slider:active {
+      cursor: grabbing;
+      transform: translate(-50%, -50%) scale(1.15);
+      box-shadow: 0 0 35px rgba(212, 175, 55, 0.95), 0 0 10px #FFF;
     }
 
     .slider::after {
@@ -304,64 +474,98 @@
       position: absolute;
       left: 50%;
       top: 100%;
-      width: 2px;
-      height: 15px;
+      width: 3px;
+      height: 16px;
       border-radius: 2px;
       background: var(--gold);
       transform: translateX(-50%);
-      opacity: .8;
+      opacity: .9;
+      box-shadow: 0 0 8px var(--gold);
     }
 
+    /* ── Hero Narrative ────────────────────────────── */
     .hero-say {
-      margin-top: clamp(2.2rem, 7vh, 3.4rem);
+      margin-top: clamp(2.4rem, 6vh, 3.6rem);
       display: grid;
       grid-template-columns: minmax(0, 1fr);
-      gap: 1.1rem;
-      max-width: 52ch;
+      gap: 1.25rem;
+      max-width: 56ch;
+      position: relative;
     }
 
     .tagline {
       font-family: var(--display);
-      font-variation-settings: "wdth" 105;
+      font-variation-settings: "wdth" 106;
       font-weight: 500;
-      font-size: clamp(1.35rem, 3.2vw, 2.1rem);
-      line-height: 1.15;
+      font-size: clamp(1.4rem, 3.4vw, 2.25rem);
+      line-height: 1.2;
       letter-spacing: -.02em;
+      color: var(--bone-bright);
     }
 
     .tagline em {
       font-style: normal;
-      color: var(--gold)
+      color: var(--gold);
+      position: relative;
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
     }
 
     .hero-sub {
       color: var(--mute);
-      max-width: 44ch
+      font-size: clamp(1rem, 1.1vw, 1.15rem);
+      line-height: 1.6;
+      max-width: 48ch;
     }
 
-    .replay {
-      margin-top: .4rem;
-      background: none;
-      border: 0;
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-top: .6rem;
+      flex-wrap: wrap;
+    }
+
+    .replay-btn {
+      background: rgba(212, 175, 55, 0.05);
+      border: 1px solid var(--rule-gold);
+      border-radius: 100px;
       cursor: pointer;
-      color: var(--mute);
+      color: var(--bone);
+      font-family: var(--mono);
+      font-size: .74rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: .5rem 1.1rem;
+      transition: all .3s cubic-bezier(.2, .8, .2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .replay-btn:hover {
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--gold-hi);
+      border-color: var(--gold);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .explore-hint {
       font-family: var(--mono);
       font-size: .72rem;
       letter-spacing: .14em;
       text-transform: uppercase;
-      padding: 0;
-      transition: color .3s ease;
-      justify-self: start;
+      color: var(--mute);
+      display: flex;
+      align-items: center;
+      gap: .4rem;
     }
 
-    .replay:hover {
-      color: var(--gold)
-    }
-
-    /* ── shared section rhythm ───────────── */
+    /* ── Shared Band Rhythm ────────────────────────────── */
     .band {
-      padding-block: clamp(3.5rem, 9vh, 6rem);
-      border-top: 1px solid var(--rule)
+      padding-block: clamp(3.8rem, 8vh, 6.5rem);
+      border-top: 1px solid var(--rule);
+      position: relative;
     }
 
     .band-head {
@@ -370,38 +574,100 @@
       align-items: baseline;
       gap: 1rem;
       margin-bottom: 2.2rem;
-      flex-wrap: wrap
+      flex-wrap: wrap;
     }
 
     .band-title {
       font-family: var(--display);
-      font-variation-settings: "wdth" 108;
+      font-variation-settings: "wdth" 110;
       font-weight: 600;
-      font-size: clamp(1.1rem, 2.4vw, 1.45rem);
-      letter-spacing: -.015em;
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      letter-spacing: -.02em;
+      color: var(--bone-bright);
+      display: flex;
+      align-items: center;
+      gap: .65rem;
     }
 
-    /* ── manifest ────────────────────────── */
-    .manifest {
-      border-top: 1px solid var(--rule)
+    .band-title::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 1px;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
     }
+
+    /* ── Manifest / Interactive Directory Archive ────────────────────────────── */
+    .manifest-container {
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      background: var(--ink-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    .manifest-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .75rem 1.25rem;
+      background: rgba(14, 18, 25, 0.85);
+      border-bottom: 1px solid var(--rule);
+      font-family: var(--mono);
+      font-size: .68rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+
+    .manifest-bar-left {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .dot-indicators {
+      display: flex;
+      gap: 5px;
+    }
+
+    .dot-indicators span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--mute-dark);
+    }
+
+    .dot-indicators span:nth-child(1) { background: rgba(239, 68, 68, 0.6); }
+    .dot-indicators span:nth-child(2) { background: rgba(245, 158, 11, 0.6); }
+    .dot-indicators span:nth-child(3) { background: rgba(52, 211, 153, 0.6); }
 
     .row {
       display: grid;
-      grid-template-columns: minmax(8.5rem, 1.1fr) minmax(0, 2.6fr) auto;
-      gap: clamp(.8rem, 3vw, 2rem);
-      align-items: baseline;
-      padding: 1.15rem .9rem;
+      grid-template-columns: minmax(9.5rem, 1.2fr) minmax(0, 2.8fr) auto auto;
+      gap: clamp(.8rem, 2.5vw, 1.8rem);
+      align-items: center;
+      padding: 1.2rem 1.25rem;
       border-bottom: 1px solid var(--rule);
       position: relative;
+      cursor: pointer;
       opacity: 0;
       transform: translateY(14px);
-      transition: opacity .7s ease, transform .7s cubic-bezier(.2, .8, .2, 1), background-color .35s ease;
+      transition: opacity .6s ease, transform .6s cubic-bezier(.2, .8, .2, 1), background-color .25s ease, border-color .25s ease;
+      user-select: none;
+    }
+
+    .row:last-child {
+      border-bottom: none;
     }
 
     .row.seen {
       opacity: 1;
-      transform: none
+      transform: none;
     }
 
     .row::before {
@@ -410,169 +676,516 @@
       left: 0;
       top: 0;
       bottom: 0;
-      width: 2px;
+      width: 3px;
       background: var(--gold);
       transform: scaleY(0);
       transform-origin: top;
-      transition: transform .4s cubic-bezier(.2, .8, .2, 1);
+      transition: transform .35s cubic-bezier(.2, .8, .2, 1);
+      box-shadow: 0 0 12px var(--gold);
     }
 
     .row:hover {
-      background: rgba(231, 227, 218, .03)
+      background: rgba(212, 175, 55, 0.035);
     }
 
     .row:hover::before {
-      transform: scaleY(1)
+      transform: scaleY(1);
     }
 
     .row-name {
       font-family: var(--mono);
-      font-size: .95rem;
-      color: var(--bone)
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--bone-bright);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      letter-spacing: .02em;
+    }
+
+    .row-name::before {
+      content: ">";
+      color: var(--mute-dark);
+      transition: color .2s ease, transform .2s ease;
+    }
+
+    .row:hover .row-name::before {
+      color: var(--gold);
+      transform: translateX(2px);
     }
 
     .row-note {
       color: var(--mute);
-      font-size: .97rem
+      font-size: .95rem;
+      line-height: 1.5;
+      transition: color .2s ease;
+    }
+
+    .row:hover .row-note {
+      color: var(--bone);
     }
 
     .row-size {
       font-family: var(--mono);
       font-size: .76rem;
-      letter-spacing: .08em;
+      letter-spacing: .1em;
+      text-transform: uppercase;
       color: var(--mute);
       text-align: right;
       white-space: nowrap;
-      transition: color .35s ease;
+      padding: .25rem .6rem;
+      border-radius: 4px;
+      background: rgba(234, 230, 223, 0.03);
+      border: 1px solid rgba(234, 230, 223, 0.05);
+      transition: all .25s ease;
     }
 
     .row:hover .row-size {
-      color: var(--gold)
+      color: var(--gold-hi);
+      background: rgba(212, 175, 55, 0.08);
+      border-color: var(--rule-gold);
     }
 
-    /* ── note ────────────────────────────── */
-    .note {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 1.4rem;
-      max-width: 60ch
-    }
-
-    .note p {
-      font-size: clamp(1.05rem, 2.1vw, 1.3rem);
-      line-height: 1.55
-    }
-
-    .note p+p {
-      color: var(--mute);
-      font-size: 1rem
-    }
-
-    /* ── contact ─────────────────────────── */
-    .contact-line {
-      font-family: var(--display);
-      font-variation-settings: "wdth" 110;
-      font-weight: 600;
-      font-size: clamp(1.6rem, 4.4vw, 3rem);
-      line-height: 1.1;
-      letter-spacing: -.025em;
-      margin-bottom: 1.6rem;
-      max-width: 18ch;
-    }
-
-    .mail {
-      display: inline-block;
+    .row-arrow {
+      color: var(--mute-dark);
       font-family: var(--mono);
-      font-size: clamp(1rem, 2.6vw, 1.5rem);
-      text-decoration: none;
-      color: var(--bone);
-      padding-bottom: .35rem;
+      font-size: .85rem;
+      transition: transform .3s ease, color .3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+    }
+
+    .row:hover .row-arrow {
+      color: var(--gold-hi);
+      transform: translate(3px, -3px);
+    }
+
+    /* ── Interactive Modal / Folder Inspection Drawer ────────────────────────────── */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 9, 13, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .35s ease, visibility .35s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .drawer-overlay.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .drawer-card {
+      background: var(--ink-raised);
+      border: 1px solid var(--rule-gold);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 88vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(212, 175, 55, 0.12);
+      transform: translateY(20px) scale(0.97);
+      transition: transform .35s cubic-bezier(.2, .8, .2, 1);
       position: relative;
     }
 
-    .mail::after {
+    .drawer-overlay.is-active .drawer-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .drawer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.6rem;
+      border-bottom: 1px solid var(--rule);
+      background: rgba(20, 25, 35, 0.6);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .drawer-path {
+      font-family: var(--mono);
+      font-size: .88rem;
+      color: var(--gold-hi);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .drawer-close {
+      background: rgba(234, 230, 223, 0.05);
+      border: 1px solid var(--rule);
+      color: var(--mute);
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 1rem;
+      transition: all .2s ease;
+    }
+
+    .drawer-close:hover {
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--gold-hi);
+      border-color: var(--gold);
+    }
+
+    .drawer-body {
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .drawer-title {
+      font-family: var(--display);
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: var(--bone-bright);
+      line-height: 1.25;
+    }
+
+    .drawer-desc {
+      color: var(--bone);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .drawer-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: .75rem;
+      padding: 1rem;
+      background: rgba(7, 9, 13, 0.5);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+    }
+
+    .drawer-meta-item {
+      font-family: var(--mono);
+      font-size: .72rem;
+    }
+
+    .drawer-meta-label {
+      color: var(--mute);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 2px;
+    }
+
+    .drawer-meta-val {
+      color: var(--gold-hi);
+      font-weight: 500;
+    }
+
+    .drawer-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+
+    .drawer-tag {
+      padding: .3rem .75rem;
+      background: rgba(21, 34, 56, 0.5);
+      border: 1px solid rgba(44, 66, 113, 0.5);
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: .72rem;
+      color: var(--bone);
+    }
+
+    /* Frames / Photo Gallery inside Drawer */
+    .frames-gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: .5rem;
+    }
+
+    .frame-card {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #090C12;
+      position: relative;
+    }
+
+    .frame-visual {
+      aspect-ratio: 16/10;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: flex-end;
+      padding: .75rem;
+      position: relative;
+    }
+
+    .frame-visual::before {
       content: "";
       position: absolute;
-      left: 0;
-      bottom: 0;
-      height: 1px;
-      width: 100%;
-      background: var(--gold);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform .5s cubic-bezier(.2, .8, .2, 1);
+      inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(7, 9, 13, 0.9) 100%);
+    }
+
+    .frame-meta {
+      position: relative;
+      z-index: 1;
+      font-family: var(--mono);
+      font-size: .68rem;
+      color: var(--gold-hi);
+    }
+
+    /* ── Manifesto Note ────────────────────────────── */
+    .note {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.6rem;
+      max-width: 64ch;
+      position: relative;
+    }
+
+    .note-lead {
+      font-size: clamp(1.15rem, 2.3vw, 1.45rem);
+      line-height: 1.55;
+      color: var(--bone-bright);
+      font-weight: 400;
+    }
+
+    .note-body {
+      color: var(--mute);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .note-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    .metric-val {
+      font-family: var(--display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gold-hi);
+      line-height: 1;
+      letter-spacing: -.03em;
+    }
+
+    .metric-label {
+      font-family: var(--mono);
+      font-size: .72rem;
+      color: var(--mute);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-top: .4rem;
+    }
+
+    /* ── Contact / Transmit Signal ────────────────────────────── */
+    .contact-card {
+      background: linear-gradient(135deg, rgba(20, 25, 38, 0.8) 0%, rgba(14, 18, 25, 0.9) 100%);
+      border: 1px solid var(--rule-gold);
+      border-radius: 12px;
+      padding: clamp(2rem, 5vw, 3.5rem);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .contact-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .contact-line {
+      font-family: var(--display);
+      font-variation-settings: "wdth" 112;
+      font-weight: 600;
+      font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+      line-height: 1.1;
+      letter-spacing: -.03em;
+      margin-top: 1rem;
+      margin-bottom: 1.75rem;
+      color: var(--bone-bright);
+      max-width: 18ch;
+    }
+
+    .mail-action-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .mail {
+      display: inline-flex;
+      align-items: center;
+      gap: .75rem;
+      font-family: var(--mono);
+      font-size: clamp(1.05rem, 2.5vw, 1.5rem);
+      color: var(--bone-bright);
+      padding: .6rem 1.25rem;
+      background: rgba(7, 9, 13, 0.6);
+      border: 1px solid var(--rule-gold);
+      border-radius: 6px;
+      position: relative;
+      cursor: pointer;
+      transition: all .3s cubic-bezier(.2, .8, .2, 1);
     }
 
     .mail:hover {
-      color: var(--gold-hi)
+      color: var(--gold-hi);
+      background: rgba(212, 175, 55, 0.1);
+      border-color: var(--gold);
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+      transform: translateY(-2px);
     }
 
-    .mail:hover::after {
-      transform: scaleX(1)
+    .copy-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--ink-surface);
+      border: 1px solid var(--gold);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px var(--gold-glow);
+      color: var(--gold-hi);
+      font-family: var(--mono);
+      font-size: .8rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .75rem 1.4rem;
+      border-radius: 6px;
+      z-index: 200;
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: all .35s cubic-bezier(.2, .8, .2, 1);
     }
 
-    /* ── footer ──────────────────────────── */
+    .copy-toast.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Footer ────────────────────────────── */
     .foot {
       border-top: 1px solid var(--rule);
-      padding-block: 1.8rem 2.6rem;
+      padding-block: 2.2rem 3.2rem;
       display: flex;
       justify-content: space-between;
-      gap: 1rem;
+      align-items: center;
+      gap: 1.25rem;
       flex-wrap: wrap;
       font-family: var(--mono);
       font-size: .72rem;
-      letter-spacing: .12em;
+      letter-spacing: .14em;
       text-transform: uppercase;
       color: var(--mute);
     }
 
-    /* ── entrance ────────────────────────── */
+    .foot-status {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .foot-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 6px var(--gold);
+    }
+
+    /* ── Entrance & Scroll Transitions ────────────────────────────── */
     .rise {
       opacity: 0;
-      transform: translateY(12px);
-      transition: opacity .8s ease, transform .8s cubic-bezier(.2, .8, .2, 1)
+      transform: translateY(16px);
+      transition: opacity .8s ease, transform .8s cubic-bezier(.2, .8, .2, 1);
     }
 
     .rise.in {
       opacity: 1;
-      transform: none
+      transform: none;
     }
 
-    @media (max-width:680px) {
+    /* ── Media Queries ────────────────────────────── */
+    @media (max-width: 820px) {
       .row {
-        grid-template-columns: minmax(0, 1fr) auto;
-        row-gap: .35rem
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        row-gap: .5rem;
       }
 
       .row-note {
-        grid-column: 1 / -1
+        grid-column: 1 / -1;
       }
 
-      .nav-links a[href="#contents"] {
-        display: none
+      .frames-gallery {
+        grid-template-columns: 1fr;
       }
     }
 
-    @media (prefers-reduced-motion:reduce) {
+    @media (max-width: 640px) {
+      .nav-links a[href="#contents"],
+      .nav-links a[href="#manifesto"] {
+        display: none;
+      }
+
+      .row-arrow {
+        display: none;
+      }
+
+      .hero-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .contact-card {
+        padding: 1.75rem 1.25rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
       html {
-        scroll-behavior: auto
+        scroll-behavior: auto;
       }
 
       *,
       *::before,
       *::after {
         transition-duration: .01ms !important;
-        animation-duration: .01ms !important
+        animation-duration: .01ms !important;
       }
 
-      .rise {
-        opacity: 1;
-        transform: none
-      }
-
+      .rise,
       .row {
         opacity: 1;
-        transform: none
+        transform: none;
       }
     }
   </style>
@@ -580,101 +1193,296 @@
 
 <body>
 
+  <!-- Ambient Backdrop -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-mesh"></div>
+    <div class="ambient-cursor-glow" id="cursorGlow"></div>
+    <div class="ambient-grid"></div>
+    <div class="ambient-noise"></div>
+  </div>
+
+  <!-- Main Wrapper -->
   <div class="wrap">
     <nav class="nav">
-      <a class="nav-mark" href="#top"><span style="color:var(--gold)">.</span>ricky</a>
+      <a class="nav-mark" href="#top" aria-label=".ricky home">
+        <span class="dot">.</span>ricky
+      </a>
+      
+      <div class="nav-center">
+        <div class="live-badge" id="timeBadge" title="Live Johannesburg Local Time">
+          <span class="pulse"></span>
+          <span id="liveTime">JNB --:-- SAST</span>
+        </div>
+      </div>
+
       <div class="nav-links">
-        <a href="#contents">Contents</a>
-        <a href="#contact">Contact</a>
-        <span class="chip"><i></i>Open for work</span>
+        <a href="#contents">Manifest</a>
+        <a href="#manifesto">Archive</a>
+        <a href="#contact" class="chip-work"><i></i>Open for Work</a>
       </div>
     </nav>
   </div>
 
+  <!-- Hero Header -->
   <header class="wrap hero" id="top">
     <div class="hero-top rise" data-delay="80">
-      <span class="eyebrow">Package · .ricky</span>
-      <span class="eyebrow">Kolkata → anywhere</span>
+      <div class="hero-coord">
+        <span class="hero-coord-tag">PKG</span>
+        <span>ARCHIVE // .RICKY</span>
+      </div>
+      <div class="hero-coord">
+        <span>JOHANNESBURG (SAST)</span>
+        <span class="eyebrow-accent">→</span>
+        <span>GLOBAL</span>
+      </div>
     </div>
 
-    <div class="mark rise" data-delay="240">
+    <!-- The Interactive Zipper Mark -->
+    <div class="mark rise" id="zipperMark" data-delay="220" title="Click or drag to scrub zipper">
       <div class="mark-face mark-ghost" aria-hidden="true"><span class="dot">.</span>ricky</div>
       <h1 class="mark-face mark-half is-top" aria-label=".ricky"><span class="dot" aria-hidden="true">.</span><span
           aria-hidden="true">ricky</span></h1>
       <div class="mark-face mark-half is-bot" aria-hidden="true"><span class="dot">.</span>ricky</div>
+      
       <div class="zip" aria-hidden="true">
+        <div class="zip-laser-track"></div>
         <div class="zip-line"></div>
         <div class="zip-row is-top" data-teeth></div>
         <div class="zip-row is-bot" data-teeth></div>
-        <div class="slider"></div>
+        <div class="slider" id="zipSlider" tabindex="0" role="slider" aria-label="Zipper control" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
       </div>
     </div>
 
     <div class="hero-say">
-      <p class="tagline rise" data-delay="1900"><em>Unzip the vision.</em> One person, a few disciplines, and a habit of
-        shipping the thing nobody else wanted to touch.</p>
-      <p class="hero-sub rise" data-delay="2050">Cloud and security by trade. Sites, apps and cameras by choice. Most of
-        it ships quietly — a little of it ends up here.</p>
-      <button class="replay rise" data-delay="2200" type="button">↻ Unzip again</button>
+      <p class="tagline rise" data-delay="1800">
+        <em>Unzip the vision.</em> One person, a few disciplines, and a habit of shipping the thing nobody else wanted to touch.
+      </p>
+      <p class="hero-sub rise" data-delay="1950">
+        Cloud infrastructure, networks & zero-trust defense by trade. Web engines, visual frames and AI by choice. 7+ years of building what endures.
+      </p>
+      <div class="hero-actions rise" data-delay="2100">
+        <button class="replay-btn" id="replayBtn" type="button">↻ Unzip again</button>
+        <span class="explore-hint">↓ Click manifest entries to inspect</span>
+      </div>
     </div>
   </header>
 
+  <!-- Archive Manifest Section -->
   <section class="wrap band" id="contents">
     <div class="band-head">
-      <h2 class="band-title">What's inside</h2>
-      <span class="eyebrow">7 entries</span>
+      <h2 class="band-title">Archive Manifest</h2>
+      <span class="eyebrow">7 virtual directories · click to inspect</span>
     </div>
-    <div class="manifest">
-      <div class="row"><span class="row-name">systems/</span><span class="row-note">Cloud and networks — the plumbing
-          nobody notices until it stops.</span><span class="row-size">6.8 yrs</span></div>
-      <div class="row"><span class="row-name">secure/</span><span class="row-note">Locks, keys, and the habit of asking
-          who else is holding one.</span><span class="row-size">always on</span></div>
-      <div class="row"><span class="row-name">build/</span><span class="row-note">Websites and apps, end to end — for
-          people who deserve better than a template.</span><span class="row-size">taking work</span></div>
-      <div class="row"><span class="row-name">frames/</span><span class="row-note">Photography and video, whatever the
-          format asks for. Light first, gear a distant second.</span><span class="row-size">multi-format</span></div>
-      <div class="row"><span class="row-name">models/</span><span class="row-note">AI pointed at real problems instead
-          of demos.</span><span class="row-size">in progress</span></div>
-      <div class="row"><span class="row-name">unreleased/</span><span class="row-note">Ideas for making ordinary things
-          less hard. Some of them are bigger than me.</span><span class="row-size">several</span></div>
-      <div class="row"><span class="row-name">crease/</span><span class="row-note">Cricket. The one folder that isn't
-          work.</span><span class="row-size">weekends</span></div>
+
+    <div class="manifest-container">
+      <div class="manifest-bar">
+        <div class="manifest-bar-left">
+          <div class="dot-indicators">
+            <span></span><span></span><span></span>
+          </div>
+          <span>PATH: /root/dotricky/</span>
+        </div>
+        <span>PERM: rwxr-xr-x</span>
+      </div>
+
+      <div class="manifest" id="manifestList">
+        
+        <div class="row" data-folder="systems" data-name="systems/" data-title="Cloud Architecture & Core Infrastructure" data-size="7+ yrs" data-desc="Production cloud environments, hybrid multi-region routing, and resilient distributed topologies. Engineered to operate under load so the plumbing never stops." data-tags="AWS, GCP, Linux, Kubernetes, Terraform, SDN, High-Availability">
+          <span class="row-name" data-scramble="systems/">systems/</span>
+          <span class="row-note">Cloud & networks — the foundation nobody notices until it stops.</span>
+          <span class="row-size">7+ yrs</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+        <div class="row" data-folder="secure" data-name="secure/" data-title="Defense, Identity & Zero-Trust Security" data-size="always on" data-desc="Zero-trust perimeter architecture, cryptographic key lifecycle management, hardened IAM policies, and active threat posture analysis." data-tags="Zero-Trust, PKI, Infosec, IAM, Compliance, Threat Hunting">
+          <span class="row-name" data-scramble="secure/">secure/</span>
+          <span class="row-note">Locks, keys, and the habit of asking who else is holding one.</span>
+          <span class="row-size">always on</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+        <div class="row" data-folder="build" data-name="build/" data-title="Custom Web Applications & Digital Platforms" data-size="taking work" data-desc="Fast, bespoke web products and high-fidelity interfaces built from the ground up — crafted for people who deserve better than cookie-cutter templates." data-tags="Modern JS/TS, Responsive UI, Microservices, API Architecture, Performance">
+          <span class="row-name" data-scramble="build/">build/</span>
+          <span class="row-note">Websites and apps, end to end — engineered with precision and speed.</span>
+          <span class="row-size">taking work</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+        <div class="row" data-folder="frames" data-name="frames/" data-title="Visual Archive: Photography & Cinematography" data-size="multi-format" data-desc="Visual storytelling through photography and motion. Driven by natural light, intentional color grading, and geometric composition over gear obsessions." data-tags="35mm & Medium Format Mindset, Color Grading, Street, Landscape, Documentary">
+          <span class="row-name" data-scramble="frames/">frames/</span>
+          <span class="row-note">Photography and video, whatever the format asks for. Light first, gear second.</span>
+          <span class="row-size">visual reel</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+        <div class="row" data-folder="models" data-name="models/" data-title="Applied AI & Autonomous Agent Workflows" data-size="in progress" data-desc="Practical machine learning applications, autonomous agentic tool-use, and localized LLM reasoning pipelines focused on solving real-world friction." data-tags="LLMs, Agentic Systems, Automation, Context Pipelines, Edge Inference">
+          <span class="row-name" data-scramble="models/">models/</span>
+          <span class="row-note">AI pointed at real operational bottlenecks instead of synthetic demos.</span>
+          <span class="row-size">active</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+        <div class="row" data-folder="unreleased" data-name="unreleased/" data-title="Prototypes, Experiments & Ideas in Progress" data-size="several" data-desc="Independent experiments, developer micro-tools, and venture concepts aimed at making difficult workflows feel effortless." data-tags="Incubating, Micro-SaaS, CLI Tools, Hardware Prototypes">
+          <span class="row-name" data-scramble="unreleased/">unreleased/</span>
+          <span class="row-note">Ideas for making ordinary things less hard. Some of them are bigger than me.</span>
+          <span class="row-size">classified</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+        <div class="row" data-folder="crease" data-name="crease/" data-title="Cricket: Matchcraft, Pace & Seam" data-size="weekends" data-desc="The art of length, seam position, field strategy, and match discipline. The one dedicated folder on this entire drive that isn't work." data-tags="Fast-Medium, In-Swinger, Matchcraft, Weekend League, Pure Passion">
+          <span class="row-name" data-scramble="crease/">crease/</span>
+          <span class="row-note">Cricket. The one folder that isn't work.</span>
+          <span class="row-size">weekends</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+      </div>
     </div>
   </section>
 
-  <section class="wrap band">
+  <!-- Manifesto / The Short Version -->
+  <section class="wrap band" id="manifesto">
     <div class="band-head">
-      <h2 class="band-title">The short version</h2><span class="eyebrow">read me</span>
+      <h2 class="band-title">The Short Version</h2>
+      <span class="eyebrow">README.TXT</span>
     </div>
     <div class="note">
-      <p class="rise">I build and defend infrastructure for a living, across four countries, for people who don't get a
-        second attempt at going live.</p>
-      <p class="rise">The rest of my time goes into sites, apps and ideas aimed at the same thing: making something that
-        was hard slightly easier for the people using it. A few are small. A few are not. The full archive opens on
-        request.</p>
+      <p class="note-lead rise">
+        I build and defend infrastructure for a living, operating across four countries and multi-region environments for teams where downtime is not an option.
+      </p>
+      <p class="note-body rise">
+        The rest of my time goes into web engines, machine intelligence, and visual media aimed at the exact same outcome: taking something notoriously complex and making it feel fluid, secure, and effortless.
+      </p>
+      <div class="note-metrics rise">
+        <div>
+          <div class="metric-val">7+</div>
+          <div class="metric-label">Years in Infra & Code</div>
+        </div>
+        <div>
+          <div class="metric-val">04</div>
+          <div class="metric-label">Countries Deployed</div>
+        </div>
+        <div>
+          <div class="metric-val">99.9%</div>
+          <div class="metric-label">Reliability Standard</div>
+        </div>
+      </div>
     </div>
   </section>
 
+  <!-- Contact Section -->
   <section class="wrap band" id="contact">
-    <span class="eyebrow">Contact</span>
-    <p class="contact-line" style="margin-top:1.4rem">Got something worth unzipping?</p>
-    <a class="mail" href="mailto:hello@dotricky.me">hello@dotricky.me</a>
+    <div class="contact-card">
+      <span class="eyebrow eyebrow-accent">TRANSMIT SIGNAL</span>
+      <h2 class="contact-line">Got something worth unzipping?</h2>
+      <p class="hero-sub" style="margin-bottom: 1.8rem;">
+        Available for select cloud architecture, security advisory, and bespoke web builds.
+      </p>
+      <div class="mail-action-wrap">
+        <button class="mail" id="copyMailBtn" type="button" title="Click to copy email address">
+          <span>hello@dotricky.me</span>
+          <span style="color:var(--gold); font-size: 0.9em;">[ ⧉ COPY ]</span>
+        </button>
+        <a class="chip-work" href="mailto:hello@dotricky.me?subject=Inquiry%20via%20dotricky.me">
+          Direct Email ↗
+        </a>
+      </div>
+    </div>
   </section>
 
+  <!-- Footer -->
   <div class="wrap">
     <footer class="foot">
-      <span>.ricky — Unzip the Vision</span>
-      <span>dotricky.me</span>
+      <div class="foot-status">
+        <span class="foot-status-dot"></span>
+        <span>.ricky // UNZIP THE VISION</span>
+      </div>
+      <div>JOHANNESBURG, SA · ALL RIGHTS RESERVED</div>
+      <div style="color:var(--gold-hi)">dotricky.me</div>
     </footer>
   </div>
+
+  <!-- Interactive Folder Inspection Drawer Modal -->
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true" role="dialog">
+    <div class="drawer-card" id="drawerCard">
+      <div class="drawer-head">
+        <div class="drawer-path">
+          <span>DIR:</span>
+          <span id="modalPath">/root/dotricky/systems/</span>
+        </div>
+        <button class="drawer-close" id="modalCloseBtn" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="drawer-body">
+        <h3 class="drawer-title" id="modalTitle">Directory Details</h3>
+        <p class="drawer-desc" id="modalDesc">Detailed description of this category.</p>
+
+        <div class="drawer-meta-grid">
+          <div class="drawer-meta-item">
+            <div class="drawer-meta-label">STATUS</div>
+            <div class="drawer-meta-val" id="modalStatus">ONLINE / MOUNTED</div>
+          </div>
+          <div class="drawer-meta-item">
+            <div class="drawer-meta-label">EXPERIENCE / SIZE</div>
+            <div class="drawer-meta-val" id="modalSize">7+ YRS</div>
+          </div>
+          <div class="drawer-meta-item">
+            <div class="drawer-meta-label">PERMISSIONS</div>
+            <div class="drawer-meta-val">drwx------</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="drawer-meta-label" style="margin-bottom: .6rem;">CORE DISCIPLINES & FOCUS</div>
+          <div class="drawer-tags" id="modalTags">
+            <!-- Dynamically populated tags -->
+          </div>
+        </div>
+
+        <div id="modalCustomContent">
+          <!-- Dynamic visual gallery or extra detail -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="copy-toast" id="copyToast">[ ✓ COPIED: hello@dotricky.me ]</div>
 
   <script>
     (function () {
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var root = document.documentElement;
 
-      /* build zipper teeth, density based on width */
-      var count = Math.max(18, Math.min(52, Math.round(window.innerWidth / 26)));
+      /* ── Mouse Spotlight Glow ────────────────────────────── */
+      window.addEventListener('pointermove', function (e) {
+        root.style.setProperty('--mouse-x', e.clientX + 'px');
+        root.style.setProperty('--mouse-y', e.clientY + 'px');
+      }, { passive: true });
+
+      /* ── Johannesburg Live Clock ─────────────────────────── */
+      function updateJnbTime() {
+        var timeEl = document.getElementById('liveTime');
+        if (!timeEl) return;
+        try {
+          var now = new Date();
+          var formatter = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Africa/Johannesburg',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+          });
+          timeEl.textContent = 'JNB ' + formatter.format(now) + ' SAST';
+        } catch (e) {
+          timeEl.textContent = 'JNB UTC+2';
+        }
+      }
+      updateJnbTime();
+      setInterval(updateJnbTime, 1000);
+
+      /* ── Build Zipper Teeth ─────────────────────────────── */
+      var count = Math.max(20, Math.min(56, Math.round(window.innerWidth / 24)));
       var rows = document.querySelectorAll('[data-teeth]');
       rows.forEach(function (row) {
         var frag = document.createDocumentFragment();
@@ -687,47 +1495,236 @@
       });
       var teeth = Array.prototype.slice.call(document.querySelectorAll('.tooth'));
 
-      function paint(p) {
+      function paintZipper(p) {
+        p = Math.max(0, Math.min(1, p));
         root.style.setProperty('--z', p);
-        root.style.setProperty('--open', p < .12 ? 0 : (p - .12) / .88);
+        root.style.setProperty('--open', p < .10 ? 0 : (p - .10) / .90);
         teeth.forEach(function (t, i) {
           var threshold = (i % count) / count;
           t.classList.toggle('open', p > threshold);
         });
+        var slider = document.getElementById('zipSlider');
+        if (slider) slider.setAttribute('aria-valuenow', Math.round(p * 100));
       }
 
       var raf;
-      function unzip() {
+      function unzip(duration) {
         cancelAnimationFrame(raf);
-        if (reduce) { paint(1); return; }
-        var start = null, dur = 1500;
+        if (reduce) { paintZipper(1); return; }
+        var dur = duration || 1400;
+        var start = null;
         function frame(ts) {
           if (start === null) start = ts;
-          var p = Math.min(1, (ts - start) / dur);
-          paint(1 - Math.pow(1 - p, 3));
-          if (p < 1) raf = requestAnimationFrame(frame);
+          var elapsed = ts - start;
+          var progress = Math.min(1, elapsed / dur);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          paintZipper(eased);
+          if (progress < 1) {
+            raf = requestAnimationFrame(frame);
+          }
         }
-        paint(0);
+        paintZipper(0);
         raf = requestAnimationFrame(frame);
       }
 
-      /* staggered entrance */
-      document.querySelectorAll('.rise[data-delay]').forEach(function (el) {
-        setTimeout(function () { el.classList.add('in'); }, reduce ? 0 : +el.dataset.delay);
-      });
-      setTimeout(unzip, reduce ? 0 : 900);
-      document.querySelector('.replay').addEventListener('click', unzip);
+      /* ── Draggable Zipper Scrubbing ─────────────────────── */
+      var markEl = document.getElementById('zipperMark');
+      var isDragging = false;
 
-      /* scroll reveals */
+      function updateScrub(clientX) {
+        var rect = markEl.getBoundingClientRect();
+        var progress = (clientX - rect.left) / rect.width;
+        paintZipper(progress);
+      }
+
+      markEl.addEventListener('pointerdown', function (e) {
+        isDragging = true;
+        cancelAnimationFrame(raf);
+        updateScrub(e.clientX);
+        markEl.setPointerCapture(e.pointerId);
+      });
+
+      markEl.addEventListener('pointermove', function (e) {
+        if (isDragging) {
+          updateScrub(e.clientX);
+        }
+      });
+
+      function stopDrag() {
+        if (isDragging) isDragging = false;
+      }
+      markEl.addEventListener('pointerup', stopDrag);
+      markEl.addEventListener('pointercancel', stopDrag);
+
+      /* ── Staggered Entrance & Initial Unzip ──────────────── */
+      document.querySelectorAll('.rise[data-delay]').forEach(function (el) {
+        setTimeout(function () {
+          el.classList.add('in');
+        }, reduce ? 0 : +el.dataset.delay);
+      });
+
+      setTimeout(function () {
+        unzip(1400);
+      }, reduce ? 0 : 750);
+
+      var replayBtn = document.getElementById('replayBtn');
+      if (replayBtn) {
+        replayBtn.addEventListener('click', function () {
+          unzip(1200);
+        });
+      }
+
+      /* ── Scroll Reveals ─────────────────────────────────── */
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e, i) {
           if (!e.isIntersecting) return;
           var el = e.target;
-          setTimeout(function () { el.classList.add(el.classList.contains('row') ? 'seen' : 'in'); }, reduce ? 0 : i * 90);
+          setTimeout(function () {
+            el.classList.add(el.classList.contains('row') ? 'seen' : 'in');
+          }, reduce ? 0 : (i * 70));
           io.unobserve(el);
         });
-      }, { threshold: .2, rootMargin: '0px 0px -8% 0px' });
-      document.querySelectorAll('.row, .note .rise').forEach(function (el) { io.observe(el); });
+      }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+
+      document.querySelectorAll('.row, .note .rise, .contact-card').forEach(function (el) {
+        io.observe(el);
+      });
+
+      /* ── Text Scramble / Decrypt Effect on Hover ────────── */
+      var chars = '01#%&_<>~=+*[]!/\\';
+      document.querySelectorAll('[data-scramble]').forEach(function (el) {
+        var originalText = el.dataset.scramble;
+        var interval = null;
+
+        el.closest('.row').addEventListener('mouseenter', function () {
+          var iteration = 0;
+          clearInterval(interval);
+
+          interval = setInterval(function () {
+            el.innerText = originalText.split('').map(function (char, index) {
+              if (index < iteration) return originalText[index];
+              return chars[Math.floor(Math.random() * chars.length)];
+            }).join('');
+
+            if (iteration >= originalText.length) {
+              clearInterval(interval);
+            }
+            iteration += 1 / 2;
+          }, 30);
+        });
+      });
+
+      /* ── Interactive Modal Drawer for Archive Folders ───── */
+      var overlay = document.getElementById('drawerOverlay');
+      var modalCloseBtn = document.getElementById('modalCloseBtn');
+      var modalPath = document.getElementById('modalPath');
+      var modalTitle = document.getElementById('modalTitle');
+      var modalDesc = document.getElementById('modalDesc');
+      var modalSize = document.getElementById('modalSize');
+      var modalTags = document.getElementById('modalTags');
+      var modalCustom = document.getElementById('modalCustomContent');
+
+      function openFolderModal(row) {
+        var folder = row.dataset.folder;
+        var name = row.dataset.name;
+        var title = row.dataset.title;
+        var desc = row.dataset.desc;
+        var size = row.dataset.size;
+        var tags = (row.dataset.tags || '').split(',');
+
+        modalPath.textContent = '/root/dotricky/' + name;
+        modalTitle.textContent = title;
+        modalDesc.textContent = desc;
+        modalSize.textContent = size.toUpperCase();
+
+        modalTags.innerHTML = '';
+        tags.forEach(function (tag) {
+          if (!tag.trim()) return;
+          var span = document.createElement('span');
+          span.className = 'drawer-tag';
+          span.textContent = tag.trim();
+          modalTags.appendChild(span);
+        });
+
+        // Custom visual reel for frames/
+        if (folder === 'frames') {
+          modalCustom.innerHTML = `
+            <div style="margin-top:1.2rem;">
+              <div class="drawer-meta-label" style="margin-bottom:.6rem;">FRAMES ARCHIVE PREVIEW</div>
+              <div class="frames-gallery">
+                <div class="frame-card">
+                  <div class="frame-visual" style="background: radial-gradient(circle at 70% 30%, #352614, #080A0E);">
+                    <span class="frame-meta">35MM / LOW LIGHT · JOHANNESBURG</span>
+                  </div>
+                </div>
+                <div class="frame-card">
+                  <div class="frame-visual" style="background: radial-gradient(circle at 30% 70%, #152238, #080A0E);">
+                    <span class="frame-meta">ANAMORPHIC / DUSK · CAPE COAST</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        } else if (folder === 'crease') {
+          modalCustom.innerHTML = `
+            <div style="margin-top:1rem; padding: 1rem; border: 1px solid var(--rule-gold); border-radius: 6px; background: rgba(212,175,55,0.04);">
+              <div class="drawer-meta-label">MATCH NOTE</div>
+              <p style="font-size: .92rem; color: var(--bone); margin-top: .3rem;">
+                Right-arm medium fast. Pitch dynamics, game awareness, and high-pressure overs. The place where instincts sharpen.
+              </p>
+            </div>
+          `;
+        } else {
+          modalCustom.innerHTML = '';
+        }
+
+        overlay.classList.add('is-active');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeFolderModal() {
+        overlay.classList.remove('is-active');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      document.querySelectorAll('.row').forEach(function (row) {
+        row.addEventListener('click', function () {
+          openFolderModal(row);
+        });
+      });
+
+      if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeFolderModal);
+      overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeFolderModal();
+      });
+
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlay.classList.contains('is-active')) {
+          closeFolderModal();
+        }
+      });
+
+      /* ── 1-Click Copy Email + Toast Notification ────────── */
+      var copyBtn = document.getElementById('copyMailBtn');
+      var toast = document.getElementById('copyToast');
+
+      if (copyBtn && toast) {
+        copyBtn.addEventListener('click', function () {
+          var email = 'hello@dotricky.me';
+          navigator.clipboard.writeText(email).then(function () {
+            toast.textContent = '[ ✓ COPIED: ' + email + ' ]';
+            toast.classList.add('is-visible');
+            setTimeout(function () {
+              toast.classList.remove('is-visible');
+            }, 2600);
+          }).catch(function () {
+            window.location.href = 'mailto:' + email;
+          });
+        });
+      }
+
     })();
   </script>
 </body>
