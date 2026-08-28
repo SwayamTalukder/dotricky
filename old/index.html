@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>.ricky — Unzip the Vision</title>
+  <meta name="description"
+    content=".ricky — an archive of systems, security, web engineering, visual frames, AI models and craft. Unzip the vision.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Karla:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --ink: #07090D;
+      --ink-raised: #0E1219;
+      --ink-surface: #141923;
+      --ink-glass: rgba(14, 18, 25, 0.85);
+      --navy: #152238;
+      --navy-lift: #1E355B;
+      --navy-glow: rgba(30, 58, 110, 0.35);
+      --gold: #D4AF37;
+      --gold-hi: #F5D061;
+      --gold-glow: rgba(212, 175, 55, 0.35);
+      --gold-dim: rgba(212, 175, 55, 0.12);
+      --cyan: #5DE2E7;
+      --bone: #EAE6DF;
+      --bone-bright: #FFFFFF;
+      --mute: #828E9E;
+      --mute-dark: #434B58;
+      --rule: rgba(234, 230, 223, 0.08);
+      --rule-gold: rgba(212, 175, 55, 0.22);
+      
+      --display: "Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --body: "Karla", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+      
+      --pad: clamp(1rem, 4vw, 4.5rem);
+      --open: 0;
+      --z: 0;
+      --split: 54%;
+      --mouse-x: 50vw;
+      --mouse-y: 30vh;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--ink);
+      color-scheme: dark;
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+
+    body {
+      background: var(--ink);
+      color: var(--bone);
+      font-family: var(--body);
+      font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.1rem);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      max-width: 100vw;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ── High-Performance Ambient Gradient (60fps Mobile Optimized) ──────── */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      transform: translateZ(0);
+    }
+
+    .ambient-mesh {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(900px circle at 50% -5%, rgba(30, 58, 110, 0.35), transparent 60%),
+        radial-gradient(700px circle at 85% 85%, rgba(212, 175, 55, 0.07), transparent 65%),
+        radial-gradient(500px circle at 15% 90%, rgba(21, 34, 56, 0.4), transparent 70%),
+        linear-gradient(180deg, #07090D 0%, #090C12 50%, #07090D 100%);
+    }
+
+    .ambient-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(234, 230, 223, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(234, 230, 223, 0.02) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 85%);
+      -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 85%);
+    }
+
+    /* Desktop-only cursor glow to prevent mobile scroll lag */
+    @media (hover: hover) and (pointer: fine) {
+      .ambient-cursor-glow {
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.04) 0%, rgba(30, 58, 110, 0.03) 45%, transparent 70%);
+        transform: translate(-50%, -50%);
+        top: var(--mouse-y);
+        left: var(--mouse-x);
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        will-change: top, left;
+      }
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding-inline: var(--pad);
+      width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    ::selection {
+      background: var(--gold);
+      color: var(--ink);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--gold-hi);
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: clamp(0.66rem, 1.8vw, 0.72rem);
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--mute);
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+    }
+
+    .eyebrow-accent {
+      color: var(--gold);
+    }
+
+    /* ── Header / Navigation (Tight Spacing) ─────────────────────── */
+    .nav {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-block: clamp(0.85rem, 2.2vw, 1.4rem);
+      border-bottom: 1px solid var(--rule);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .nav-mark {
+      font-family: var(--display);
+      font-variation-settings: "wdth" 120;
+      font-weight: 800;
+      font-size: clamp(1.1rem, 3vw, 1.2rem);
+      letter-spacing: -.02em;
+      color: var(--bone-bright);
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      transition: transform .3s ease;
+      flex-shrink: 0;
+    }
+
+    .nav-mark:hover {
+      transform: scale(1.03);
+    }
+
+    .nav-mark .dot {
+      color: var(--gold);
+      text-shadow: 0 0 12px var(--gold-glow);
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .3rem .7rem;
+      background: rgba(14, 18, 25, 0.7);
+      border: 1px solid var(--rule-gold);
+      border-radius: 100px;
+      font-family: var(--mono);
+      font-size: .66rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--bone);
+      white-space: nowrap;
+    }
+
+    .live-badge .pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #34D399;
+      box-shadow: 0 0 8px rgba(52, 211, 153, 0.8);
+      animation: pulse-green 2.5s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse-green {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.35); opacity: 0.6; }
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: clamp(0.75rem, 2vw, 1.8rem);
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: .74rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--mute);
+      transition: color .25s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold-hi);
+    }
+
+    .chip-work {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      border: 1px solid var(--rule-gold);
+      background: rgba(212, 175, 55, 0.06);
+      border-radius: 100px;
+      padding: .3rem .75rem;
+      font-family: var(--mono);
+      font-size: clamp(0.64rem, 1.8vw, 0.68rem);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold-hi);
+      white-space: nowrap;
+      transition: all .3s ease;
+      flex-shrink: 0;
+    }
+
+    .chip-work:hover {
+      background: rgba(212, 175, 55, 0.14);
+      border-color: var(--gold);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    }
+
+    .chip-work i {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
+      animation: blip 2.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes blip {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(212, 175, 55, .6); }
+      50% { opacity: .5; box-shadow: 0 0 0 6px rgba(212, 175, 55, 0); }
+    }
+
+    /* ── Hero Section (Reduced Top Gap & Balanced Layout) ────────────── */
+    .hero {
+      padding-top: clamp(0.85rem, 2.5vh, 1.8rem);
+      padding-bottom: clamp(2.5rem, 6vh, 4.8rem);
+      position: relative;
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-bottom: clamp(1.4rem, 3.2vh, 2.2rem);
+      padding-bottom: .6rem;
+      border-bottom: 1px solid rgba(234, 230, 223, 0.05);
+    }
+
+    .hero-coord {
+      font-family: var(--mono);
+      font-size: clamp(0.66rem, 1.8vw, 0.72rem);
+      letter-spacing: .15em;
+      color: var(--mute);
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-coord-tag {
+      padding: 2px 5px;
+      border: 1px solid var(--rule-gold);
+      border-radius: 3px;
+      background: var(--ink-raised);
+      color: var(--gold);
+      font-size: 0.9em;
+    }
+
+    .hero-mobile-time {
+      display: none;
+    }
+
+    /* ── The Zipper Wordmark (No Clipping & Proper Clearance) ────────────── */
+    .mark-container {
+      width: 100%;
+      overflow: visible;
+      padding-top: clamp(0.95rem, 2.4vw, 1.4rem);
+      padding-bottom: clamp(1.8rem, 4vw, 2.8rem);
+      position: relative;
+    }
+
+    .mark {
+      position: relative;
+      isolation: isolate;
+      user-select: none;
+      cursor: ew-resize;
+      touch-action: pan-y;
+      width: 100%;
+      max-width: 100%;
+      overflow: visible;
+    }
+
+    .mark-face {
+      font-family: var(--display);
+      font-variation-settings: "wdth" 120;
+      font-weight: 850;
+      font-size: clamp(3.4rem, 16vw, 10.5rem);
+      line-height: .88;
+      letter-spacing: -.045em;
+      white-space: nowrap;
+      color: var(--bone-bright);
+      text-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .mark-face .dot {
+      color: var(--gold);
+      text-shadow: 0 0 30px var(--gold-glow);
+    }
+
+    .mark-half {
+      position: absolute;
+      inset: 0;
+      will-change: transform;
+      transition: transform 0.1s linear;
+    }
+
+    .mark-half.is-top {
+      clip-path: inset(0 0 calc(100% - var(--split)) 0);
+      transform: translateY(calc(var(--open) * -22px));
+    }
+
+    .mark-half.is-bot {
+      clip-path: inset(var(--split) 0 0 0);
+      transform: translateY(calc(var(--open) * 22px));
+    }
+
+    .mark-ghost {
+      visibility: hidden;
+    }
+
+    .zip {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: var(--split);
+      height: 0;
+      z-index: 5;
+      pointer-events: auto;
+    }
+
+    .zip-laser-track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -1px;
+      height: 1px;
+      background: rgba(234, 230, 223, 0.08);
+    }
+
+    .zip-line {
+      position: absolute;
+      left: 0;
+      top: -1px;
+      height: 2px;
+      width: calc(var(--z) * 100%);
+      background: linear-gradient(90deg, rgba(212, 175, 55, 0) 0%, rgba(212, 175, 55, 0.6) 70%, var(--gold-hi) 100%);
+      box-shadow: 0 0 10px var(--gold);
+    }
+
+    .zip-row {
+      position: absolute;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 3px;
+      pointer-events: none;
+    }
+
+    .zip-row.is-top {
+      bottom: 0;
+    }
+
+    .zip-row.is-bot {
+      top: 0;
+    }
+
+    .tooth {
+      flex: 1 1 auto;
+      max-width: 7px;
+      height: 6px;
+      border-radius: 2px;
+      background: linear-gradient(180deg, var(--gold-hi), var(--gold));
+      opacity: .85;
+      transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .45s ease, background-color .3s;
+      box-shadow: 0 0 4px rgba(212, 175, 55, 0.2);
+    }
+
+    .is-top .tooth {
+      transform: translateY(3px);
+    }
+
+    .is-bot .tooth {
+      transform: translateY(-3px);
+    }
+
+    .is-top .tooth.open {
+      transform: translateY(-16px) rotate(-14deg);
+      opacity: .4;
+      background: var(--navy-lift);
+    }
+
+    .is-bot .tooth.open {
+      transform: translateY(16px) rotate(14deg);
+      opacity: .4;
+      background: var(--navy-lift);
+    }
+
+    .slider {
+      position: absolute;
+      top: 0;
+      left: calc(var(--z) * 100%);
+      transform: translate(-50%, -50%);
+      width: clamp(26px, 5vw, 32px);
+      height: clamp(15px, 3.5vw, 18px);
+      border-radius: 4px;
+      background: linear-gradient(135deg, #FFF0B8 0%, var(--gold-hi) 40%, var(--gold) 100%);
+      box-shadow: 0 0 22px rgba(212, 175, 55, 0.7), 0 0 5px #FFF;
+      cursor: grab;
+      z-index: 10;
+      transition: transform .15s ease;
+      touch-action: none;
+    }
+
+    .slider:active {
+      cursor: grabbing;
+      transform: translate(-50%, -50%) scale(1.18);
+    }
+
+    .slider::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      width: 2px;
+      height: 14px;
+      border-radius: 2px;
+      background: var(--gold);
+      transform: translateX(-50%);
+      opacity: .9;
+      box-shadow: 0 0 6px var(--gold);
+    }
+
+    /* ── Hero Narrative (Spacious Breathing Room & Authentic Copy) ────────────── */
+    .hero-say {
+      margin-top: clamp(2.2rem, 5vh, 3.5rem);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(1.15rem, 2.6vh, 1.6rem);
+      max-width: 52ch;
+      position: relative;
+    }
+
+    .tagline {
+      font-family: var(--display);
+      font-variation-settings: "wdth" 106;
+      font-weight: 500;
+      font-size: clamp(1.25rem, 3.2vw, 1.95rem);
+      line-height: 1.32;
+      letter-spacing: -.02em;
+      color: var(--bone-bright);
+      max-width: 52ch;
+    }
+
+    .tagline em {
+      font-style: normal;
+      color: var(--gold);
+      text-shadow: 0 0 16px rgba(212, 175, 55, 0.25);
+    }
+
+    .hero-sub {
+      color: var(--mute);
+      font-size: clamp(0.92rem, 1.8vw, 1.05rem);
+      line-height: 1.65;
+      max-width: 46ch;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin-top: clamp(0.75rem, 1.8vh, 1.2rem);
+      flex-wrap: wrap;
+    }
+
+    .replay-btn {
+      background: rgba(212, 175, 55, 0.06);
+      border: 1px solid var(--rule-gold);
+      border-radius: 100px;
+      cursor: pointer;
+      color: var(--bone);
+      font-family: var(--mono);
+      font-size: clamp(0.68rem, 1.8vw, 0.72rem);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .45rem 1rem;
+      transition: all .25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      min-height: 38px;
+    }
+
+    .replay-btn:hover {
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--gold-hi);
+      border-color: var(--gold);
+      box-shadow: 0 0 18px rgba(212, 175, 55, 0.2);
+    }
+
+    .explore-hint {
+      font-family: var(--mono);
+      font-size: clamp(0.66rem, 1.6vw, 0.7rem);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--mute);
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    /* ── Shared Band Rhythm ────────────────────────────── */
+    .band {
+      padding-block: clamp(3rem, 7vh, 5.5rem);
+      border-top: 1px solid var(--rule);
+      position: relative;
+    }
+
+    .band-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: .75rem;
+      margin-bottom: 1.6rem;
+      flex-wrap: wrap;
+    }
+
+    .band-title {
+      font-family: var(--display);
+      font-variation-settings: "wdth" 110;
+      font-weight: 600;
+      font-size: clamp(1.15rem, 3vw, 1.55rem);
+      letter-spacing: -.02em;
+      color: var(--bone-bright);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .band-title::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 1px;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
+    }
+
+    /* ── Manifest / Interactive Directory Archive ────────────────────────────── */
+    .manifest-container {
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      background: var(--ink-glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+      transform: translateZ(0);
+    }
+
+    .manifest-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .6rem 1rem;
+      background: rgba(14, 18, 25, 0.9);
+      border-bottom: 1px solid var(--rule);
+      font-family: var(--mono);
+      font-size: clamp(0.64rem, 1.8vw, 0.68rem);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+
+    .manifest-bar-left {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+    }
+
+    .dot-indicators {
+      display: flex;
+      gap: 4px;
+    }
+
+    .dot-indicators span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--mute-dark);
+    }
+
+    .dot-indicators span:nth-child(1) { background: rgba(239, 68, 68, 0.7); }
+    .dot-indicators span:nth-child(2) { background: rgba(245, 158, 11, 0.7); }
+    .dot-indicators span:nth-child(3) { background: rgba(52, 211, 153, 0.7); }
+
+    .row {
+      display: grid;
+      grid-template-columns: minmax(9rem, 1.2fr) minmax(0, 2.8fr) auto auto;
+      gap: clamp(0.6rem, 2vw, 1.6rem);
+      align-items: center;
+      padding: clamp(0.9rem, 2.2vw, 1.15rem) clamp(0.85rem, 2.2vw, 1.2rem);
+      border-bottom: 1px solid var(--rule);
+      position: relative;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .5s ease, transform .5s cubic-bezier(.2, .8, .2, 1), background-color .2s ease;
+      user-select: none;
+    }
+
+    .row:last-child {
+      border-bottom: none;
+    }
+
+    .row.seen {
+      opacity: 1;
+      transform: none;
+    }
+
+    .row::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--gold);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+      box-shadow: 0 0 10px var(--gold);
+    }
+
+    .row:hover {
+      background: rgba(212, 175, 55, 0.035);
+    }
+
+    .row:hover::before {
+      transform: scaleY(1);
+    }
+
+    .row-name {
+      font-family: var(--mono);
+      font-size: clamp(0.9rem, 2vw, 0.98rem);
+      font-weight: 500;
+      color: var(--bone-bright);
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      letter-spacing: .02em;
+    }
+
+    .row-name::before {
+      content: ">";
+      color: var(--mute-dark);
+      transition: color .2s ease, transform .2s ease;
+    }
+
+    .row:hover .row-name::before {
+      color: var(--gold);
+      transform: translateX(2px);
+    }
+
+    .row-note {
+      color: var(--mute);
+      font-size: clamp(0.86rem, 1.8vw, 0.93rem);
+      line-height: 1.45;
+      transition: color .2s ease;
+    }
+
+    .row:hover .row-note {
+      color: var(--bone);
+    }
+
+    .row-size {
+      font-family: var(--mono);
+      font-size: .7rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--mute);
+      text-align: right;
+      white-space: nowrap;
+      padding: .2rem .5rem;
+      border-radius: 4px;
+      background: rgba(234, 230, 223, 0.03);
+      border: 1px solid rgba(234, 230, 223, 0.06);
+      transition: all .2s ease;
+    }
+
+    .row:hover .row-size {
+      color: var(--gold-hi);
+      background: rgba(212, 175, 55, 0.08);
+      border-color: var(--rule-gold);
+    }
+
+    .row-arrow {
+      color: var(--mute-dark);
+      font-family: var(--mono);
+      font-size: .85rem;
+      transition: transform .25s ease, color .25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+    }
+
+    .row:hover .row-arrow {
+      color: var(--gold-hi);
+      transform: translate(2px, -2px);
+    }
+
+    /* ── Interactive Modal Drawer (Locked Scroll & Contained) ────────────── */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 9, 13, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .3s ease, visibility .3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(0.75rem, 3vw, 1.5rem);
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+    }
+
+    .drawer-overlay.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .drawer-card {
+      background: var(--ink-raised);
+      border: 1px solid var(--rule-gold);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 86vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.85), 0 0 40px rgba(212, 175, 55, 0.12);
+      transform: translateY(20px) scale(0.97);
+      transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+      position: relative;
+    }
+
+    .drawer-overlay.is-active .drawer-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .drawer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.4rem;
+      border-bottom: 1px solid var(--rule);
+      background: rgba(20, 25, 35, 0.85);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .drawer-path {
+      font-family: var(--mono);
+      font-size: clamp(0.78rem, 2vw, 0.88rem);
+      color: var(--gold-hi);
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .drawer-close {
+      background: rgba(234, 230, 223, 0.05);
+      border: 1px solid var(--rule);
+      color: var(--mute);
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 1rem;
+      transition: all .2s ease;
+      flex-shrink: 0;
+    }
+
+    .drawer-close:hover {
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--gold-hi);
+      border-color: var(--gold);
+    }
+
+    .drawer-body {
+      padding: clamp(1.2rem, 3.5vw, 1.8rem);
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .drawer-title {
+      font-family: var(--display);
+      font-size: clamp(1.2rem, 3vw, 1.45rem);
+      font-weight: 600;
+      color: var(--bone-bright);
+      line-height: 1.25;
+    }
+
+    .drawer-desc {
+      color: var(--bone);
+      font-size: clamp(0.92rem, 2vw, 1.02rem);
+      line-height: 1.6;
+    }
+
+    .drawer-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: .65rem;
+      padding: .85rem;
+      background: rgba(7, 9, 13, 0.5);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+    }
+
+    .drawer-meta-item {
+      font-family: var(--mono);
+      font-size: .7rem;
+    }
+
+    .drawer-meta-label {
+      color: var(--mute);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 2px;
+    }
+
+    .drawer-meta-val {
+      color: var(--gold-hi);
+      font-weight: 500;
+    }
+
+    .drawer-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+    }
+
+    .drawer-tag {
+      padding: .25rem .65rem;
+      background: rgba(21, 34, 56, 0.5);
+      border: 1px solid rgba(44, 66, 113, 0.5);
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--bone);
+    }
+
+    .frames-gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: .75rem;
+      margin-top: .4rem;
+    }
+
+    .frame-card {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #090C12;
+      position: relative;
+    }
+
+    .frame-visual {
+      aspect-ratio: 16/10;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: flex-end;
+      padding: .65rem;
+      position: relative;
+    }
+
+    .frame-visual::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(7, 9, 13, 0.9) 100%);
+    }
+
+    .frame-meta {
+      position: relative;
+      z-index: 1;
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: var(--gold-hi);
+    }
+
+    /* ── Manifesto Note ────────────────────────────── */
+    .note {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.25rem;
+      max-width: 64ch;
+      position: relative;
+    }
+
+    .note-lead {
+      font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+      line-height: 1.55;
+      color: var(--bone-bright);
+      font-weight: 400;
+    }
+
+    .note-body {
+      color: var(--mute);
+      font-size: clamp(0.9rem, 2vw, 1.02rem);
+      line-height: 1.65;
+    }
+
+    .note-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: .6rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    .metric-val {
+      font-family: var(--display);
+      font-size: clamp(1.6rem, 4vw, 2.1rem);
+      font-weight: 700;
+      color: var(--gold-hi);
+      line-height: 1;
+      letter-spacing: -.03em;
+    }
+
+    .metric-label {
+      font-family: var(--mono);
+      font-size: clamp(0.62rem, 1.6vw, 0.72rem);
+      color: var(--mute);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-top: .3rem;
+    }
+
+    /* ── Contact / Transmit Signal ────────────────────────────── */
+    .contact-card {
+      background: linear-gradient(135deg, rgba(20, 25, 38, 0.85) 0%, rgba(14, 18, 25, 0.95) 100%);
+      border: 1px solid var(--rule-gold);
+      border-radius: 12px;
+      padding: clamp(1.6rem, 4.5vw, 3rem);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      transform: translateZ(0);
+    }
+
+    .contact-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .contact-line {
+      font-family: var(--display);
+      font-variation-settings: "wdth" 112;
+      font-weight: 600;
+      font-size: clamp(1.45rem, 4.5vw, 2.8rem);
+      line-height: 1.15;
+      letter-spacing: -.03em;
+      margin-top: .65rem;
+      margin-bottom: 1.25rem;
+      color: var(--bone-bright);
+      max-width: 18ch;
+    }
+
+    .mail-action-wrap {
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      flex-wrap: wrap;
+    }
+
+    .mail {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .65rem;
+      font-family: var(--mono);
+      font-size: clamp(0.95rem, 2.4vw, 1.35rem);
+      color: var(--bone-bright);
+      padding: .55rem 1.1rem;
+      background: rgba(7, 9, 13, 0.6);
+      border: 1px solid var(--rule-gold);
+      border-radius: 6px;
+      position: relative;
+      cursor: pointer;
+      transition: all .25s ease;
+      min-height: 42px;
+    }
+
+    .mail:hover {
+      color: var(--gold-hi);
+      background: rgba(212, 175, 55, 0.1);
+      border-color: var(--gold);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+    }
+
+    /* ── Perfectly Centered Copy Toast ────────────────────────────── */
+    .copy-toast {
+      position: fixed;
+      bottom: clamp(1.5rem, 4vh, 2.5rem);
+      left: 50%;
+      transform: translate(-50%, 25px);
+      background: var(--ink-surface);
+      border: 1px solid var(--gold);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 20px var(--gold-glow);
+      color: var(--gold-hi);
+      font-family: var(--mono);
+      font-size: clamp(0.72rem, 2vw, 0.8rem);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .65rem 1.25rem;
+      border-radius: 6px;
+      z-index: 250;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      white-space: nowrap;
+      max-width: calc(100vw - 2rem);
+      text-align: center;
+      transition: opacity .3s ease, transform .3s cubic-bezier(.2, .8, .2, 1), visibility .3s;
+    }
+
+    .copy-toast.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, 0);
+    }
+
+    /* ── Footer ────────────────────────────── */
+    .foot {
+      border-top: 1px solid var(--rule);
+      padding-block: clamp(1.6rem, 3.5vw, 2.5rem);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-family: var(--mono);
+      font-size: .7rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+
+    .foot-status {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+    }
+
+    .foot-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 6px var(--gold);
+      flex-shrink: 0;
+    }
+
+    /* ── Entrance Transitions ────────────────────────────── */
+    .rise {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .7s ease, transform .7s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .rise.in {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── Responsive / Mobile Specific Optimizations ────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav {
+        padding-block: 0.9rem;
+      }
+
+      .nav-center {
+        display: none;
+      }
+
+      .nav-links a {
+        display: none;
+      }
+
+      .hero-mobile-time {
+        display: inline-flex;
+      }
+
+      .hero-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .4rem;
+        margin-bottom: 1.35rem;
+      }
+
+      .hero-say {
+        margin-top: 2.2rem;
+        gap: 1.1rem;
+      }
+
+      .row {
+        grid-template-columns: 1fr auto;
+        row-gap: .3rem;
+        padding: .85rem .75rem;
+      }
+
+      .row-note {
+        grid-column: 1 / -1;
+        font-size: .86rem;
+      }
+
+      .row-arrow {
+        display: none;
+      }
+
+      .row-size {
+        font-size: .66rem;
+      }
+
+      .frames-gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .mail-action-wrap {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .mail {
+        width: 100%;
+        text-align: center;
+      }
+
+      .mail-action-wrap .chip-work {
+        justify-content: center;
+        padding-block: .55rem;
+      }
+
+      .foot {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .6rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .note-metrics {
+        grid-template-columns: 1fr;
+        gap: .75rem;
+      }
+
+      .metric-val {
+        font-size: 1.6rem;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .6rem;
+      }
+
+      .replay-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+      }
+
+      .rise,
+      .row {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Ambient Backdrop (Hardware Accelerated) -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-mesh"></div>
+    <div class="ambient-cursor-glow" id="cursorGlow"></div>
+    <div class="ambient-grid"></div>
+  </div>
+
+  <!-- Main Wrapper -->
+  <div class="wrap">
+    <nav class="nav">
+      <a class="nav-mark" href="#top" aria-label=".ricky home">
+        <span class="dot">.</span>ricky
+      </a>
+      
+      <!-- Desktop Center Badge -->
+      <div class="nav-center">
+        <div class="live-badge" title="Live Johannesburg Local Time">
+          <span class="pulse"></span>
+          <span class="jnb-time-display">JNB --:-- SAST</span>
+        </div>
+      </div>
+
+      <div class="nav-links">
+        <a href="#contents">Manifest</a>
+        <a href="#manifesto">Archive</a>
+        <a href="#contact" class="chip-work"><i></i>Open for Work</a>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Hero Header (Tightened Spacing & Clean Typography) -->
+  <header class="wrap hero" id="top">
+    <div class="hero-top rise" data-delay="80">
+      <div class="hero-coord">
+        <span class="hero-coord-tag">PKG</span>
+        <span>ARCHIVE // .RICKY</span>
+      </div>
+      <div class="hero-coord">
+        <span>JOHANNESBURG (SAST)</span>
+        <span class="eyebrow-accent">→</span>
+        <span>GLOBAL</span>
+        <!-- Mobile Live Time Badge -->
+        <span class="live-badge hero-mobile-time" title="Live Johannesburg Local Time">
+          <span class="pulse"></span>
+          <span class="jnb-time-display">JNB --:-- SAST</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- The Interactive Zipper Mark -->
+    <div class="mark-container">
+      <div class="mark rise" id="zipperMark" data-delay="220" title="Click or drag to scrub zipper">
+        <div class="mark-face mark-ghost" aria-hidden="true"><span class="dot">.</span>ricky</div>
+        <h1 class="mark-face mark-half is-top" aria-label=".ricky"><span class="dot" aria-hidden="true">.</span><span
+            aria-hidden="true">ricky</span></h1>
+        <div class="mark-face mark-half is-bot" aria-hidden="true"><span class="dot">.</span>ricky</div>
+        
+        <div class="zip" aria-hidden="true">
+          <div class="zip-laser-track"></div>
+          <div class="zip-line"></div>
+          <div class="zip-row is-top" data-teeth></div>
+          <div class="zip-row is-bot" data-teeth></div>
+          <div class="slider" id="zipSlider" tabindex="0" role="slider" aria-label="Zipper control" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-say">
+      <p class="tagline rise" data-delay="1800">
+        <em>Unzip the vision.</em><br>
+        One mind. Many disciplines. Building what others leave untouched.
+      </p>
+      <p class="hero-sub rise" data-delay="1950">
+        Cloud, networks & zero-trust by trade. Web, visuals & AI by choice.
+      </p>
+      <div class="hero-actions rise" data-delay="2100">
+        <button class="replay-btn" id="replayBtn" type="button">↻ Unzip again</button>
+        <span class="explore-hint">↓ Click manifest entries to inspect</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Archive Manifest Section -->
+  <section class="wrap band" id="contents">
+    <div class="band-head">
+      <h2 class="band-title">Archive Manifest</h2>
+      <span class="eyebrow">7 virtual directories · click to inspect</span>
+    </div>
+
+    <div class="manifest-container">
+      <div class="manifest-bar">
+        <div class="manifest-bar-left">
+          <div class="dot-indicators">
+            <span></span><span></span><span></span>
+          </div>
+          <span>PATH: /root/dotricky/</span>
+        </div>
+        <span>PERM: rwxr-xr-x</span>
+      </div>
+
+      <div class="manifest" id="manifestList">
+        
+        <div class="row" data-folder="systems" data-name="systems/" data-title="Cloud Architecture & Core Infrastructure" data-size="7+ yrs" data-desc="Production cloud environments, hybrid multi-region routing, and resilient distributed topologies. Engineered to operate under load so the plumbing never stops." data-tags="AWS, GCP, Linux, Kubernetes, Terraform, SDN, High-Availability">
+          <span class="row-name" data-scramble="systems/">systems/</span>
+          <span class="row-note">Cloud & networks — the foundation nobody notices until it stops.</span>
+          <span class="row-size">7+ yrs</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+        <div class="row" data-folder="secure" data-name="secure/" data-title="Defense, Identity & Zero-Trust Security" data-size="always on" data-desc="Zero-trust perimeter architecture, cryptographic key lifecycle management, hardened IAM policies, and active threat posture analysis." data-tags="Zero-Trust, PKI, Infosec, IAM, Compliance, Threat Hunting">
+          <span class="row-name" data-scramble="secure/">secure/</span>
+          <span class="row-note">Locks, keys, and the habit of asking who else is holding one.</span>
+          <span class="row-size">always on</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+        <div class="row" data-folder="build" data-name="build/" data-title="Custom Web Applications & Digital Platforms" data-size="taking work" data-desc="Fast, bespoke web products and high-fidelity interfaces built from the ground up — crafted for people who deserve better than cookie-cutter templates." data-tags="Modern JS/TS, Responsive UI, Microservices, API Architecture, Performance">
+          <span class="row-name" data-scramble="build/">build/</span>
+          <span class="row-note">Websites and apps, end to end — engineered with precision and speed.</span>
+          <span class="row-size">taking work</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+        <div class="row" data-folder="frames" data-name="frames/" data-title="Visual Archive: Photography & Cinematography" data-size="multi-format" data-desc="Visual storytelling through photography and motion. Driven by natural light, intentional color grading, and geometric composition over gear obsessions." data-tags="35mm & Medium Format Mindset, Color Grading, Street, Landscape, Documentary">
+          <span class="row-name" data-scramble="frames/">frames/</span>
+          <span class="row-note">Photography and video, whatever the format asks for. Light first, gear second.</span>
+          <span class="row-size">visual reel</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+        <div class="row" data-folder="models" data-name="models/" data-title="Applied AI & Autonomous Agent Workflows" data-size="in progress" data-desc="Practical machine learning applications, autonomous agentic tool-use, and localized LLM reasoning pipelines focused on solving real-world friction." data-tags="LLMs, Agentic Systems, Automation, Context Pipelines, Edge Inference">
+          <span class="row-name" data-scramble="models/">models/</span>
+          <span class="row-note">AI pointed at real operational bottlenecks instead of synthetic demos.</span>
+          <span class="row-size">active</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+        <div class="row" data-folder="unreleased" data-name="unreleased/" data-title="Prototypes, Experiments & Ideas in Progress" data-size="several" data-desc="Independent experiments, developer micro-tools, and venture concepts aimed at making difficult workflows feel effortless." data-tags="Incubating, Micro-SaaS, CLI Tools, Hardware Prototypes">
+          <span class="row-name" data-scramble="unreleased/">unreleased/</span>
+          <span class="row-note">Ideas for making ordinary things less hard. Some of them are bigger than me.</span>
+          <span class="row-size">classified</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+        <div class="row" data-folder="crease" data-name="crease/" data-title="Cricket: Matchcraft, Pace & Seam" data-size="weekends" data-desc="The art of length, seam position, field strategy, and match discipline. The one dedicated folder on this entire drive that isn't work." data-tags="Fast-Medium, In-Swinger, Matchcraft, Weekend League, Pure Passion">
+          <span class="row-name" data-scramble="crease/">crease/</span>
+          <span class="row-note">Cricket. The one folder that isn't work.</span>
+          <span class="row-size">weekends</span>
+          <span class="row-arrow">↗</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Manifesto / The Short Version -->
+  <section class="wrap band" id="manifesto">
+    <div class="band-head">
+      <h2 class="band-title">The Short Version</h2>
+      <span class="eyebrow">README.TXT</span>
+    </div>
+    <div class="note">
+      <p class="note-lead rise">
+        I build and defend infrastructure for a living, operating across four countries and multi-region environments for teams where downtime is not an option.
+      </p>
+      <p class="note-body rise">
+        The rest of my time goes into web engines, machine intelligence, and visual media aimed at the exact same outcome: taking something notoriously complex and making it feel fluid, secure, and effortless.
+      </p>
+      <div class="note-metrics rise">
+        <div>
+          <div class="metric-val">7+</div>
+          <div class="metric-label">Years in Infra & Code</div>
+        </div>
+        <div>
+          <div class="metric-val">04</div>
+          <div class="metric-label">Countries Deployed</div>
+        </div>
+        <div>
+          <div class="metric-val">99.9%</div>
+          <div class="metric-label">Reliability Standard</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="wrap band" id="contact">
+    <div class="contact-card">
+      <span class="eyebrow eyebrow-accent">TRANSMIT SIGNAL</span>
+      <h2 class="contact-line">Got something worth unzipping?</h2>
+      <p class="hero-sub" style="margin-bottom: 1.4rem;">
+        Available for select cloud architecture, security advisory, and bespoke web builds.
+      </p>
+      <div class="mail-action-wrap">
+        <button class="mail" id="copyMailBtn" type="button" title="Click to copy email address">
+          <span>hello@dotricky.me</span>
+          <span style="color:var(--gold); font-size: 0.9em;">[ ⧉ COPY ]</span>
+        </button>
+        <a class="chip-work" href="mailto:hello@dotricky.me?subject=Inquiry%20via%20dotricky.me">
+          Direct Email ↗
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="wrap">
+    <footer class="foot">
+      <div class="foot-status">
+        <span class="foot-status-dot"></span>
+        <span>.ricky // UNZIP THE VISION</span>
+      </div>
+      <div>JOHANNESBURG, SA · ALL RIGHTS RESERVED</div>
+      <div style="color:var(--gold-hi)">dotricky.me</div>
+    </footer>
+  </div>
+
+  <!-- Interactive Folder Inspection Drawer Modal -->
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true" role="dialog">
+    <div class="drawer-card" id="drawerCard">
+      <div class="drawer-head">
+        <div class="drawer-path">
+          <span>DIR:</span>
+          <span id="modalPath">/root/dotricky/systems/</span>
+        </div>
+        <button class="drawer-close" id="modalCloseBtn" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="drawer-body">
+        <h3 class="drawer-title" id="modalTitle">Directory Details</h3>
+        <p class="drawer-desc" id="modalDesc">Detailed description of this category.</p>
+
+        <div class="drawer-meta-grid">
+          <div class="drawer-meta-item">
+            <div class="drawer-meta-label">STATUS</div>
+            <div class="drawer-meta-val" id="modalStatus">ONLINE / MOUNTED</div>
+          </div>
+          <div class="drawer-meta-item">
+            <div class="drawer-meta-label">EXPERIENCE / SIZE</div>
+            <div class="drawer-meta-val" id="modalSize">7+ YRS</div>
+          </div>
+          <div class="drawer-meta-item">
+            <div class="drawer-meta-label">PERMISSIONS</div>
+            <div class="drawer-meta-val">drwx------</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="drawer-meta-label" style="margin-bottom: .6rem;">CORE DISCIPLINES & FOCUS</div>
+          <div class="drawer-tags" id="modalTags">
+            <!-- Dynamically populated tags -->
+          </div>
+        </div>
+
+        <div id="modalCustomContent">
+          <!-- Dynamic visual gallery or extra detail -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification (Fixed Centering) -->
+  <div class="copy-toast" id="copyToast">[ ✓ COPIED: hello@dotricky.me ]</div>
+
+  <script>
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      var root = document.documentElement;
+
+      /* ── Desktop Cursor Spotlight Glow (Disabled on touch to prevent mobile lag) ── */
+      if (!isTouch) {
+        window.addEventListener('pointermove', function (e) {
+          root.style.setProperty('--mouse-x', e.clientX + 'px');
+          root.style.setProperty('--mouse-y', e.clientY + 'px');
+        }, { passive: true });
+      }
+
+      /* ── Johannesburg Live Clock Sync ────────────────────── */
+      function updateJnbTime() {
+        var timeEls = document.querySelectorAll('.jnb-time-display');
+        if (!timeEls.length) return;
+        try {
+          var now = new Date();
+          var formatter = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Africa/Johannesburg',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+          });
+          var text = 'JNB ' + formatter.format(now) + ' SAST';
+          timeEls.forEach(function (el) { el.textContent = text; });
+        } catch (e) {
+          timeEls.forEach(function (el) { el.textContent = 'JNB UTC+2'; });
+        }
+      }
+      updateJnbTime();
+      setInterval(updateJnbTime, 1000);
+
+      /* ── Build Zipper Teeth ─────────────────────────────── */
+      var count = Math.max(18, Math.min(54, Math.round(window.innerWidth / 24)));
+      var rows = document.querySelectorAll('[data-teeth]');
+      rows.forEach(function (row) {
+        var frag = document.createDocumentFragment();
+        for (var i = 0; i < count; i++) {
+          var t = document.createElement('span');
+          t.className = 'tooth';
+          frag.appendChild(t);
+        }
+        row.appendChild(frag);
+      });
+      var teeth = Array.prototype.slice.call(document.querySelectorAll('.tooth'));
+
+      function paintZipper(p) {
+        p = Math.max(0, Math.min(1, p));
+        root.style.setProperty('--z', p);
+        root.style.setProperty('--open', p < .10 ? 0 : (p - .10) / .90);
+        teeth.forEach(function (t, i) {
+          var threshold = (i % count) / count;
+          t.classList.toggle('open', p > threshold);
+        });
+        var slider = document.getElementById('zipSlider');
+        if (slider) slider.setAttribute('aria-valuenow', Math.round(p * 100));
+      }
+
+      var raf;
+      function unzip(duration) {
+        cancelAnimationFrame(raf);
+        if (reduce) { paintZipper(1); return; }
+        var dur = duration || 1400;
+        var start = null;
+        function frame(ts) {
+          if (start === null) start = ts;
+          var elapsed = ts - start;
+          var progress = Math.min(1, elapsed / dur);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          paintZipper(eased);
+          if (progress < 1) {
+            raf = requestAnimationFrame(frame);
+          }
+        }
+        paintZipper(0);
+        raf = requestAnimationFrame(frame);
+      }
+
+      /* ── Draggable Zipper Scrubbing ─────────────────────── */
+      var markEl = document.getElementById('zipperMark');
+      var isDragging = false;
+
+      function updateScrub(clientX) {
+        if (!markEl) return;
+        var rect = markEl.getBoundingClientRect();
+        var progress = (clientX - rect.left) / rect.width;
+        paintZipper(progress);
+      }
+
+      if (markEl) {
+        markEl.addEventListener('pointerdown', function (e) {
+          isDragging = true;
+          cancelAnimationFrame(raf);
+          updateScrub(e.clientX);
+          try { markEl.setPointerCapture(e.pointerId); } catch(err) {}
+        });
+
+        markEl.addEventListener('pointermove', function (e) {
+          if (isDragging) {
+            updateScrub(e.clientX);
+          }
+        });
+
+        function stopDrag() {
+          if (isDragging) isDragging = false;
+        }
+        markEl.addEventListener('pointerup', stopDrag);
+        markEl.addEventListener('pointercancel', stopDrag);
+      }
+
+      /* ── Staggered Entrance & Initial Unzip ──────────────── */
+      document.querySelectorAll('.rise[data-delay]').forEach(function (el) {
+        setTimeout(function () {
+          el.classList.add('in');
+        }, reduce ? 0 : +el.dataset.delay);
+      });
+
+      setTimeout(function () {
+        unzip(1400);
+      }, reduce ? 0 : 750);
+
+      var replayBtn = document.getElementById('replayBtn');
+      if (replayBtn) {
+        replayBtn.addEventListener('click', function () {
+          unzip(1200);
+        });
+      }
+
+      /* ── Scroll Reveals ─────────────────────────────────── */
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e, i) {
+          if (!e.isIntersecting) return;
+          var el = e.target;
+          setTimeout(function () {
+            el.classList.add(el.classList.contains('row') ? 'seen' : 'in');
+          }, reduce ? 0 : (i * 60));
+          io.unobserve(el);
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -2% 0px' });
+
+      document.querySelectorAll('.row, .note .rise, .contact-card').forEach(function (el) {
+        io.observe(el);
+      });
+
+      /* ── Text Scramble / Decrypt Effect on Hover ────────── */
+      var chars = '01#%&_<>~=+*[]!/\\';
+      document.querySelectorAll('[data-scramble]').forEach(function (el) {
+        var originalText = el.dataset.scramble;
+        var interval = null;
+
+        el.closest('.row').addEventListener('mouseenter', function () {
+          var iteration = 0;
+          clearInterval(interval);
+
+          interval = setInterval(function () {
+            el.innerText = originalText.split('').map(function (char, index) {
+              if (index < iteration) return originalText[index];
+              return chars[Math.floor(Math.random() * chars.length)];
+            }).join('');
+
+            if (iteration >= originalText.length) {
+              clearInterval(interval);
+            }
+            iteration += 1 / 2;
+          }, 28);
+        });
+      });
+
+      /* ── Bulletproof Modal Scroll-Lock (Preserves Exact Scroll Position) ── */
+      var overlay = document.getElementById('drawerOverlay');
+      var modalCloseBtn = document.getElementById('modalCloseBtn');
+      var modalPath = document.getElementById('modalPath');
+      var modalTitle = document.getElementById('modalTitle');
+      var modalDesc = document.getElementById('modalDesc');
+      var modalSize = document.getElementById('modalSize');
+      var modalTags = document.getElementById('modalTags');
+      var modalCustom = document.getElementById('modalCustomContent');
+      var savedScrollY = 0;
+
+      function openFolderModal(row) {
+        var folder = row.dataset.folder;
+        var name = row.dataset.name;
+        var title = row.dataset.title;
+        var desc = row.dataset.desc;
+        var size = row.dataset.size;
+        var tags = (row.dataset.tags || '').split(',');
+
+        modalPath.textContent = '/root/dotricky/' + name;
+        modalTitle.textContent = title;
+        modalDesc.textContent = desc;
+        modalSize.textContent = size.toUpperCase();
+
+        modalTags.innerHTML = '';
+        tags.forEach(function (tag) {
+          if (!tag.trim()) return;
+          var span = document.createElement('span');
+          span.className = 'drawer-tag';
+          span.textContent = tag.trim();
+          modalTags.appendChild(span);
+        });
+
+        if (folder === 'frames') {
+          modalCustom.innerHTML = `
+            <div style="margin-top:1.2rem;">
+              <div class="drawer-meta-label" style="margin-bottom:.6rem;">FRAMES ARCHIVE PREVIEW</div>
+              <div class="frames-gallery">
+                <div class="frame-card">
+                  <div class="frame-visual" style="background: radial-gradient(circle at 70% 30%, #352614, #080A0E);">
+                    <span class="frame-meta">35MM / LOW LIGHT · JOHANNESBURG</span>
+                  </div>
+                </div>
+                <div class="frame-card">
+                  <div class="frame-visual" style="background: radial-gradient(circle at 30% 70%, #152238, #080A0E);">
+                    <span class="frame-meta">ANAMORPHIC / DUSK · CAPE COAST</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        } else if (folder === 'crease') {
+          modalCustom.innerHTML = `
+            <div style="margin-top:1rem; padding: 1rem; border: 1px solid var(--rule-gold); border-radius: 6px; background: rgba(212,175,55,0.04);">
+              <div class="drawer-meta-label">MATCH NOTE</div>
+              <p style="font-size: .92rem; color: var(--bone); margin-top: .3rem;">
+                Right-arm medium fast. Pitch dynamics, game awareness, and high-pressure overs. The place where instincts sharpen.
+              </p>
+            </div>
+          `;
+        } else {
+          modalCustom.innerHTML = '';
+        }
+
+        savedScrollY = window.pageYOffset || document.documentElement.scrollTop;
+        document.body.style.position = 'fixed';
+        document.body.style.top = '-' + savedScrollY + 'px';
+        document.body.style.width = '100%';
+        document.body.style.overflowY = 'scroll';
+
+        overlay.classList.add('is-active');
+        overlay.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeFolderModal() {
+        overlay.classList.remove('is-active');
+        overlay.setAttribute('aria-hidden', 'true');
+
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflowY = '';
+        window.scrollTo(0, savedScrollY);
+      }
+
+      document.querySelectorAll('.row').forEach(function (row) {
+        row.addEventListener('click', function () {
+          openFolderModal(row);
+        });
+      });
+
+      if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeFolderModal);
+      overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeFolderModal();
+      });
+
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlay.classList.contains('is-active')) {
+          closeFolderModal();
+        }
+      });
+
+      /* ── 1-Click Copy Email + Centered Toast Notification ────────── */
+      var copyBtn = document.getElementById('copyMailBtn');
+      var toast = document.getElementById('copyToast');
+
+      if (copyBtn && toast) {
+        copyBtn.addEventListener('click', function () {
+          var email = 'hello@dotricky.me';
+          navigator.clipboard.writeText(email).then(function () {
+            toast.textContent = '[ ✓ COPIED: ' + email + ' ]';
+            toast.classList.add('is-visible');
+            setTimeout(function () {
+              toast.classList.remove('is-visible');
+            }, 2600);
+          }).catch(function () {
+            window.location.href = 'mailto:' + email;
+          });
+        });
+      }
+
+    })();
+  </script>
+</body>
+
+</html>
