@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>.ricky — Unzip the Vision</title>
+<meta name="description" content="One mind. Many disciplines. Building what others leave untouched.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Karla:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* type system — matches dotricky.me */
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+
+  --ink:#0B0C0F;
+  --gold:#D4AF37;
+  --gold-hot:#F0D77A;
+  --gold-glow:rgba(212,175,55,.35);
+  --bone:#EFE9DC;
+  --bone-bright:#FFFFFF;
+  --dim:rgba(239,233,220,.42);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--ink);scroll-behavior:smooth}
+body{background:var(--ink);color:var(--bone);font-family:var(--sans);overscroll-behavior-y:none}
+a{color:inherit}
+:focus-visible{outline:1px solid var(--gold);outline-offset:4px}
+
+/* ══ fixed cinematic stage ══ */
+#stage{position:fixed;inset:0;z-index:0}
+#c{display:block;width:100%;height:100%}
+#veil{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(to top,rgba(11,12,15,.82) 0%,rgba(11,12,15,.35) 26%,rgba(11,12,15,0) 52%),
+    radial-gradient(120% 90% at 50% 42%,rgba(11,12,15,0) 45%,rgba(11,12,15,.5) 100%);}
+#hud{position:fixed;inset:0;z-index:2;pointer-events:none}
+
+/* ══ value beats ══ */
+.beat{position:absolute;left:clamp(28px,7vw,110px);bottom:clamp(72px,13vh,130px);
+  max-width:min(520px,74vw);opacity:0;will-change:opacity,transform}
+.beat .rule{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.beat .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 16px rgba(212,175,55,.8);flex:none}
+.beat .prog{font-family:var(--mono);font-size:13px;letter-spacing:.42em;
+  color:rgba(239,233,220,.34);display:flex}
+.beat .prog span.on{color:var(--gold)}
+.beat .word{font-family:var(--display);font-weight:800;
+  font-variation-settings:"wdth" 120;
+  font-size:clamp(36px,7vw,72px);line-height:.98;letter-spacing:-.02em;
+  color:var(--bone-bright);margin-bottom:16px}
+.beat .line{font-weight:200;font-size:clamp(16px,2.15vw,23px);line-height:1.44;
+  color:rgba(239,233,220,.9);max-width:26ch;text-wrap:balance}
+
+/* ══ the payoff — wordmark alone, nothing else ══ */
+#end{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  text-align:center;opacity:0;width:min(620px,90vw)}
+#end .mark{font-family:var(--display);font-weight:800;
+  font-variation-settings:"wdth" 120;
+  font-size:clamp(46px,10vw,92px);letter-spacing:-.02em;line-height:1;
+  color:var(--bone-bright);white-space:nowrap;
+  /* JS shifts this left by half the period's advance so "ricky" — not
+     the whole string — sits on the page's centre line. */}
+#end .mark .dot{color:var(--gold);text-shadow:0 0 12px var(--gold-glow);opacity:0}
+#end .mark #base{display:inline-block;width:0;height:0;overflow:hidden}
+#end .tag{font-weight:200;font-size:clamp(14px,2.4vw,19px);
+  color:rgba(239,233,220,.62);margin-top:24px}
+#end .more{margin-top:52px;font-family:var(--mono);font-size:10px;
+  letter-spacing:.34em;text-transform:uppercase;color:rgba(239,233,220,.3)}
+
+/* ══ nav ══ */
+#burger{position:fixed;top:clamp(18px,3vw,30px);right:clamp(18px,3vw,30px);z-index:7;
+  width:44px;height:44px;display:flex;flex-direction:column;justify-content:center;
+  align-items:flex-end;gap:6px;background:none;border:0;cursor:pointer;
+  opacity:.42;transition:opacity .4s ease}
+#burger:hover,#burger:focus-visible{opacity:1}
+#burger span{display:block;height:1px;background:var(--bone);transition:transform .32s cubic-bezier(.4,0,.2,1),width .32s cubic-bezier(.4,0,.2,1)}
+#burger span:nth-child(1){width:22px}
+#burger span:nth-child(2){width:14px}
+body.menu #burger{opacity:1}
+body.menu #burger span:nth-child(1){width:22px;transform:translateY(3.5px) rotate(45deg)}
+body.menu #burger span:nth-child(2){width:22px;transform:translateY(-3.5px) rotate(-45deg)}
+
+#menu{position:fixed;inset:0;z-index:6;background:rgba(11,12,15,.97);
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;
+  opacity:0;pointer-events:none;transition:opacity .38s ease}
+body.menu #menu{opacity:1;pointer-events:auto}
+#menu a{font-family:var(--display);font-weight:800;
+  font-variation-settings:"wdth" 120;text-decoration:none;
+  font-size:clamp(24px,5vw,38px);letter-spacing:-.02em;padding:12px 20px;
+  color:rgba(239,233,220,.6);transition:color .25s ease}
+#menu a:hover,#menu a:focus-visible{color:var(--gold)}
+#menu .sub{font-family:var(--mono);font-size:10px;letter-spacing:.34em;
+  text-transform:uppercase;color:rgba(239,233,220,.28);margin-top:36px}
+
+#cue{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:3;
+  font-family:var(--mono);font-size:10px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--dim);pointer-events:none;transition:opacity .5s ease}
+#cue::after{content:"";display:block;width:1px;height:26px;margin:10px auto 0;
+  background:linear-gradient(to bottom,rgba(212,175,55,.75),rgba(212,175,55,0))}
+
+#load{position:fixed;inset:0;z-index:9;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;
+  transition:opacity .7s ease}
+#load .bar{width:min(210px,44vw);height:1px;background:rgba(239,233,220,.14);overflow:hidden}
+#load .bar i{display:block;height:100%;width:0%;background:var(--gold);transition:width .25s ease}
+#load .lb{font-family:var(--mono);font-size:10px;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--dim)}
+#load.gone{opacity:0;pointer-events:none}
+
+#scroller{position:relative;z-index:0;width:1px;pointer-events:none}
+
+/* ══ contact — its own stage, on solid ground ══ */
+#contact{position:relative;z-index:4;background:var(--ink);
+  min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(64px,11vh,130px) clamp(28px,7vw,110px)}
+#contact .eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:34px}
+#contact .eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 14px rgba(212,175,55,.7);flex:none}
+#contact .eyebrow span{font-family:var(--mono);font-size:11px;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--dim)}
+#contact h2{font-family:var(--display);font-weight:800;
+  font-variation-settings:"wdth" 120;
+  font-size:clamp(28px,5.2vw,54px);line-height:1.06;letter-spacing:-.02em;
+  color:var(--bone-bright);max-width:18ch;margin-bottom:26px}
+#contact .avail{font-weight:200;font-size:clamp(15px,2vw,20px);line-height:1.5;
+  color:rgba(239,233,220,.66);max-width:44ch;margin-bottom:54px}
+#contact .mailrow{display:flex;flex-wrap:wrap;align-items:center;gap:16px 22px;
+  padding-bottom:26px;border-bottom:1px solid rgba(239,233,220,.1)}
+#contact .mail{font-family:var(--mono);font-weight:400;
+  font-size:clamp(19px,3.4vw,34px);letter-spacing:-.01em;color:var(--gold);
+  text-decoration:none;transition:color .25s ease}
+#contact .mail:hover,#contact .mail:focus-visible{color:var(--gold-hot)}
+#contact .copy{font-family:var(--mono);font-size:10px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--dim);background:none;cursor:pointer;
+  border:1px solid rgba(239,233,220,.16);padding:9px 15px;transition:color .25s ease,border-color .25s ease}
+#contact .copy:hover,#contact .copy:focus-visible,#contact .copy.done{
+  color:var(--gold);border-color:rgba(212,175,55,.42)}
+#contact .full{margin-top:30px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none;
+  border-bottom:1px solid rgba(239,233,220,.16);padding-bottom:3px;
+  align-self:flex-start;transition:color .25s ease,border-color .25s ease}
+#contact .full:hover,#contact .full:focus-visible{color:var(--gold);border-color:rgba(212,175,55,.42)}
+#contact .foot{margin-top:auto;padding-top:70px;display:flex;flex-wrap:wrap;gap:10px 26px;
+  justify-content:space-between;font-family:var(--mono);font-size:10px;
+  letter-spacing:.28em;text-transform:uppercase;color:rgba(239,233,220,.26)}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .beat,#end,#menu,#burger span{transition:none}
+}
+</style>
+</head>
+<body>
+
+<div id="stage"><canvas id="c"></canvas></div>
+<div id="veil"></div>
+
+<button id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+  <span></span><span></span>
+</button>
+
+<nav id="menu" aria-hidden="true">
+  <a href="#top" data-top>Top</a>
+  <a href="contact.html">Contact</a>
+  <a href="https://dotricky.me" target="_blank" rel="noopener">dotricky.me ↗</a>
+  <div class="sub">Unzip the vision</div>
+</nav>
+
+<div id="hud">
+  <div class="beat" data-b="0">
+    <div class="rule"><span class="dot"></span><span class="prog"><span class="on">R</span><span>I</span><span>C</span><span>K</span><span>Y</span></span></div>
+    <div class="word">Restless</div>
+    <div class="line">Settling is the only real risk</div>
+  </div>
+  <div class="beat" data-b="1">
+    <div class="rule"><span class="dot"></span><span class="prog"><span>R</span><span class="on">I</span><span>C</span><span>K</span><span>Y</span></span></div>
+    <div class="word">Instinct</div>
+    <div class="line">The first thing you notice is usually the real thing</div>
+  </div>
+  <div class="beat" data-b="2">
+    <div class="rule"><span class="dot"></span><span class="prog"><span>R</span><span>I</span><span class="on">C</span><span>K</span><span>Y</span></span></div>
+    <div class="word">Curiosity</div>
+    <div class="line">Ask before you plan</div>
+  </div>
+  <div class="beat" data-b="3">
+    <div class="rule"><span class="dot"></span><span class="prog"><span>R</span><span>I</span><span>C</span><span class="on">K</span><span>Y</span></span></div>
+    <div class="word">Kinetic</div>
+    <div class="line">Move, then find the direction</div>
+  </div>
+  <div class="beat" data-b="4">
+    <div class="rule"><span class="dot"></span><span class="prog"><span>R</span><span>I</span><span>C</span><span>K</span><span class="on">Y</span></span></div>
+    <div class="word">Yes</div>
+    <div class="line">Say yes to the unknown</div>
+  </div>
+
+  <div id="end">
+    <div class="mark" id="mark"><span class="dot" id="dotdom">.<span id="base"></span></span>ricky</div>
+    <div class="tag">Unzip the vision.</div>
+    <div class="more">Keep scrolling</div>
+  </div>
+</div>
+
+<div id="cue">Scroll</div>
+
+<div id="load">
+  <div class="lb">Unzipping</div>
+  <div class="bar"><i id="pb"></i></div>
+</div>
+
+<div id="top"></div>
+<div id="scroller"></div>
+
+<section id="contact">
+  <div class="eyebrow"><i></i><span>Open for work</span></div>
+  <h2>Got something worth unzipping?</h2>
+  <p class="avail">Available for select cloud architecture, security advisory, and bespoke web builds.</p>
+  <div class="mailrow">
+    <a class="mail" href="mailto:hello@dotricky.me?subject=Inquiry%20via%20dotricky.me">hello@dotricky.me</a>
+    <button class="copy" id="copy" type="button">Copy address</button>
+  </div>
+  <a class="full" href="contact.html">Full contact details →</a>
+  <div class="foot">
+    <span>.ricky — Unzip the vision</span>
+    <span>dotricky.me</span>
+  </div>
+</section>
+
+<script>
+/* ============================================================
+   .ricky — scroll-scrubbed sequence
+   Scroll is the transport. Nothing plays on its own.
+   ============================================================ */
+
+const SRC = (()=>{const p=innerHeight>innerWidth?'frames/mobile/m_':'frames/desktop/d_';return Array.from({length:351},(_,i)=>p+String(i+1).padStart(4,'0')+'.webp');})();
+const N   = SRC.length;
+
+/* Scroll cost per frame. >1 stretches a moment out, <1 races through.
+   Tuned to the footage, not guessed. */
+const PACE = [
+  [1,   32, 1.00],   // canyon sprint
+  [32,  50, 1.55],   // the fork — hesitate here
+  [50, 100, 0.58],   // dark corridor — least to look at
+  [100,205, 1.00],   // cave
+  [205,238, 1.35],   // emergence into open water
+  [238,282, 0.85],   // open water
+  [282,352, 1.00]    // the city
+];
+const PX = 9;          // base scroll px per frame — raise for a longer scroll
+const END_PX = 1500;   // the coded closing beat
+const BEATS = [[-9,32],[32,100],[100,205],[205,282],[282,351]];
+const SUN = {x:0.471, y:0.404};   // measured off the final frame
+
+const cv=document.getElementById('c'), ctx=cv.getContext('2d',{alpha:false});
+const scroller=document.getElementById('scroller');
+const beatEls=[...document.querySelectorAll('.beat')];
+const endEl=document.getElementById('end');
+const dotDom=document.getElementById('dotdom');
+const markEl=document.getElementById('mark');
+const baseEl=document.getElementById('base');
+
+/* The closing dot has to land exactly on the wordmark's period. Rather than
+   hard-code where that glyph sits, draw it offscreen in the same face and
+   find its ink. Works for Archivo and survives a font swap. */
+let DOT_OFF={x:0,y:0,r:6};      // ink centre relative to (pen origin, baseline), + ink radius
+function measureDot(){
+  const cs=getComputedStyle(dotDom);
+  const size=parseFloat(cs.fontSize)||16;
+  const s=Math.ceil(size*2.4);
+  const oc=document.createElement('canvas'); oc.width=s; oc.height=s;
+  const o=oc.getContext('2d',{willReadFrequently:true});
+  o.font=(cs.fontVariationSettings&&cs.fontVariationSettings!=='normal'?'':'')+
+         cs.fontWeight+' '+size+'px '+cs.fontFamily;
+  o.textBaseline='alphabetic'; o.fillStyle='#fff';
+  const penX=size*0.6, baseY=size*1.5;
+  o.fillText('.',penX,baseY);
+  const d=o.getImageData(0,0,s,s).data;
+  let x0=s,x1=-1,y0=s,y1=-1;
+  for(let y=0;y<s;y++) for(let x=0;x<s;x++){
+    if(d[((y*s+x)<<2)+3]>40){ if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; }
+  }
+  if(x1<0){ DOT_OFF={x:size*0.15,y:-size*0.07,r:size*0.055}; return; }   // fallback
+  DOT_OFF={ x:(x0+x1)/2-penX, y:(y0+y1)/2-baseY, r:((x1-x0)+(y1-y0))/4 };
+}
+
+function centreMark(){
+  markEl.style.transform='none';
+  const w=dotDom.getBoundingClientRect().width;
+  markEl.style.transform='translateX('+(-w/2).toFixed(2)+'px)';
+}
+const contact=document.getElementById('contact');
+const cue=document.getElementById('cue');
+const loadEl=document.getElementById('load'), pb=document.getElementById('pb');
+const burger=document.getElementById('burger'), menu=document.getElementById('menu');
+
+/* ---- scroll map ---- */
+const cum=new Float64Array(N+1);
+for(let i=1;i<=N;i++){
+  let w=1;
+  for(const [a,b,v] of PACE){ if(i>=a && i<b){ w=v; break; } }
+  cum[i]=cum[i-1]+w*PX;
+}
+const SEQ_LEN=cum[N];
+function setHeight(){ scroller.style.height=(SEQ_LEN+END_PX+window.innerHeight)+'px'; }
+
+function frameAt(y){
+  if(y<=0) return 1;
+  if(y>=SEQ_LEN) return N;
+  let lo=1,hi=N;
+  while(lo<hi){ const m=(lo+hi)>>1; if(cum[m]<y) lo=m+1; else hi=m; }
+  const prev=cum[lo-1], span=cum[lo]-prev;
+  return lo-1+(span>0?(y-prev)/span:0)+1;
+}
+
+/* ---- frames ---- */
+const imgs=new Array(N).fill(null);
+let firstPaint=false;
+function load(i){
+  return new Promise(res=>{
+    if(imgs[i]) return res();
+    const im=new Image(); im.decoding='async';
+    im.onload=()=>{ imgs[i]=im; res(); };
+    im.onerror=()=>res();
+    im.src=SRC[i];
+  });
+}
+async function boot(){
+  const head=Math.min(16,N);
+  for(let i=0;i<head;i++){ await load(i); pb.style.width=Math.round((i+1)/head*100)+'%'; }
+  firstPaint=true; draw();
+  loadEl.classList.add('gone');
+  setTimeout(()=>{ if(loadEl.parentNode) loadEl.remove(); },800);
+  for(let i=head;i<N;i++) await load(i);
+}
+
+/* ---- canvas ---- */
+function resize(){
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  cv.width=Math.round(innerWidth*dpr);
+  cv.height=Math.round(innerHeight*dpr);
+  setHeight(); measureDot(); centreMark(); draw();
+}
+function cover(im){
+  const cw=cv.width, ch=cv.height;
+  const s=Math.max(cw/im.width, ch/im.height);
+  const w=im.width*s, h=im.height*s;
+  ctx.drawImage(im,(cw-w)/2,(ch-h)/2,w,h);
+}
+function nearest(idx){
+  let i=Math.max(0,Math.min(N-1,Math.round(idx)-1));
+  if(imgs[i]) return imgs[i];
+  for(let d=1;d<N;d++){
+    if(i-d>=0&&imgs[i-d]) return imgs[i-d];
+    if(i+d<N&&imgs[i+d]) return imgs[i+d];
+  }
+  return null;
+}
+
+/* ---- the coded closing beat ----
+   The world drains to charcoal, the horizon glow contracts to a point,
+   the point lifts, and the wordmark resolves around it. Done in code
+   because Veo can move a camera but cannot collapse a sun into a graphic. */
+function ending(e){
+  const cw=cv.width, ch=cv.height;
+
+  const drain=Math.min(1,e/0.34);
+  ctx.fillStyle='rgba(11,12,15,'+(drain*0.965).toFixed(3)+')';
+  ctx.fillRect(0,0,cw,ch);
+
+  const t=Math.min(1,e/0.52);
+  const ease=1-Math.pow(1-t,3);
+  const startR=Math.max(cw,ch)*0.42, endR=Math.max(2,DOT_OFF.r*(cw/innerWidth));
+  const r=startR+(endR-startR)*ease;
+
+  const rect=dotDom.getBoundingClientRect();
+  const baseY=baseEl.getBoundingClientRect().bottom;   // zero-height box sits on the baseline
+  const dpr=cv.width/innerWidth;
+  const tx=(rect.left+DOT_OFF.x)*dpr, ty=(baseY+DOT_OFF.y)*dpr;
+  const sx=SUN.x*cw, sy=SUN.y*ch;
+  const lift=Math.max(0,Math.min(1,(e-0.44)/0.34));
+  const le=lift<0.5?4*lift*lift*lift:1-Math.pow(-2*lift+2,3)/2;
+  const x=sx+(tx-sx)*le, y=sy+(ty-sy)*le;
+
+  const hand=Math.max(0,Math.min(1,(e-0.72)/0.16));
+  const fade=1-hand;
+
+  const g=ctx.createRadialGradient(x,y,0,x,y,Math.max(r,1));
+  const heat=(0.55+0.45*ease)*fade;
+  g.addColorStop(0,'rgba(245,228,170,'+heat.toFixed(3)+')');
+  g.addColorStop(0.18,'rgba(212,175,55,'+(heat*0.85).toFixed(3)+')');
+  g.addColorStop(1,'rgba(212,175,55,0)');
+  ctx.fillStyle=g; ctx.fillRect(0,0,cw,ch);
+
+  if(ease>0.6){
+    ctx.beginPath(); ctx.arc(x,y,endR,0,Math.PI*2);
+    ctx.fillStyle='rgba(240,215,122,'+((ease-0.6)/0.4*fade).toFixed(3)+')';
+    ctx.fill();
+  }
+  dotDom.style.opacity=hand.toFixed(3);
+  return hand;
+}
+
+function beats(idx,inEnd){
+  beatEls.forEach((el,i)=>{
+    if(inEnd){ el.style.opacity=0; return; }
+    const [a,b]=BEATS[i];
+    const p=(idx-a)/(b-a);
+    let o=0;
+    if(p>=0&&p<=1) o = p<0.20 ? p/0.20 : (p>0.78 ? Math.max(0,1-(p-0.78)/0.20) : 1);
+    el.style.opacity=o.toFixed(3);
+    el.style.transform='translateY('+((1-o)*10).toFixed(1)+'px)';
+  });
+}
+
+let raf=null;
+function draw(){
+  raf=null;
+  if(!firstPaint) return;
+  const y=window.scrollY||window.pageYOffset||0;
+  const idx=frameAt(y);
+  const im=nearest(idx);
+  ctx.fillStyle='#0B0C0F'; ctx.fillRect(0,0,cv.width,cv.height);
+  if(im) cover(im);
+
+  const past=y-SEQ_LEN;
+  let vis=0;
+  if(past>0){ vis=ending(Math.min(1,past/END_PX)); beats(idx,true); }
+  else { dotDom.style.opacity=0; beats(idx,false); }
+
+  /* the wordmark yields as the contact stage rises past it */
+  const ct=contact.getBoundingClientRect().top;
+  const handoff=Math.max(0,Math.min(1,(ct-innerHeight*0.35)/(innerHeight*0.65)));
+  endEl.style.opacity=(vis*handoff).toFixed(3);
+  endEl.style.transform='translate(-50%,-50%) translateY('+((1-vis)*14).toFixed(1)+'px)';
+
+  cue.style.opacity=y>60?0:1;
+  burger.style.opacity=(past>0||y<60)?1:0.42;
+}
+function onScroll(){ if(!raf) raf=requestAnimationFrame(draw); }
+
+/* ---- menu ---- */
+function setMenu(open){
+  document.body.classList.toggle('menu',open);
+  burger.setAttribute('aria-expanded',open?'true':'false');
+  burger.setAttribute('aria-label',open?'Close menu':'Open menu');
+  menu.setAttribute('aria-hidden',open?'false':'true');
+}
+burger.addEventListener('click',()=>setMenu(!document.body.classList.contains('menu')));
+menu.addEventListener('click',e=>{ if(e.target.tagName==='A') setMenu(false); });
+addEventListener('keydown',e=>{ if(e.key==='Escape') setMenu(false); });
+document.querySelector('[data-top]').addEventListener('click',e=>{
+  e.preventDefault(); setMenu(false); scrollTo({top:0,behavior:'smooth'});
+});
+
+/* ---- copy ---- */
+const copyBtn=document.getElementById('copy');
+copyBtn.addEventListener('click',async()=>{
+  try{ await navigator.clipboard.writeText('hello@dotricky.me'); }catch{ return; }
+  copyBtn.textContent='Copied';
+  copyBtn.classList.add('done');
+  setTimeout(()=>{ copyBtn.textContent='Copy address'; copyBtn.classList.remove('done'); },2000);
+});
+
+addEventListener('scroll',onScroll,{passive:true});
+addEventListener('resize',resize);
+resize();
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{measureDot();centreMark();draw();});
+boot();
+</script>
+</body>
+</html>

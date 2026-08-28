@@ -7,19 +7,22 @@
 <meta name="description" content="One mind. Many disciplines. Building what others leave untouched.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" media="print" onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Karla:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Karla:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"></noscript>
 <style>
 :root{
-  /* ── SWAP THE FONT HERE ──────────────────────────────────
-     Replace "JetBrains Mono" with the face used on dotricky.me,
-     and update the <link> above to match. Nothing else changes. */
-  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  /* type system — matches dotricky.me */
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 
   --ink:#0B0C0F;
-  --gold:#E8B25C;
-  --gold-hot:#FCDFA0;
+  --gold:#D4AF37;
+  --gold-hot:#F0D77A;
+  --gold-glow:rgba(212,175,55,.35);
   --bone:#EFE9DC;
+  --bone-bright:#FFFFFF;
   --dim:rgba(239,233,220,.42);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -42,28 +45,28 @@ a{color:inherit}
   max-width:min(520px,74vw);opacity:0;will-change:opacity,transform}
 .beat .rule{display:flex;align-items:center;gap:14px;margin-bottom:18px}
 .beat .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);
-  box-shadow:0 0 16px rgba(232,178,92,.85);flex:none}
+  box-shadow:0 0 16px rgba(212,175,55,.8);flex:none}
 .beat .prog{font-family:var(--mono);font-size:13px;letter-spacing:.42em;
   color:rgba(239,233,220,.34);display:flex}
 .beat .prog span.on{color:var(--gold)}
-.beat .word{font-family:var(--mono);font-weight:300;
-  font-size:clamp(38px,7.4vw,76px);line-height:.96;letter-spacing:-.015em;margin-bottom:16px}
+.beat .word{font-family:var(--display);font-weight:800;
+  font-variation-settings:"wdth" 120;
+  font-size:clamp(36px,7vw,72px);line-height:.98;letter-spacing:-.02em;
+  color:var(--bone-bright);margin-bottom:16px}
 .beat .line{font-weight:200;font-size:clamp(16px,2.15vw,23px);line-height:1.44;
   color:rgba(239,233,220,.9);max-width:26ch;text-wrap:balance}
 
 /* ══ the payoff — wordmark alone, nothing else ══ */
 #end{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   text-align:center;opacity:0;width:min(620px,90vw)}
-#end .mark{font-family:var(--mono);font-weight:300;
+#end .mark{font-family:var(--display);font-weight:800;
+  font-variation-settings:"wdth" 120;
   font-size:clamp(46px,10vw,92px);letter-spacing:-.02em;line-height:1;
-  display:flex;align-items:baseline;justify-content:center;
-  /* shift left by half the dot slot so "ricky" — not the whole row —
-     sits on the page's centre line. The dot hangs into the margin. */
-  transform:translateX(-.25em)}
-#end .mark .slot{display:inline-block;position:relative;width:.5em;flex:none}
-#end .mark .slot i{position:absolute;left:50%;bottom:.07em;transform:translateX(-50%);
-  width:.13em;height:.13em;border-radius:50%;background:var(--gold);
-  box-shadow:0 0 20px rgba(232,178,92,.85);opacity:0}
+  color:var(--bone-bright);white-space:nowrap;
+  /* JS shifts this left by half the period's advance so "ricky" — not
+     the whole string — sits on the page's centre line. */}
+#end .mark .dot{color:var(--gold);text-shadow:0 0 12px var(--gold-glow);opacity:0}
+#end .mark #base{display:inline-block;width:0;height:0;overflow:hidden}
 #end .tag{font-weight:200;font-size:clamp(14px,2.4vw,19px);
   color:rgba(239,233,220,.62);margin-top:24px}
 #end .more{margin-top:52px;font-family:var(--mono);font-size:10px;
@@ -86,8 +89,9 @@ body.menu #burger span:nth-child(2){width:22px;transform:translateY(-3.5px) rota
   display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;
   opacity:0;pointer-events:none;transition:opacity .38s ease}
 body.menu #menu{opacity:1;pointer-events:auto}
-#menu a{font-family:var(--mono);font-weight:300;text-decoration:none;
-  font-size:clamp(26px,5.4vw,42px);letter-spacing:-.01em;padding:12px 20px;
+#menu a{font-family:var(--display);font-weight:800;
+  font-variation-settings:"wdth" 120;text-decoration:none;
+  font-size:clamp(24px,5vw,38px);letter-spacing:-.02em;padding:12px 20px;
   color:rgba(239,233,220,.6);transition:color .25s ease}
 #menu a:hover,#menu a:focus-visible{color:var(--gold)}
 #menu .sub{font-family:var(--mono);font-size:10px;letter-spacing:.34em;
@@ -97,7 +101,7 @@ body.menu #menu{opacity:1;pointer-events:auto}
   font-family:var(--mono);font-size:10px;letter-spacing:.34em;text-transform:uppercase;
   color:var(--dim);pointer-events:none;transition:opacity .5s ease}
 #cue::after{content:"";display:block;width:1px;height:26px;margin:10px auto 0;
-  background:linear-gradient(to bottom,rgba(232,178,92,.75),rgba(232,178,92,0))}
+  background:linear-gradient(to bottom,rgba(212,175,55,.75),rgba(212,175,55,0))}
 
 #load{position:fixed;inset:0;z-index:9;background:var(--ink);
   display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;
@@ -116,12 +120,13 @@ body.menu #menu{opacity:1;pointer-events:auto}
   padding:clamp(64px,11vh,130px) clamp(28px,7vw,110px)}
 #contact .eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:34px}
 #contact .eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--gold);
-  box-shadow:0 0 14px rgba(232,178,92,.7);flex:none}
+  box-shadow:0 0 14px rgba(212,175,55,.7);flex:none}
 #contact .eyebrow span{font-family:var(--mono);font-size:11px;letter-spacing:.34em;
   text-transform:uppercase;color:var(--dim)}
-#contact h2{font-family:var(--mono);font-weight:300;
-  font-size:clamp(30px,5.6vw,58px);line-height:1.08;letter-spacing:-.02em;
-  max-width:16ch;margin-bottom:26px}
+#contact h2{font-family:var(--display);font-weight:800;
+  font-variation-settings:"wdth" 120;
+  font-size:clamp(28px,5.2vw,54px);line-height:1.06;letter-spacing:-.02em;
+  color:var(--bone-bright);max-width:18ch;margin-bottom:26px}
 #contact .avail{font-weight:200;font-size:clamp(15px,2vw,20px);line-height:1.5;
   color:rgba(239,233,220,.66);max-width:44ch;margin-bottom:54px}
 #contact .mailrow{display:flex;flex-wrap:wrap;align-items:center;gap:16px 22px;
@@ -134,12 +139,12 @@ body.menu #menu{opacity:1;pointer-events:auto}
   text-transform:uppercase;color:var(--dim);background:none;cursor:pointer;
   border:1px solid rgba(239,233,220,.16);padding:9px 15px;transition:color .25s ease,border-color .25s ease}
 #contact .copy:hover,#contact .copy:focus-visible,#contact .copy.done{
-  color:var(--gold);border-color:rgba(232,178,92,.4)}
+  color:var(--gold);border-color:rgba(212,175,55,.42)}
 #contact .full{margin-top:30px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;
   text-transform:uppercase;color:var(--dim);text-decoration:none;
   border-bottom:1px solid rgba(239,233,220,.16);padding-bottom:3px;
   align-self:flex-start;transition:color .25s ease,border-color .25s ease}
-#contact .full:hover,#contact .full:focus-visible{color:var(--gold);border-color:rgba(232,178,92,.4)}
+#contact .full:hover,#contact .full:focus-visible{color:var(--gold);border-color:rgba(212,175,55,.42)}
 #contact .foot{margin-top:auto;padding-top:70px;display:flex;flex-wrap:wrap;gap:10px 26px;
   justify-content:space-between;font-family:var(--mono);font-size:10px;
   letter-spacing:.28em;text-transform:uppercase;color:rgba(239,233,220,.26)}
@@ -194,7 +199,7 @@ body.menu #menu{opacity:1;pointer-events:auto}
   </div>
 
   <div id="end">
-    <div class="mark"><span class="slot"><i id="dotdom"></i></span>ricky</div>
+    <div class="mark" id="mark"><span class="dot" id="dotdom">.<span id="base"></span></span>ricky</div>
     <div class="tag">Unzip the vision.</div>
     <div class="more">Keep scrolling</div>
   </div>
@@ -231,7 +236,8 @@ body.menu #menu{opacity:1;pointer-events:auto}
    Scroll is the transport. Nothing plays on its own.
    ============================================================ */
 
-const SRC = (()=>{const p=innerHeight>innerWidth?'frames/mobile/m_':'frames/desktop/d_';return Array.from({length:351},(_,i)=>p+String(i+1).padStart(4,'0')+'.webp');})();
+const SRC = (()=>{const p=innerHeight>innerWidth?'frames/mobile/m_':'frames/desktop/d_';return Array.from({length:351},(_,i)=>p+String(i+1).padStart(4,'0')+'.webp');})();      // full-resolution frames
+const LOW = (()=>{const p=innerHeight>innerWidth?'frames/low-m/m_':'frames/low-d/d_';return Array.from({length:351},(_,i)=>p+String(i+1).padStart(4,'0')+'.webp');})();        // tiny first-pass frames, whole journey
 const N   = SRC.length;
 
 /* Scroll cost per frame. >1 stretches a moment out, <1 races through.
@@ -255,6 +261,38 @@ const scroller=document.getElementById('scroller');
 const beatEls=[...document.querySelectorAll('.beat')];
 const endEl=document.getElementById('end');
 const dotDom=document.getElementById('dotdom');
+const markEl=document.getElementById('mark');
+const baseEl=document.getElementById('base');
+
+/* The closing dot has to land exactly on the wordmark's period. Rather than
+   hard-code where that glyph sits, draw it offscreen in the same face and
+   find its ink. Works for Archivo and survives a font swap. */
+let DOT_OFF={x:0,y:0,r:6};      // ink centre relative to (pen origin, baseline), + ink radius
+function measureDot(){
+  const cs=getComputedStyle(dotDom);
+  const size=parseFloat(cs.fontSize)||16;
+  const s=Math.ceil(size*2.4);
+  const oc=document.createElement('canvas'); oc.width=s; oc.height=s;
+  const o=oc.getContext('2d',{willReadFrequently:true});
+  o.font=(cs.fontVariationSettings&&cs.fontVariationSettings!=='normal'?'':'')+
+         cs.fontWeight+' '+size+'px '+cs.fontFamily;
+  o.textBaseline='alphabetic'; o.fillStyle='#fff';
+  const penX=size*0.6, baseY=size*1.5;
+  o.fillText('.',penX,baseY);
+  const d=o.getImageData(0,0,s,s).data;
+  let x0=s,x1=-1,y0=s,y1=-1;
+  for(let y=0;y<s;y++) for(let x=0;x<s;x++){
+    if(d[((y*s+x)<<2)+3]>40){ if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; }
+  }
+  if(x1<0){ DOT_OFF={x:size*0.15,y:-size*0.07,r:size*0.055}; return; }   // fallback
+  DOT_OFF={ x:(x0+x1)/2-penX, y:(y0+y1)/2-baseY, r:((x1-x0)+(y1-y0))/4 };
+}
+
+function centreMark(){
+  markEl.style.transform='none';
+  const w=dotDom.getBoundingClientRect().width;
+  markEl.style.transform='translateX('+(-w/2).toFixed(2)+'px)';
+}
 const contact=document.getElementById('contact');
 const cue=document.getElementById('cue');
 const loadEl=document.getElementById('load'), pb=document.getElementById('pb');
@@ -279,25 +317,86 @@ function frameAt(y){
   return lo-1+(span>0?(y-prev)/span:0)+1;
 }
 
-/* ---- frames ---- */
-const imgs=new Array(N).fill(null);
-let firstPaint=false;
-function load(i){
+/* ---- frames ----
+   Two passes. First a tiny version of every frame, so the whole journey
+   is scrubbable within a couple of seconds. Then the full-resolution set,
+   nearest to the playhead first, quietly replacing the small ones. */
+const imgs=new Array(N).fill(null);   // full res
+const low =new Array(N).fill(null);   // first pass
+let firstPaint=false, lowDone=0;
+
+function fetchInto(store,src,i){
   return new Promise(res=>{
-    if(imgs[i]) return res();
+    if(store[i]) return res();
     const im=new Image(); im.decoding='async';
-    im.onload=()=>{ imgs[i]=im; res(); };
+    im.onload=()=>{ store[i]=im; res(); };
     im.onerror=()=>res();
-    im.src=SRC[i];
+    im.src=src[i];
   });
 }
-async function boot(){
-  const head=Math.min(16,N);
-  for(let i=0;i<head;i++){ await load(i); pb.style.width=Math.round((i+1)/head*100)+'%'; }
-  firstPaint=true; draw();
-  loadEl.classList.add('gone');
-  setTimeout(()=>{ if(loadEl.parentNode) loadEl.remove(); },800);
-  for(let i=head;i<N;i++) await load(i);
+const load=i=>fetchInto(imgs,SRC,i);
+/* Frames stream in parallel, nearest-to-the-playhead first, so loading
+   follows the reader instead of marching from frame 1. */
+const MAXC=8;                       // concurrent requests
+const pending=new Set();
+let inflight=0, done=0;
+
+function nextNeeded(){
+  const cur=Math.max(0,Math.min(N-1,Math.round(frameAt(window.scrollY||0))-1));
+  for(let d=0;d<N;d++){
+    const f=cur+d;  if(f<N  && !imgs[f] && !pending.has(f)) return f;   // ahead first
+    const b=cur-d;  if(b>=0 && !imgs[b] && !pending.has(b)) return b;
+  }
+  return -1;
+}
+
+/* pass one — every frame, small, in story order */
+function pumpLow(){
+  let started=0;
+  for(let i=0;i<N && started<12;i++){
+    if(low[i]||pendingLow.has(i)) continue;
+    pendingLow.add(i); started++;
+    fetchInto(low,LOW,i).then(()=>{
+      lowDone++;
+      pb.style.width=Math.round(lowDone/N*100)+'%';
+      if(!raf) raf=requestAnimationFrame(draw);
+      if(lowDone>=N) pump(); else pumpLow();
+    });
+  }
+}
+const pendingLow=new Set();
+function pump(){
+  while(inflight<MAXC){
+    const i=nextNeeded();
+    if(i<0) return;
+    pending.add(i); inflight++;
+    load(i).then(()=>{
+      inflight--; done++;
+      if(!firstPaint){
+        firstPaint=true;
+        loadEl.classList.add('gone');
+        setTimeout(()=>{ if(loadEl.parentNode) loadEl.remove(); },800);
+      }
+      if(!raf) raf=requestAnimationFrame(draw);
+      pb.style.width=Math.round(done/N*100)+'%';
+      pump();
+    });
+  }
+}
+/* Fetch the very first frame on its own so it isn't competing for
+   bandwidth with the pool — paint, then open the taps. */
+function boot(){
+  /* one small frame, alone, uncontended — then the rest */
+  pendingLow.add(0);
+  fetchInto(low,LOW,0).then(()=>{
+    lowDone++;
+    firstPaint=true;
+    loadEl.classList.add('gone');
+    setTimeout(()=>{ if(loadEl.parentNode) loadEl.remove(); },800);
+    draw();
+    pumpLow();
+    load(0).then(()=>{ done++; if(!raf) raf=requestAnimationFrame(draw); });
+  });
 }
 
 /* ---- canvas ---- */
@@ -305,7 +404,7 @@ function resize(){
   const dpr=Math.min(window.devicePixelRatio||1,2);
   cv.width=Math.round(innerWidth*dpr);
   cv.height=Math.round(innerHeight*dpr);
-  setHeight(); draw();
+  setHeight(); measureDot(); centreMark(); draw();
 }
 function cover(im){
   const cw=cv.width, ch=cv.height;
@@ -314,11 +413,12 @@ function cover(im){
   ctx.drawImage(im,(cw-w)/2,(ch-h)/2,w,h);
 }
 function nearest(idx){
-  let i=Math.max(0,Math.min(N-1,Math.round(idx)-1));
-  if(imgs[i]) return imgs[i];
-  for(let d=1;d<N;d++){
-    if(i-d>=0&&imgs[i-d]) return imgs[i-d];
-    if(i+d<N&&imgs[i+d]) return imgs[i+d];
+  const i=Math.max(0,Math.min(N-1,Math.round(idx)-1));
+  if(imgs[i]) return imgs[i];      // sharp
+  if(low[i])  return low[i];       // small but right
+  for(let d=1;d<N;d++){            // else the closest frame we do have
+    if(i-d>=0&&(imgs[i-d]||low[i-d])) return imgs[i-d]||low[i-d];
+    if(i+d<N &&(imgs[i+d]||low[i+d])) return imgs[i+d]||low[i+d];
   }
   return null;
 }
@@ -336,12 +436,13 @@ function ending(e){
 
   const t=Math.min(1,e/0.52);
   const ease=1-Math.pow(1-t,3);
-  const startR=Math.max(cw,ch)*0.42, endR=Math.max(cw,ch)*0.008;
+  const startR=Math.max(cw,ch)*0.42, endR=Math.max(2,DOT_OFF.r*(cw/innerWidth));
   const r=startR+(endR-startR)*ease;
 
   const rect=dotDom.getBoundingClientRect();
+  const baseY=baseEl.getBoundingClientRect().bottom;   // zero-height box sits on the baseline
   const dpr=cv.width/innerWidth;
-  const tx=(rect.left+rect.width/2)*dpr, ty=(rect.top+rect.height/2)*dpr;
+  const tx=(rect.left+DOT_OFF.x)*dpr, ty=(baseY+DOT_OFF.y)*dpr;
   const sx=SUN.x*cw, sy=SUN.y*ch;
   const lift=Math.max(0,Math.min(1,(e-0.44)/0.34));
   const le=lift<0.5?4*lift*lift*lift:1-Math.pow(-2*lift+2,3)/2;
@@ -352,14 +453,14 @@ function ending(e){
 
   const g=ctx.createRadialGradient(x,y,0,x,y,Math.max(r,1));
   const heat=(0.55+0.45*ease)*fade;
-  g.addColorStop(0,'rgba(255,238,198,'+heat.toFixed(3)+')');
-  g.addColorStop(0.18,'rgba(232,178,92,'+(heat*0.85).toFixed(3)+')');
-  g.addColorStop(1,'rgba(232,178,92,0)');
+  g.addColorStop(0,'rgba(245,228,170,'+heat.toFixed(3)+')');
+  g.addColorStop(0.18,'rgba(212,175,55,'+(heat*0.85).toFixed(3)+')');
+  g.addColorStop(1,'rgba(212,175,55,0)');
   ctx.fillStyle=g; ctx.fillRect(0,0,cw,ch);
 
   if(ease>0.6){
-    ctx.beginPath(); ctx.arc(x,y,endR*1.5,0,Math.PI*2);
-    ctx.fillStyle='rgba(252,223,160,'+((ease-0.6)/0.4*fade).toFixed(3)+')';
+    ctx.beginPath(); ctx.arc(x,y,endR,0,Math.PI*2);
+    ctx.fillStyle='rgba(240,215,122,'+((ease-0.6)/0.4*fade).toFixed(3)+')';
     ctx.fill();
   }
   dotDom.style.opacity=hand.toFixed(3);
@@ -430,6 +531,7 @@ copyBtn.addEventListener('click',async()=>{
 addEventListener('scroll',onScroll,{passive:true});
 addEventListener('resize',resize);
 resize();
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{measureDot();centreMark();draw();});
 boot();
 </script>
 </body>
