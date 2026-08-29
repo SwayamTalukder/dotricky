@@ -120,7 +120,7 @@ a{color:inherit}
 /* ══ the payoff — wordmark alone, nothing else ══ */
 #end{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   text-align:center;opacity:0;width:min(620px,90vw)}
-#end .mark{font-family:var(--display);font-weight:800;
+#end .mark{display:inline-block;font-family:var(--display);font-weight:800;
   font-variation-settings:"wdth" 120;
   font-size:clamp(46px,10vw,92px);letter-spacing:-.02em;line-height:1;
   color:var(--bone-bright);white-space:nowrap;
@@ -171,7 +171,32 @@ body.menu #menu{opacity:1;pointer-events:auto}
 #load .bar i{display:block;height:100%;width:0%;background:var(--gold);transition:width .25s ease}
 #load .lb{font-family:var(--mono);font-size:10px;letter-spacing:.34em;
   text-transform:uppercase;color:var(--dim)}
+/* An honest count. People wait happily when they can see it moving and
+   know roughly how far is left; they leave when a bar lies to them. */
+#load .pc{font-family:var(--mono);font-size:10px;letter-spacing:.28em;
+  color:rgba(239,233,220,.34);font-variant-numeric:tabular-nums}
 #load.gone{opacity:0;pointer-events:none}
+
+/* ══ the opening — the mark docks into the corner and becomes the chrome ══
+   The journey used to simply begin. Now something arrives and resolves:
+   the wordmark stands centre, then shrinks into the top-left slot where
+   it spends the rest of the scroll as the progress indicator. */
+#intro{position:fixed;inset:0;z-index:5;pointer-events:none;
+  display:flex;align-items:center;justify-content:center}
+/* The opening mark stands over the canyon's bright sky slit — the one place
+   in the whole piece where white type has nothing to sit against. */
+#intro .scrim{position:absolute;inset:0;
+  background:radial-gradient(ellipse 54% 40% at 50% 48%,rgba(11,12,15,.80),rgba(11,12,15,.30) 55%,rgba(11,12,15,0) 78%)}
+#intro .wrap{text-align:center;transform-origin:50% 50%;will-change:transform,opacity}
+#intro .mark{font-family:var(--display);font-weight:800;
+  font-variation-settings:"wdth" 120;
+  font-size:clamp(46px,10vw,92px);letter-spacing:-.02em;line-height:1;
+  color:var(--bone-bright);white-space:nowrap;
+  text-shadow:0 2px 40px rgba(11,12,15,.9),0 1px 8px rgba(11,12,15,.7)}
+#intro .mark .dot{color:var(--gold);text-shadow:0 0 16px var(--gold-glow)}
+#intro .tag{font-family:var(--mono);font-size:10px;letter-spacing:.34em;
+  text-transform:uppercase;color:rgba(239,233,220,.58);margin-top:20px;
+  text-shadow:0 1px 14px rgba(11,12,15,.9)}
 
 #scroller{position:relative;z-index:0;width:1px;pointer-events:none}
 
@@ -281,9 +306,18 @@ body.menu #menu{opacity:1;pointer-events:auto}
 
 <div id="cue">Scroll</div>
 
+<div id="intro" aria-hidden="true">
+  <div class="scrim" id="introscrim"></div>
+  <div class="wrap" id="introwrap">
+    <div class="mark"><span class="dot">.</span>ricky</div>
+    <div class="tag">Unzip the vision</div>
+  </div>
+</div>
+
 <div id="load">
   <div class="lb">Unzipping</div>
   <div class="bar"><i id="pb"></i></div>
+  <div class="pc" id="pc">0%</div>
 </div>
 
 <div id="top"></div>
@@ -310,25 +344,39 @@ body.menu #menu{opacity:1;pointer-events:auto}
    Scroll is the transport. Nothing plays on its own.
    ============================================================ */
 
-const SRC = (()=>{const p=innerHeight>innerWidth?'frames/mobile/m_':'frames/desktop/d_';return Array.from({length:351},(_,i)=>p+String(i+1).padStart(4,'0')+'.webp');})();      // full-resolution frames
-const LOW = (()=>{const p=innerHeight>innerWidth?'frames/low-m/m_':'frames/low-d/d_';return Array.from({length:351},(_,i)=>p+String(i+1).padStart(4,'0')+'.webp');})();        // tiny first-pass frames, whole journey
+const SRC = (()=>{const p=innerHeight>innerWidth?'frames/mobile/m_':'frames/desktop/d_';return Array.from({length:368},(_,i)=>p+String(i+1).padStart(4,'0')+'.webp');})();      // full-resolution frames
 const N   = SRC.length;
 
 /* Scroll cost per frame. >1 stretches a moment out, <1 races through.
    Tuned to the footage, not guessed. */
 const PACE = [
-  [1,   32, 1.00],   // canyon sprint
-  [32,  50, 1.55],   // the fork — hesitate here
-  [50, 100, 0.58],   // dark corridor — least to look at
-  [100,205, 1.00],   // cave
-  [205,238, 1.35],   // emergence into open water
-  [238,282, 0.85],   // open water
-  [282,352, 1.00]    // the city
+  [1,   30, 1.00],   // canyon
+  [30,  58, 1.55],   // the fork — hesitate here
+  [58,  66, 0.65],   // dark corridor — least to look at
+  [66,  80, 1.60],   // fastest camera move in the piece — slow the scroll
+  [80, 183, 1.00],   // cave
+  [183,206, 1.40],   // emergence into open water
+  [206,240, 0.95],   // open water
+  [240,294, 0.68],   // fog — hold the pace up
+  [294,368, 1.15]    // the city
 ];
 const PX = 9;          // base scroll px per frame — raise for a longer scroll
 const END_PX = 1500;   // the coded closing beat
-const BEATS = [[-9,32],[32,100],[100,205],[205,282],[282,351]];
-const SUN = {x:0.471, y:0.404};   // measured off the final frame
+const BEATS = [[-9,30],[30,71],[71,183],[183,294],[294,367]];
+const SUN = {x:0.497, y:0.512};   // measured off the final frame
+
+/* Frames held back before anything paints. Nobody scrolls a site twice —
+   if the first pass looks cheap there is no second pass to be saved by,
+   so we would rather make people wait behind an honest bar than show
+   them a soft version of the only thing they came to see.
+   Raise it if you can still outrun the loader on your own connection. */
+const HEAD = 90;
+
+/* The opening dock. The wordmark stands centre, then travels into the
+   top-left slot and becomes the progress mark. Frames creep forward
+   underneath it so the world is already moving while it lands. */
+const INTRO_PX = 340;
+const INTRO_FR = 10;   // frames consumed by the dock
 
 const cv=document.getElementById('c'), ctx=cv.getContext('2d',{alpha:false});
 const scroller=document.getElementById('scroller');
@@ -370,6 +418,27 @@ function centreMark(){
 const contact=document.getElementById('contact');
 const cue=document.getElementById('cue');
 const loadEl=document.getElementById('load'), pb=document.getElementById('pb');
+const pcEl=document.getElementById('pc');
+const introEl=document.getElementById('intro'), introWrap=document.getElementById('introwrap');
+const brandEl=document.getElementById('brand');
+const introMark=introEl.querySelector('.mark'), introTag=introEl.querySelector('.tag');
+const introScrim=document.getElementById('introscrim');
+const tagEl=document.querySelector('#end .tag'), moreEl=document.querySelector('#end .more');
+if(tagEl) tagEl.style.opacity=0;
+if(moreEl) moreEl.style.opacity=0;
+
+/* Where the opening mark has to land: dead on the chrome brand, measured
+   rather than guessed, so a font swap or a resize cannot break the dock. */
+let DOCK={s:0.2,dx:0,dy:0};
+function measureDock(){
+  if(!introMark||!brandEl) return;
+  introMark.style.transform='none';
+  const a=introMark.getBoundingClientRect(), b=brandEl.getBoundingClientRect();
+  if(!a.width||!b.width) return;
+  DOCK={ s:b.width/a.width,
+         dx:(b.left+b.width/2)-(a.left+a.width/2),
+         dy:(b.top+b.height/2)-(a.top+a.height/2) };
+}
 const burger=document.getElementById('burger'), menu=document.getElementById('menu');
 
 /* ---- scroll map ---- */
@@ -380,9 +449,24 @@ for(let i=1;i<=N;i++){
   cum[i]=cum[i-1]+w*PX;
 }
 const SEQ_LEN=cum[N];
-function setHeight(){ scroller.style.height=(SEQ_LEN+END_PX+window.innerHeight)+'px'; }
+/* The dock replaces the scroll that the first INTRO_FR frames would have
+   cost, and adds the difference. Everything downstream keeps working in
+   sequence pixels — only the mapping from page scroll changes. */
+const C_IN=cum[INTRO_FR];
+const EXTRA=INTRO_PX-C_IN;
+const TOTAL=SEQ_LEN+EXTRA;
+function setHeight(){ scroller.style.height=(TOTAL+END_PX+window.innerHeight)+'px'; }
 
-function frameAt(y){
+/* page scroll → sequence scroll */
+function seqY(y){
+  if(y<=0) return 0;
+  if(y<INTRO_PX) return (y/INTRO_PX)*C_IN;
+  return y-EXTRA;
+}
+const introAt=y=>Math.max(0,Math.min(1,y/INTRO_PX));
+
+function frameAt(yPage){
+  const y=seqY(yPage);
   if(y<=0) return 1;
   if(y>=SEQ_LEN) return N;
   let lo=1,hi=N;
@@ -392,33 +476,36 @@ function frameAt(y){
 }
 
 /* ---- frames ----
-   Two passes. First a tiny version of every frame, so the whole journey
-   is scrubbable within a couple of seconds. Then the full-resolution set,
-   nearest to the playhead first, quietly replacing the small ones. */
-const imgs=new Array(N).fill(null);   // full res
-const low =new Array(N).fill(null);   // first pass
-let firstPaint=false, lowDone=0;
+   One pass, full resolution, always. The low set is gone: it existed to
+   make the journey scrubbable in two seconds, but the price was that the
+   first thing anyone saw was a 560px frame blown up four times, and that
+   reads as a cheap site no matter what arrives afterwards. Dropping it
+   also returns ~4MB of contended bandwidth to the frames we actually show.
 
-function fetchInto(store,src,i){
+   Instead: hold the opening behind a bar until it is genuinely sharp,
+   then stream forward ahead of the playhead. If a reader outruns the
+   loader the picture holds on the last sharp frame — a freeze reads as
+   deliberate, a mushy frame reads as broken. */
+const imgs=new Array(N).fill(null);
+let firstPaint=false;
+
+function load(i){
   return new Promise(res=>{
-    if(store[i]) return res();
+    if(imgs[i]) return res();
     const im=new Image(); im.decoding='async';
-    im.onload=()=>{ store[i]=im; res(); };
+    im.onload=()=>{ imgs[i]=im; res(); };
     im.onerror=()=>res();
-    im.src=src[i];
+    im.src=SRC[i];
   });
 }
-const load=i=>fetchInto(imgs,SRC,i);
-/* Frames stream in parallel, nearest-to-the-playhead first, so loading
-   follows the reader instead of marching from frame 1. */
 const MAXC=8;                       // concurrent requests
 const pending=new Set();
 let inflight=0, done=0;
 
 /* Strictly forward. Nobody scrolls back up to admire a frame they have
-   already passed, so sharpening behind the playhead is wasted bandwidth
+   already passed, so loading behind the playhead is wasted bandwidth
    that the frames ahead are still waiting on. Only once everything ahead
-   is sharp do we backfill, for the rare reader who scrolls up. */
+   is loaded do we backfill, for the rare reader who scrolls up. */
 function nextNeeded(){
   const cur=Math.max(0,Math.min(N-1,Math.round(frameAt(window.scrollY||0))-1));
   for(let f=cur;f<N;f++)  if(!imgs[f] && !pending.has(f)) return f;
@@ -426,21 +513,6 @@ function nextNeeded(){
   return -1;
 }
 
-/* pass one — every frame, small, in story order */
-function pumpLow(){
-  let started=0;
-  for(let i=0;i<N && started<12;i++){
-    if(low[i]||pendingLow.has(i)) continue;
-    pendingLow.add(i); started++;
-    fetchInto(low,LOW,i).then(()=>{
-      lowDone++;
-      pb.style.width=Math.round(lowDone/N*100)+'%';
-      if(!raf) raf=requestAnimationFrame(draw);
-      if(lowDone>=N) pump(); else pumpLow();
-    });
-  }
-}
-const pendingLow=new Set();
 function pump(){
   while(inflight<MAXC){
     const i=nextNeeded();
@@ -448,31 +520,41 @@ function pump(){
     pending.add(i); inflight++;
     load(i).then(()=>{
       inflight--; done++;
-      if(!firstPaint){
-        firstPaint=true;
-        loadEl.classList.add('gone');
-        setTimeout(()=>{ if(loadEl.parentNode) loadEl.remove(); },800);
-      }
       if(!raf) raf=requestAnimationFrame(draw);
-      pb.style.width=Math.round(done/N*100)+'%';
       pump();
     });
   }
 }
-/* Fetch the very first frame on its own so it isn't competing for
-   bandwidth with the pool — paint, then open the taps. */
+
+/* The head start. Load HEAD frames sharp before anything paints, counting
+   honestly on the bar, then hand over to the streaming pool. */
 function boot(){
-  /* one small frame, alone, uncontended — then the rest */
-  pendingLow.add(0);
-  fetchInto(low,LOW,0).then(()=>{
-    lowDone++;
+  const head=Math.min(HEAD,N);
+  let got=0, cursor=0, live=0;
+  const tick=()=>{
+    const p=Math.round(got/head*100);
+    pb.style.width=p+'%';
+    if(pcEl) pcEl.textContent=p+'%';
+  };
+  const step=()=>{
+    while(live<MAXC && cursor<head){
+      const i=cursor++; live++; pending.add(i);
+      load(i).then(()=>{
+        live--; got++; done++;
+        tick();
+        if(got>=head) open(); else step();
+      });
+    }
+  };
+  const open=()=>{
+    if(firstPaint) return;
     firstPaint=true;
+    draw();
     loadEl.classList.add('gone');
     setTimeout(()=>{ if(loadEl.parentNode) loadEl.remove(); },800);
-    draw();
-    pumpLow();
-    load(0).then(()=>{ done++; if(!raf) raf=requestAnimationFrame(draw); });
-  });
+    pump();
+  };
+  tick(); step();
 }
 
 /* ---- canvas ---- */
@@ -480,7 +562,7 @@ function resize(){
   const dpr=Math.min(window.devicePixelRatio||1,2);
   cv.width=Math.round(innerWidth*dpr);
   cv.height=Math.round(innerHeight*dpr);
-  setHeight(); measureDot(); centreMark(); draw();
+  setHeight(); measureDot(); centreMark(); measureDock(); draw();
 /* live Johannesburg clock — same component as dotricky.me */
 (function clock(){
   const el=document.getElementById('jnb'); if(!el) return;
@@ -497,14 +579,17 @@ function cover(im){
   const w=im.width*s, h=im.height*s;
   ctx.drawImage(im,(cw-w)/2,(ch-h)/2,w,h);
 }
+/* Outrunning the loader costs a hold, never a soft frame. We look
+   backwards first — the frame just behind the playhead is the one the
+   reader was looking at a moment ago, so freezing there is invisible
+   as a defect and reads as a beat in the edit. */
+let held=false;
 function nearest(idx){
   const i=Math.max(0,Math.min(N-1,Math.round(idx)-1));
-  if(imgs[i]) return imgs[i];      // sharp
-  if(low[i])  return low[i];       // small but right
-  for(let d=1;d<N;d++){            // else the closest frame we do have
-    if(i-d>=0&&(imgs[i-d]||low[i-d])) return imgs[i-d]||low[i-d];
-    if(i+d<N &&(imgs[i+d]||low[i+d])) return imgs[i+d]||low[i+d];
-  }
+  if(imgs[i]){ held=false; return imgs[i]; }
+  held=true;
+  for(let b=i-1;b>=0;b--) if(imgs[b]) return imgs[b];
+  for(let f=i+1;f<N;f++)  if(imgs[f]) return imgs[f];
   return null;
 }
 
@@ -533,7 +618,9 @@ function ending(e){
   const le=lift<0.5?4*lift*lift*lift:1-Math.pow(-2*lift+2,3)/2;
   const x=sx+(tx-sx)*le, y=sy+(ty-sy)*le;
 
-  const hand=Math.max(0,Math.min(1,(e-0.72)/0.16));
+  /* the sun has landed on the period — it stops being a sun and becomes
+     the pull. The glow bleeds off, the dot takes over. */
+  const hand=Math.max(0,Math.min(1,(e-0.68)/0.10));
   const fade=1-hand;
 
   const g=ctx.createRadialGradient(x,y,0,x,y,Math.max(r,1));
@@ -542,13 +629,62 @@ function ending(e){
   g.addColorStop(0.18,'rgba(212,175,55,'+(heat*0.85).toFixed(3)+')');
   g.addColorStop(1,'rgba(212,175,55,0)');
   ctx.fillStyle=g; ctx.fillRect(0,0,cw,ch);
-
-  if(ease>0.6){
-    ctx.beginPath(); ctx.arc(x,y,endR,0,Math.PI*2);
-    ctx.fillStyle='rgba(240,215,122,'+((ease-0.6)/0.4*fade).toFixed(3)+')';
-    ctx.fill();
-  }
   dotDom.style.opacity=hand.toFixed(3);
+
+  /* ---- the unzip ----
+     Below the wordmark line sits a closed seam. The pull runs left to
+     right along it, the teeth part behind it, and "ricky" is not faded
+     in but uncovered — the tagline performed rather than printed. */
+  const u=Math.max(0,Math.min(1,(e-0.78)/0.22));
+  const ue=u<0.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+
+  const mr=markEl.getBoundingClientRect();
+  const dr=dotDom.getBoundingClientRect();
+  const xa=dr.right, xb=mr.right+2;
+  const pullCss=xa+(xb-xa)*ue;
+  markEl.style.clipPath='inset(0 '+Math.max(0,(xb-pullCss)).toFixed(1)+'px 0 0)';
+
+  if(hand>0){
+    const seamY=(baseY+DOT_OFF.y)*dpr;
+    const size=parseFloat(getComputedStyle(markEl).fontSize)||60;
+    const spread=size*0.42*dpr, step=7;
+    const tw=2.4*dpr, th=2.4*dpr;
+    ctx.save();
+    for(let cx=xa;cx<=xb;cx+=step){
+      const X=cx*dpr;
+      if(cx>pullCss){                       // ahead of the pull — still closed
+        ctx.fillStyle='rgba(212,175,55,'+(0.30*hand).toFixed(3)+')';
+        ctx.fillRect(X,seamY-th/2,tw,th);
+      }else{                                 // behind it — parted and clearing
+        const d=pullCss-cx;
+        const off=Math.min(spread,d*0.85*dpr);
+        const a=Math.max(0,(1-d/(size*1.7)))*0.80*hand;
+        if(a<=0.004) continue;
+        ctx.fillStyle='rgba(212,175,55,'+a.toFixed(3)+')';
+        ctx.fillRect(X,seamY-off-th,tw,th);
+        ctx.fillRect(X,seamY+off,tw,th);
+      }
+    }
+    ctx.restore();
+
+    /* the pull itself — the last of the sun, still travelling */
+    const spent=1-Math.max(0,Math.min(1,(u-0.86)/0.14));
+    if(spent>0.004){
+      const px=pullCss*dpr, pr=Math.max(2.2,endR*1.05);
+      const pg=ctx.createRadialGradient(px,seamY,0,px,seamY,pr*7);
+      pg.addColorStop(0,'rgba(245,228,170,'+(0.95*hand*spent).toFixed(3)+')');
+      pg.addColorStop(0.3,'rgba(212,175,55,'+(0.42*hand*spent).toFixed(3)+')');
+      pg.addColorStop(1,'rgba(212,175,55,0)');
+      ctx.fillStyle=pg;
+      ctx.fillRect(px-pr*7,seamY-pr*7,pr*14,pr*14);
+      ctx.beginPath(); ctx.arc(px,seamY,pr,0,Math.PI*2);
+      ctx.fillStyle='rgba(246,232,180,'+(hand*spent).toFixed(3)+')'; ctx.fill();
+    }
+  }
+
+  const settle=Math.max(0,Math.min(1,(u-0.90)/0.10));
+  if(tagEl)  tagEl.style.opacity=settle.toFixed(3);
+  if(moreEl) moreEl.style.opacity=(settle*0.9).toFixed(3);
   return hand;
 }
 
@@ -566,13 +702,14 @@ function chrome(idx,inEnd){
   if(fnoEl) fnoEl.textContent='Frame '+String(Math.min(N,Math.max(1,Math.round(idx)))).padStart(3,'0')+' / '+N;
 }
 
-function beats(idx,inEnd){
+function beats(idx,inEnd,gate){
   beatEls.forEach((el,i)=>{
     if(inEnd){ el.style.opacity=0; return; }
     const [a,b]=BEATS[i];
     const p=(idx-a)/(b-a);
     let o=0;
     if(p>=0&&p<=1) o = p<0.20 ? p/0.20 : (p>0.78 ? Math.max(0,1-(p-0.78)/0.20) : 1);
+    o*=(gate===undefined?1:gate);
     el.style.opacity=o.toFixed(3);
     el.style.transform='translateY('+((1-o)*10).toFixed(1)+'px)';
   });
@@ -588,10 +725,36 @@ function draw(){
   ctx.fillStyle='#0B0C0F'; ctx.fillRect(0,0,cv.width,cv.height);
   if(im) cover(im);
 
-  const past=y-SEQ_LEN;
+  /* ---- the opening dock ----
+     The mark stands centre, then travels into the corner slot and hands
+     over to the chrome. Nothing here plays on its own — it is scrubbed,
+     so scrolling back up re-opens it. */
+  const ip=introAt(y);
+  let gate=1;
+  if(ip<1){
+    const e=ip<0.5?2*ip*ip:1-Math.pow(-2*ip+2,2)/2;
+    introEl.style.display='';
+    introMark.style.transform='translate('+(DOCK.dx*e).toFixed(2)+'px,'+(DOCK.dy*e).toFixed(2)+
+                              'px) scale('+(1+(DOCK.s-1)*e).toFixed(4)+')';
+    introMark.style.opacity=(1-Math.max(0,(ip-0.80)/0.20)).toFixed(3);
+    introTag.style.opacity=Math.max(0,1-ip/0.45).toFixed(3);
+    introScrim.style.opacity=Math.max(0,1-ip/0.62).toFixed(3);
+    brandEl.style.opacity=Math.max(0,(ip-0.80)/0.20).toFixed(3);
+    gate=Math.max(0,(ip-0.62)/0.38);
+  }else{
+    introEl.style.display='none';
+    brandEl.style.opacity=1;
+  }
+
+  const past=y-TOTAL;
   let vis=0;
   if(past>0){ vis=ending(Math.min(1,past/END_PX)); beats(idx,true); chrome(idx,true); }
-  else { dotDom.style.opacity=0; beats(idx,false); chrome(idx,false); }
+  else {
+    dotDom.style.opacity=0; markEl.style.clipPath='none';
+    if(tagEl) tagEl.style.opacity=0;
+    if(moreEl) moreEl.style.opacity=0;
+    beats(idx,false,gate); chrome(idx,false);
+  }
 
   /* the wordmark yields as the contact stage rises past it */
   const ct=contact.getBoundingClientRect().top;
@@ -599,8 +762,9 @@ function draw(){
   endEl.style.opacity=(vis*handoff).toFixed(3);
   endEl.style.transform='translate(-50%,-50%) translateY('+((1-vis)*14).toFixed(1)+'px)';
 
-  cue.style.opacity=y>60?0:1;
-  burger.style.opacity=(past>0||y<60)?1:0.42;
+  /* the cue belongs to the dock — it leaves when the mark does */
+  cue.style.opacity=Math.max(0,1-y/(INTRO_PX*0.55)).toFixed(3);
+  burger.style.opacity=(past>0||ip<0.35)?1:0.42;
 }
 function onScroll(){ if(!raf) raf=requestAnimationFrame(draw); }
 
@@ -630,7 +794,7 @@ copyBtn.addEventListener('click',async()=>{
 addEventListener('scroll',onScroll,{passive:true});
 addEventListener('resize',resize);
 resize();
-if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{measureDot();centreMark();draw();});
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{measureDot();centreMark();measureDock();draw();});
 boot();
 </script>
 </body>
