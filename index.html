@@ -36,25 +36,86 @@ a{color:inherit}
 #c{display:block;width:100%;height:100%}
 #veil{position:fixed;inset:0;z-index:1;pointer-events:none;
   background:
-    linear-gradient(to top,rgba(11,12,15,.82) 0%,rgba(11,12,15,.35) 26%,rgba(11,12,15,0) 52%),
-    radial-gradient(120% 90% at 50% 42%,rgba(11,12,15,0) 45%,rgba(11,12,15,.5) 100%);}
+    linear-gradient(to top,rgba(11,12,15,.88) 0%,rgba(11,12,15,.55) 20%,rgba(11,12,15,.18) 38%,rgba(11,12,15,0) 58%),
+    radial-gradient(120% 90% at 50% 42%,rgba(11,12,15,0) 45%,rgba(11,12,15,.5) 100%),
+    /* a soft pool under the caption corner — the value word has to hold over
+       blown-out sand as well as night water, and the global veil can't do both */
+    radial-gradient(78% 52% at 16% 86%,rgba(11,12,15,.62) 0%,rgba(11,12,15,.28) 46%,rgba(11,12,15,0) 76%);}
 #hud{position:fixed;inset:0;z-index:2;pointer-events:none}
 
+/* ══ structural grid — lifted from dotricky.me, but inverted.
+      There the grid sat under flat colour; here it must not sit on the
+      footage. The mask keeps it in the margins so it frames the frame
+      and leaves the centre clean. ══ */
+#grid{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:
+    linear-gradient(to right ,rgba(239,233,220,.055) 1px,transparent 1px),
+    linear-gradient(to bottom,rgba(239,233,220,.055) 1px,transparent 1px);
+  background-size:clamp(38px,4.4vw,62px) clamp(38px,4.4vw,62px);
+  -webkit-mask-image:radial-gradient(ellipse 78% 64% at 50% 48%,transparent 34%,#000 100%);
+          mask-image:radial-gradient(ellipse 78% 64% at 50% 48%,transparent 34%,#000 100%)}
+
+/* ══ chrome — the thing that makes it read as a site, not a video ══ */
+#chrome{position:fixed;inset:0;z-index:6;pointer-events:none;
+  font-family:var(--mono);font-size:clamp(9.5px,1.15vw,11px);
+  letter-spacing:.17em;text-transform:uppercase;color:rgba(239,233,220,.5)}
+#chrome .bar{position:absolute;left:0;right:0;display:flex;align-items:center;
+  justify-content:space-between;gap:12px;
+  padding:0 clamp(18px,3vw,30px);height:clamp(44px,6.4vh,58px)}
+#chrome .top{top:0;border-bottom:1px solid rgba(239,233,220,.09)}
+#chrome .bot{bottom:0;border-top:1px solid rgba(239,233,220,.09);
+  height:clamp(38px,5.2vh,46px);color:rgba(239,233,220,.34)}
+/* chrome has to stay legible over a blown-out canyon as well as a night
+   skyline, so each bar carries its own scrim rather than trusting the grade */
+#chrome .bar::before{content:"";position:absolute;left:0;right:0;z-index:-1;
+  pointer-events:none}
+#chrome .top::before{top:0;height:210%;
+  background:linear-gradient(to bottom,rgba(11,12,15,.78) 0%,rgba(11,12,15,.42) 46%,rgba(11,12,15,0) 100%)}
+#chrome .bot::before{bottom:0;height:210%;
+  background:linear-gradient(to top,rgba(11,12,15,.78) 0%,rgba(11,12,15,.4) 48%,rgba(11,12,15,0) 100%)}
+#chrome .grp{display:flex;align-items:center;gap:clamp(8px,1.5vw,16px)}
+/* the brand mark, styled exactly as on dotricky.me — and doubling as the
+   position indicator: the letter of the value you're inside lights gold,
+   so "ricky" spells the journey instead of a separate strip doing it */
+#chrome .brand{font-family:var(--display);font-variation-settings:"wdth" 120;
+  font-weight:800;font-size:clamp(16px,2vw,20px);letter-spacing:-.02em;
+  text-transform:none;display:flex;align-items:center;
+  color:rgba(255,255,255,.86);pointer-events:auto;text-decoration:none}
+#chrome .brand .dot{color:var(--gold);text-shadow:0 0 12px var(--gold-glow)}
+#chrome .brand i{font-style:normal;transition:color .55s ease,text-shadow .55s ease}
+#chrome .brand i.on{color:var(--gold);text-shadow:0 0 18px var(--gold-glow)}
+#chrome .clock{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+#chrome .pulse{width:5px;height:5px;border-radius:50%;background:#34D399;
+  box-shadow:0 0 8px rgba(52,211,153,.8);animation:pg 2.5s infinite;flex:none}
+@keyframes pg{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.55}}
+#chrome .ar{color:var(--gold);opacity:.75}
+
+/* pull the burger inside the top bar instead of floating loose */
+#burger{top:0!important;height:clamp(44px,6.4vh,58px)!important;
+  justify-content:center!important}
+
+@media (max-width:720px){
+  #chrome .hide-s{display:none}
+  #chrome .bar{padding:0 clamp(14px,4vw,20px)}
+}
+@media (max-width:520px){
+  #chrome .hide-xs{display:none}
+}
+
 /* ══ value beats ══ */
-.beat{position:absolute;left:clamp(28px,7vw,110px);bottom:clamp(72px,13vh,130px);
+.beat{position:absolute;left:clamp(28px,7vw,110px);
+  bottom:calc(clamp(38px,5.2vh,46px) + clamp(46px,9vh,92px));
   max-width:min(520px,74vw);opacity:0;will-change:opacity,transform}
-.beat .rule{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-.beat .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);
-  box-shadow:0 0 16px rgba(212,175,55,.8);flex:none}
-.beat .prog{font-family:var(--mono);font-size:13px;letter-spacing:.42em;
-  color:rgba(239,233,220,.34);display:flex}
-.beat .prog span.on{color:var(--gold)}
 .beat .word{font-family:var(--display);font-weight:800;
   font-variation-settings:"wdth" 120;
   font-size:clamp(36px,7vw,72px);line-height:.98;letter-spacing:-.02em;
-  color:var(--bone-bright);margin-bottom:16px}
+  color:var(--bone-bright);margin-bottom:16px;
+  /* the sand and the sky both go near-white, so the caption carries its own
+     shadow rather than relying on the veil to hold contrast everywhere */
+  text-shadow:0 2px 30px rgba(11,12,15,.85),0 1px 5px rgba(11,12,15,.6)}
 .beat .line{font-weight:200;font-size:clamp(16px,2.15vw,23px);line-height:1.44;
-  color:rgba(239,233,220,.9);max-width:26ch;text-wrap:balance}
+  color:rgba(239,233,220,.92);max-width:26ch;text-wrap:balance;
+  text-shadow:0 1px 20px rgba(11,12,15,.85),0 1px 4px rgba(11,12,15,.55)}
 
 /* ══ the payoff — wordmark alone, nothing else ══ */
 #end{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
@@ -171,29 +232,42 @@ body.menu #menu{opacity:1;pointer-events:auto}
   <div class="sub">Unzip the vision</div>
 </nav>
 
+<div id="grid"></div>
+
+<div id="chrome">
+  <div class="bar top">
+    <div class="grp">
+      <a class="brand" href="#top" id="brand" aria-label=".ricky — top"><span class="dot">.</span><i>r</i><i>i</i><i>c</i><i>k</i><i>y</i></a>
+    </div>
+    <div class="grp">
+      <span class="clock hide-s"><i class="pulse"></i><span id="jnb">JNB --:--</span></span>
+      <span style="width:44px"></span>
+    </div>
+  </div>
+  <div class="bar bot">
+    <div class="grp"><span>&copy; .ricky</span><span class="ar">&middot;</span><span>All rights reserved</span></div>
+    <div class="grp hide-s"><span id="fno">Frame 001 / 351</span></div>
+  </div>
+</div>
+
 <div id="hud">
   <div class="beat" data-b="0">
-    <div class="rule"><span class="dot"></span><span class="prog"><span class="on">R</span><span>I</span><span>C</span><span>K</span><span>Y</span></span></div>
     <div class="word">Restless</div>
     <div class="line">Settling is the only real risk</div>
   </div>
   <div class="beat" data-b="1">
-    <div class="rule"><span class="dot"></span><span class="prog"><span>R</span><span class="on">I</span><span>C</span><span>K</span><span>Y</span></span></div>
     <div class="word">Instinct</div>
     <div class="line">The first thing you notice is usually the real thing</div>
   </div>
   <div class="beat" data-b="2">
-    <div class="rule"><span class="dot"></span><span class="prog"><span>R</span><span>I</span><span class="on">C</span><span>K</span><span>Y</span></span></div>
     <div class="word">Curiosity</div>
     <div class="line">Ask before you plan</div>
   </div>
   <div class="beat" data-b="3">
-    <div class="rule"><span class="dot"></span><span class="prog"><span>R</span><span>I</span><span>C</span><span class="on">K</span><span>Y</span></span></div>
     <div class="word">Kinetic</div>
     <div class="line">Move, then find the direction</div>
   </div>
   <div class="beat" data-b="4">
-    <div class="rule"><span class="dot"></span><span class="prog"><span>R</span><span>I</span><span>C</span><span>K</span><span class="on">Y</span></span></div>
     <div class="word">Yes</div>
     <div class="line">Say yes to the unknown</div>
   </div>
@@ -341,12 +415,14 @@ const MAXC=8;                       // concurrent requests
 const pending=new Set();
 let inflight=0, done=0;
 
+/* Strictly forward. Nobody scrolls back up to admire a frame they have
+   already passed, so sharpening behind the playhead is wasted bandwidth
+   that the frames ahead are still waiting on. Only once everything ahead
+   is sharp do we backfill, for the rare reader who scrolls up. */
 function nextNeeded(){
   const cur=Math.max(0,Math.min(N-1,Math.round(frameAt(window.scrollY||0))-1));
-  for(let d=0;d<N;d++){
-    const f=cur+d;  if(f<N  && !imgs[f] && !pending.has(f)) return f;   // ahead first
-    const b=cur-d;  if(b>=0 && !imgs[b] && !pending.has(b)) return b;
-  }
+  for(let f=cur;f<N;f++)  if(!imgs[f] && !pending.has(f)) return f;
+  for(let b=cur-1;b>=0;b--) if(!imgs[b] && !pending.has(b)) return b;
   return -1;
 }
 
@@ -405,6 +481,15 @@ function resize(){
   cv.width=Math.round(innerWidth*dpr);
   cv.height=Math.round(innerHeight*dpr);
   setHeight(); measureDot(); centreMark(); draw();
+/* live Johannesburg clock — same component as dotricky.me */
+(function clock(){
+  const el=document.getElementById('jnb'); if(!el) return;
+  const tick=()=>{ try{
+    el.textContent='JNB '+new Intl.DateTimeFormat('en-GB',{timeZone:'Africa/Johannesburg',
+      hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date())+' SAST';
+  }catch(e){ el.textContent='JNB UTC+2'; } };
+  tick(); setInterval(tick,15000);
+})();
 }
 function cover(im){
   const cw=cv.width, ch=cv.height;
@@ -467,6 +552,20 @@ function ending(e){
   return hand;
 }
 
+const stripEls=[...document.querySelectorAll('#brand i')];
+const fnoEl=document.getElementById('fno');
+let litLetter=-1;
+function chrome(idx,inEnd){
+  /* light the letter whose beat we are inside; hold the last one at the end */
+  let cur=inEnd?4:-1;
+  if(!inEnd) for(let i=0;i<BEATS.length;i++){ if(idx>=BEATS[i][0]&&idx<=BEATS[i][1]) cur=i; }
+  if(cur!==litLetter){
+    litLetter=cur;
+    stripEls.forEach((s,i)=>s.classList.toggle('on',i===cur));
+  }
+  if(fnoEl) fnoEl.textContent='Frame '+String(Math.min(N,Math.max(1,Math.round(idx)))).padStart(3,'0')+' / '+N;
+}
+
 function beats(idx,inEnd){
   beatEls.forEach((el,i)=>{
     if(inEnd){ el.style.opacity=0; return; }
@@ -491,8 +590,8 @@ function draw(){
 
   const past=y-SEQ_LEN;
   let vis=0;
-  if(past>0){ vis=ending(Math.min(1,past/END_PX)); beats(idx,true); }
-  else { dotDom.style.opacity=0; beats(idx,false); }
+  if(past>0){ vis=ending(Math.min(1,past/END_PX)); beats(idx,true); chrome(idx,true); }
+  else { dotDom.style.opacity=0; beats(idx,false); chrome(idx,false); }
 
   /* the wordmark yields as the contact stage rises past it */
   const ct=contact.getBoundingClientRect().top;
