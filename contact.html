@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Contact — .ricky</title>
+<meta name="description" content="Open for select cloud architecture, security advisory, and bespoke web builds.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Karla:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* type system — matches dotricky.me */
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+
+  --ink:#0B0C0F;
+  --gold:#D4AF37;
+  --gold-hot:#F0D77A;
+  --gold-glow:rgba(212,175,55,.35);
+  --bone:#EFE9DC;
+  --bone-bright:#FFFFFF;
+  --dim:rgba(239,233,220,.42);
+  --hair:rgba(239,233,220,.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--ink)}
+body{background:var(--ink);color:var(--bone);font-family:var(--sans);
+  min-height:100svh;display:flex;flex-direction:column}
+a{color:inherit}
+:focus-visible{outline:1px solid var(--gold);outline-offset:4px}
+
+.wrap{width:100%;max-width:1080px;margin:0 auto;
+  padding:clamp(26px,4vw,44px) clamp(28px,7vw,110px)}
+
+/* ── masthead ── */
+header{border-bottom:1px solid var(--hair)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.mark{font-family:var(--display);font-weight:800;
+  font-variation-settings:"wdth" 120;font-size:clamp(1.1rem,3vw,1.35rem);
+  letter-spacing:-.02em;color:var(--bone-bright);text-decoration:none;
+  display:flex;align-items:center;gap:2px;flex-shrink:0;transition:transform .3s ease}
+.mark:hover{transform:scale(1.03)}
+.mark .dot{color:var(--gold);text-shadow:0 0 12px var(--gold-glow)}
+.back{font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--dim);text-decoration:none;transition:color .25s ease}
+.back:hover,.back:focus-visible{color:var(--gold)}
+
+/* ── body ── */
+main{flex:1;display:flex;align-items:center}
+main .wrap{padding-top:clamp(56px,10vh,110px);padding-bottom:clamp(56px,10vh,110px)}
+.eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:34px}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 14px rgba(212,175,55,.7);flex:none}
+.eyebrow span{font-family:var(--mono);font-size:11px;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--dim)}
+h1{font-family:var(--display);font-weight:800;
+  font-variation-settings:"wdth" 120;font-size:clamp(30px,5.6vw,58px);
+  line-height:1.04;letter-spacing:-.02em;color:var(--bone-bright);
+  max-width:17ch;margin-bottom:26px}
+.intro{font-weight:200;font-size:clamp(16px,2.1vw,21px);line-height:1.55;
+  color:rgba(239,233,220,.68);max-width:46ch}
+
+.mailrow{margin-top:54px;display:flex;flex-wrap:wrap;align-items:center;gap:16px 22px;
+  padding-bottom:26px;border-bottom:1px solid var(--hair)}
+.mail{font-family:var(--display);font-variation-settings:"wdth" 125;font-weight:500;font-size:clamp(21px,3.9vw,41px);letter-spacing:.005em;line-height:1;color:var(--gold);text-decoration:none;transition:color .3s ease,text-shadow .3s ease}
+.mail:hover,.mail:focus-visible{color:var(--gold-hot)}
+.copy{font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--dim);background:none;border:1px solid rgba(239,233,220,.16);
+  padding:9px 15px;cursor:pointer;transition:color .25s ease,border-color .25s ease}
+.copy:hover,.copy:focus-visible,.copy.done{color:var(--gold);border-color:rgba(212,175,55,.42)}
+
+/* what I'm open to — the useful part of a contact page */
+.grid{margin-top:56px;display:grid;gap:1px;background:var(--hair);
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.cell{background:var(--ink);padding:26px 24px 30px}
+.cell .k{font-family:var(--mono);font-size:10px;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:14px}
+.cell .v{font-weight:200;font-size:16px;line-height:1.5;color:rgba(239,233,220,.86)}
+
+/* ── foot ── */
+@media (max-width:640px){
+  .grid{grid-template-columns:1fr}
+  .cell{padding-left:0;padding-right:0}
+}
+footer{border-top:1px solid var(--hair)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:10px 26px;justify-content:space-between;
+  font-family:var(--mono);font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:rgba(239,233,220,.26)}
+footer a{text-decoration:none;transition:color .25s ease}
+footer a:hover,footer a:focus-visible{color:var(--gold)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="mark" href="index.html"><span class="dot">.</span>ricky</a>
+    <a class="back" href="index.html">← Back to the sequence</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow"><i></i><span>Open for work</span></div>
+    <h1>Got something worth unzipping?</h1>
+    <p class="intro">Cloud, networks and zero-trust by trade. Web, visuals and AI by choice. If the problem is one of those, or sits awkwardly between them, it's worth a message.</p>
+
+    <div class="mailrow">
+      <a class="mail" href="mailto:hello@dotricky.me?subject=Inquiry%20via%20dotricky.me">hello@dotricky.me</a>
+      <button class="copy" id="copy" type="button">Copy address</button>
+    </div>
+
+    <div class="grid">
+      <div class="cell">
+        <div class="k">Taking on</div>
+        <div class="v">Cloud architecture, security advisory, bespoke web builds.</div>
+      </div>
+      <div class="cell">
+        <div class="k">Working across</div>
+        <div class="v">Four countries, multi-region environments, teams where downtime isn't an option.</div>
+      </div>
+      <div class="cell">
+        <div class="k">Best way in</div>
+        <div class="v">Email. Say what the problem is rather than what you'd like to book.</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>.ricky — Unzip the vision</span>
+    <a href="https://dotricky.me" target="_blank" rel="noopener">dotricky.me ↗</a>
+  </div>
+</footer>
+
+<script>
+const b=document.getElementById('copy');
+b.addEventListener('click',async()=>{
+  try{ await navigator.clipboard.writeText('hello@dotricky.me'); }catch{ return; }
+  b.textContent='Copied'; b.classList.add('done');
+  setTimeout(()=>{ b.textContent='Copy address'; b.classList.remove('done'); },2000);
+});
+</script>
+</body>
+</html>

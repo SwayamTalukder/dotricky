@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>.ricky — Unzip the Vision | Swayam Talukder</title>
+<meta name="description" content="One mind. Many disciplines. Building what others leave untouched. Personal brand of Swayam (Ricky) — Cloud Architecture, Security Advisory, and Bespoke Web Builds.">
+
+<!-- Identity Typography: Archivo (Display), IBM Plex Mono (Telemetry/Utility), Karla (Editorial Body) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Karla:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap">
+
+<style>
+:root {
+  --display: "Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: "Karla", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --ink: #0B0C0F;
+  --gold: #D4AF37;
+  --gold-hot: #F0D77A;
+  --gold-glow: rgba(212, 175, 55, 0.35);
+  --bone: #EFE9DC;
+  --bone-bright: #FFFFFF;
+  --dim: rgba(239, 233, 220, 0.42);
+
+  /* Exact Vanishing Point Anchor */
+  --sun-x: 49.7%;
+  --sun-y: 51.2%;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { background: var(--ink); scroll-behavior: smooth; }
+body {
+  background: var(--ink); color: var(--bone); font-family: var(--sans);
+  overscroll-behavior-y: none; -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+:focus-visible { outline: 1px solid var(--gold); outline-offset: 4px; }
+
+/* ══ fixed cinematic stage ══ */
+#stage {
+  position: fixed; inset: 0; z-index: 0; width: 100vw; height: 100vh;
+  overflow: hidden; background: var(--ink); perspective: 1400px;
+}
+
+#veil {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(11,12,15,0.85) 0%, rgba(11,12,15,0.48) 22%, rgba(11,12,15,0.12) 40%, rgba(11,12,15,0) 60%),
+    radial-gradient(120% 90% at 50% 42%, rgba(11,12,15,0) 45%, rgba(11,12,15,0.45) 100%),
+    radial-gradient(78% 52% at 16% 86%, rgba(11,12,15,0.55) 0%, rgba(11,12,15,0.22) 46%, rgba(11,12,15,0) 76%);
+}
+
+#hud { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
+
+/* ══ structural framing grid ══ */
+#grid {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(239,233,220,0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(239,233,220,0.04) 1px, transparent 1px);
+  background-size: clamp(38px, 4.4vw, 62px) clamp(38px, 4.4vw, 62px);
+  -webkit-mask-image: radial-gradient(ellipse 78% 64% at 50% 48%, transparent 34%, #000 100%);
+          mask-image: radial-gradient(ellipse 78% 64% at 50% 48%, transparent 34%, #000 100%);
+}
+
+/* ══ chrome (matching dotricky.me) ══ */
+#chrome {
+  position: fixed; inset: 0; z-index: 6; pointer-events: none;
+  font-family: var(--mono); font-size: clamp(9.5px, 1.15vw, 11px);
+  letter-spacing: 0.17em; text-transform: uppercase; color: rgba(239,233,220,0.5);
+}
+
+#chrome .bar {
+  position: absolute; left: 0; right: 0; display: flex; align-items: center;
+  justify-content: space-between; gap: 12px;
+  padding: 0 clamp(18px, 3vw, 30px); height: clamp(44px, 6.4vh, 58px);
+}
+
+#chrome .top { top: 0; border-bottom: 1px solid rgba(239,233,220,0.09); }
+#chrome .bot {
+  bottom: 0; border-top: 1px solid rgba(239,233,220,0.09);
+  height: clamp(38px, 5.2vh, 46px); color: rgba(239,233,220,0.34);
+}
+
+#chrome .bar::before { content: ""; position: absolute; left: 0; right: 0; z-index: -1; pointer-events: none; }
+#chrome .top::before {
+  top: 0; height: 210%;
+  background: linear-gradient(to bottom, rgba(11,12,15,0.78) 0%, rgba(11,12,15,0.42) 46%, rgba(11,12,15,0) 100%);
+}
+#chrome .bot::before {
+  bottom: 0; height: 210%;
+  background: linear-gradient(to top, rgba(11,12,15,0.78) 0%, rgba(11,12,15,0.4) 48%, rgba(11,12,15,0) 100%);
+}
+
+#chrome .grp { display: flex; align-items: center; gap: clamp(8px, 1.5vw, 16px); }
+
+/* Brand Mark with Journey Letter Lighting */
+#chrome .brand {
+  font-family: var(--display); font-variation-settings: "wdth" 120;
+  font-weight: 800; font-size: clamp(16px, 2vw, 20px); letter-spacing: -0.02em;
+  text-transform: none; display: flex; align-items: center;
+  color: rgba(255,255,255,0.86); pointer-events: auto; text-decoration: none;
+}
+#chrome .brand .dot { color: var(--gold); text-shadow: 0 0 12px var(--gold-glow); }
+#chrome .brand i { font-style: normal; transition: color 0.55s ease, text-shadow 0.55s ease; }
+#chrome .brand i.on { color: var(--gold); text-shadow: 0 0 18px var(--gold-glow); }
+
+#chrome .clock { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+#chrome .pulse {
+  width: 5px; height: 5px; border-radius: 50%; background: #34D399;
+  box-shadow: 0 0 8px rgba(52,211,153,0.8); animation: pg 2.5s infinite; flex: none;
+}
+@keyframes pg {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.35); opacity: 0.55; }
+}
+
+#chrome .ar { color: var(--gold); opacity: 0.75; }
+
+/* ══ burger & fullscreen menu ══ */
+#burger {
+  position: fixed; top: 0; right: clamp(18px, 3vw, 30px); z-index: 7;
+  height: clamp(44px, 6.4vh, 58px); width: 44px; display: flex; flex-direction: column;
+  justify-content: center; align-items: flex-end; gap: 6px; background: none; border: 0;
+  cursor: pointer; opacity: 0.42; transition: opacity 0.4s ease; pointer-events: auto;
+}
+#burger:hover, #burger:focus-visible { opacity: 1; }
+#burger span {
+  display: block; height: 1px; background: var(--bone);
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), width 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#burger span:nth-child(1) { width: 22px; }
+#burger span:nth-child(2) { width: 14px; }
+body.menu #burger { opacity: 1; }
+body.menu #burger span:nth-child(1) { width: 22px; transform: translateY(3.5px) rotate(45deg); }
+body.menu #burger span:nth-child(2) { width: 22px; transform: translateY(-3.5px) rotate(-45deg); }
+
+#menu {
+  position: fixed; inset: 0; z-index: 6; background: rgba(11,12,15,0.97);
+  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px;
+  opacity: 0; pointer-events: none; transition: opacity 0.38s ease;
+}
+body.menu #menu { opacity: 1; pointer-events: auto; }
+#menu a {
+  font-family: var(--display); font-weight: 800; font-variation-settings: "wdth" 120;
+  text-decoration: none; font-size: clamp(24px, 5vw, 38px); letter-spacing: -0.02em;
+  padding: 12px 20px; color: rgba(239,233,220,0.6); transition: color 0.25s ease;
+}
+#menu a:hover, #menu a:focus-visible { color: var(--gold); }
+#menu .sub {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.34em;
+  text-transform: uppercase; color: rgba(239,233,220,0.28); margin-top: 36px;
+}
+
+/* ══ SVG Scene Engine ══ */
+.scene-engine {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  transform-origin: var(--sun-x) var(--sun-y);
+}
+
+.scene {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  opacity: 0; will-change: transform, opacity; pointer-events: none;
+  transform-origin: var(--sun-x) var(--sun-y);
+}
+
+.scene svg {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transform-origin: var(--sun-x) var(--sun-y);
+}
+
+.layer {
+  transform-origin: var(--sun-x) var(--sun-y);
+  will-change: transform, opacity;
+}
+
+/* ══ value beats ══ */
+.beat {
+  position: absolute; left: clamp(28px, 7vw, 110px);
+  bottom: calc(clamp(38px, 5.2vh, 46px) + clamp(46px, 9vh, 92px));
+  max-width: min(520px, 74vw); opacity: 0; will-change: opacity, transform;
+}
+.beat .word {
+  font-family: var(--display); font-weight: 800; font-variation-settings: "wdth" 120;
+  font-size: clamp(36px, 7vw, 72px); line-height: 0.98; letter-spacing: -0.02em;
+  color: var(--bone-bright); margin-bottom: 16px;
+  text-shadow: 0 2px 30px rgba(11,12,15,0.85), 0 1px 5px rgba(11,12,15,0.6);
+}
+.beat .line {
+  font-weight: 200; font-size: clamp(16px, 2.15vw, 23px); line-height: 1.44;
+  color: rgba(239,233,220,0.92); max-width: 26ch; text-wrap: balance;
+  text-shadow: 0 1px 20px rgba(11,12,15,0.85), 0 1px 4px rgba(11,12,15,0.55);
+}
+
+/* ══ the payoff — wordmark alone, nothing else ══ */
+#end {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  text-align: center; opacity: 0; width: min(620px, 90vw); z-index: 3;
+}
+#end .mark {
+  font-family: var(--display); font-weight: 800; font-variation-settings: "wdth" 120;
+  font-size: clamp(46px, 10vw, 92px); letter-spacing: -0.02em; line-height: 1;
+  color: var(--bone-bright); white-space: nowrap;
+}
+#end .mark .dot { color: var(--gold); text-shadow: 0 0 12px var(--gold-glow); opacity: 0; }
+#end .mark #base { display: inline-block; width: 0; height: 0; overflow: hidden; }
+#end .tag {
+  font-weight: 200; font-size: clamp(14px, 2.4vw, 19px);
+  color: rgba(239,233,220,0.62); margin-top: 24px;
+}
+#end .more {
+  margin-top: 52px; font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.34em; text-transform: uppercase; color: rgba(239,233,220,0.3);
+}
+
+/* ══ Closing Core Dot Anchor ══ */
+.core-dot {
+  position: absolute; top: var(--sun-y); left: var(--sun-x);
+  width: 14px; height: 14px; border-radius: 50%; background: var(--gold);
+  box-shadow: 0 0 20px 4px rgba(212, 175, 55, 0.5);
+  transform: translate(-50%, -50%) scale(0); opacity: 0;
+  will-change: transform, top, left, opacity; pointer-events: none; z-index: 5;
+}
+
+#cue {
+  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 3;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.34em; text-transform: uppercase;
+  color: var(--dim); pointer-events: none; transition: opacity 0.5s ease;
+}
+#cue::after {
+  content: ""; display: block; width: 1px; height: 26px; margin: 10px auto 0;
+  background: linear-gradient(to bottom, rgba(212,175,55,0.75), rgba(212,175,55,0));
+}
+
+#scroller { position: relative; z-index: 0; width: 1px; pointer-events: none; }
+
+/* ══ contact stage on solid ground (pure live site design) ══ */
+#contact {
+  position: relative; z-index: 4; background: var(--ink);
+  min-height: 100svh; display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(64px, 11vh, 130px) clamp(28px, 7vw, 110px);
+}
+#contact .eyebrow { display: flex; align-items: center; gap: 14px; margin-bottom: 34px; }
+#contact .eyebrow i {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--gold);
+  box-shadow: 0 0 14px rgba(212,175,55,0.7); flex: none;
+}
+#contact .eyebrow span {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.34em;
+  text-transform: uppercase; color: var(--dim);
+}
+#contact h2 {
+  font-family: var(--display); font-weight: 800; font-variation-settings: "wdth" 120;
+  font-size: clamp(28px, 5.2vw, 54px); line-height: 1.06; letter-spacing: -0.02em;
+  color: var(--bone-bright); max-width: 18ch; margin-bottom: 26px;
+}
+#contact .avail {
+  font-weight: 200; font-size: clamp(15px, 2vw, 20px); line-height: 1.5;
+  color: rgba(239,233,220,0.66); max-width: 44ch; margin-bottom: 54px;
+}
+#contact .mailrow {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 16px 22px;
+  padding-bottom: 26px; border-bottom: 1px solid rgba(239,233,220,0.1);
+}
+#contact .mail {
+  font-family: var(--mono); font-weight: 400; font-size: clamp(19px, 3.4vw, 34px);
+  letter-spacing: -0.01em; color: var(--gold); text-decoration: none; transition: color 0.25s ease;
+}
+#contact .mail:hover, #contact .mail:focus-visible { color: var(--gold-hot); }
+#contact .copy {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--dim); background: none; cursor: pointer;
+  border: 1px solid rgba(239,233,220,0.16); padding: 9px 15px;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+#contact .copy:hover, #contact .copy:focus-visible, #contact .copy.done {
+  color: var(--gold); border-color: rgba(212,175,55,0.42);
+}
+#contact .full {
+  margin-top: 30px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--dim); text-decoration: none;
+  border-bottom: 1px solid rgba(239,233,220,0.16); padding-bottom: 3px;
+  align-self: flex-start; transition: color 0.25s ease, border-color 0.25s ease;
+}
+#contact .full:hover, #contact .full:focus-visible { color: var(--gold); border-color: rgba(212,175,55,0.42); }
+#contact .foot {
+  margin-top: auto; padding-top: 70px; display: flex; flex-wrap: wrap; gap: 10px 26px;
+  justify-content: space-between; font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.28em; text-transform: uppercase; color: rgba(239,233,220,0.26);
+}
+
+@media (max-width: 720px) {
+  #chrome .hide-s { display: none; }
+  #chrome .bar { padding: 0 clamp(14px, 4vw, 20px); }
+}
+@media (max-width: 520px) {
+  #chrome .hide-xs { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .beat, #end, #menu, #burger span { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Fixed Cinematic Stage with 5 Densely-Detailed Vector Worlds -->
+<main id="stage" role="region" aria-label="Interactive Cinema Canvas">
+  <div class="scene-engine" id="sceneEngine">
+
+    <!-- ============================================================= -->
+    <!-- SCENE 01: CANYON (Restless) — Cinematic Sandstone & River     -->
+    <!-- ============================================================= -->
+    <section class="scene" id="scene-0">
+      <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="skyGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#080B14"/>
+            <stop offset="35%" stop-color="#141E34"/>
+            <stop offset="68%" stop-color="#383652"/>
+            <stop offset="88%" stop-color="#9C5F2C"/>
+            <stop offset="100%" stop-color="#DE9A3E"/>
+          </linearGradient>
+
+          <linearGradient id="riverGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFF0C8"/>
+            <stop offset="12%" stop-color="#32B5C6"/>
+            <stop offset="45%" stop-color="#1F7D8E"/>
+            <stop offset="80%" stop-color="#124450"/>
+            <stop offset="100%" stop-color="#08161D"/>
+          </linearGradient>
+
+          <radialGradient id="sunAperture1" cx="49.7%" cy="51.2%" r="38%">
+            <stop offset="0%" stop-color="#FFFDF5" stop-opacity="0.95"/>
+            <stop offset="18%" stop-color="#E8C88A" stop-opacity="0.7"/>
+            <stop offset="45%" stop-color="#B98A4E" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#141E34" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <rect width="1920" height="1080" fill="url(#skyGrad1)"/>
+        <circle cx="954" cy="553" r="460" fill="url(#sunAperture1)"/>
+
+        <!-- Far Layer: Multi-Tiered Mountain Buttes & Ridges -->
+        <g class="layer far-layer">
+          <polygon points="680,553 740,430 810,430 860,480 920,410 970,410 1020,490 1080,440 1160,440 1240,553" fill="#464860" opacity="0.6"/>
+          <polygon points="760,553 820,455 880,455 920,505 954,445 1000,515 1060,465 1120,553" fill="#6A6C88" opacity="0.65"/>
+          <polygon points="860,553 910,470 954,500 990,460 1050,553" fill="#918F9C" opacity="0.6"/>
+          <!-- Floating Canyon Stratus Clouds -->
+          <ellipse cx="650" cy="220" rx="180" ry="24" fill="#B98A4E" opacity="0.25"/>
+          <ellipse cx="1280" cy="190" rx="220" ry="28" fill="#B98A4E" opacity="0.25"/>
+        </g>
+
+        <!-- Mid Layer: Winding River Bed, Sandbanks & Gravel Wash -->
+        <g class="layer mid-layer">
+          <polygon points="480,1080 954,553 1440,1080" fill="#4A3128"/>
+          <polygon points="560,1080 954,553 1360,1080" fill="#8A5A2B"/>
+          <polygon points="640,1080 954,553 1280,1080" fill="#C6A473"/>
+          <path d="M954,553 C920,620 980,680 910,760 C840,840 920,920 800,1080 L1120,1080 C1060,940 1020,860 1010,760 C990,660 970,600 954,553 Z" fill="url(#riverGrad1)"/>
+          <!-- Water Surface Light Shimmers -->
+          <path d="M935,565 L973,565 L995,620 L920,620 Z" fill="#FFF3D6" opacity="0.85"/>
+          <path d="M890,660 L1010,660 L1040,750 L850,750 Z" fill="#32B5C6" opacity="0.6"/>
+          <path d="M840,780 L1060,780 L1090,880 L800,880 Z" fill="#FFF0C8" opacity="0.4"/>
+        </g>
+
+        <!-- Mid Layer: Towering Sandstone Facets, Contours & Flora -->
+        <g class="layer mid-layer">
+          <!-- Left Canyon Wall -->
+          <polygon points="120,1080 340,540 520,410 720,340 940,553 580,1080" fill="#3A2A2C"/>
+          <polygon points="520,410 720,340 940,553 840,553 620,450" fill="#DE9A3E"/>
+          <polygon points="120,1080 620,450 480,1080" fill="#9C5F2C"/>
+          <polygon points="720,340 780,380 940,553" fill="#F0D77A" opacity="0.85"/>
+          <!-- Left Horizontal Geological Strata Lines -->
+          <path d="M300,640 L620,450 L840,553" fill="none" stroke="#7A3D1E" stroke-width="3" opacity="0.75"/>
+          <path d="M220,780 L520,560 L780,553" fill="none" stroke="#7A3D1E" stroke-width="3" opacity="0.75"/>
+          <!-- Desert Shrub Silhouettes on Ledges -->
+          <circle cx="540" cy="430" r="12" fill="#1E2C22"/>
+          <circle cx="560" cy="425" r="10" fill="#2A3E30"/>
+          <circle cx="680" cy="370" r="14" fill="#1E2C22"/>
+
+          <!-- Right Canyon Wall -->
+          <polygon points="1800,1080 1560,520 1380,390 1180,320 968,553 1340,1080" fill="#241C26"/>
+          <polygon points="1380,390 1180,320 968,553 1080,553 1300,430" fill="#DE9A3E"/>
+          <polygon points="1800,1080 1300,430 1480,1080" fill="#8A5A2B"/>
+          <polygon points="1180,320 1120,360 968,553" fill="#D4AF37" opacity="0.8"/>
+          <!-- Right Horizontal Geological Strata Lines -->
+          <path d="M1620,620 L1300,430 L1080,553" fill="none" stroke="#5E2816" stroke-width="3" opacity="0.75"/>
+          <path d="M1700,760 L1400,540 L1140,553" fill="none" stroke="#5E2816" stroke-width="3" opacity="0.75"/>
+          <!-- Desert Shrub Silhouettes on Ledges -->
+          <circle cx="1340" cy="415" r="14" fill="#1E2C22"/>
+          <circle cx="1360" cy="410" r="11" fill="#2A3E30"/>
+        </g>
+
+        <!-- Near Layer: Massive Foreground Overhangs & Rim Highlights -->
+        <g class="layer near-layer">
+          <path d="M-80,-60 L580,-60 C500,240 380,420 440,680 C500,900 360,980 200,1080 L-80,1080 Z" fill="#12101A"/>
+          <path d="M380,420 C440,680 500,900 360,980 L280,1080 C400,940 360,700 300,440 Z" fill="#9C5F2C" opacity="0.75"/>
+          <path d="M580,-60 C520,180 440,320 380,420 L350,390 C420,300 490,160 550,-60 Z" fill="#DE9A3E" opacity="0.6"/>
+          <!-- Gold Rim Highlight -->
+          <path d="M580,-60 C520,180 440,320 380,420 C440,680 500,900 360,980" fill="none" stroke="#F0D77A" stroke-width="3" opacity="0.75"/>
+
+          <path d="M2000,-60 L1360,-60 C1460,240 1320,480 1420,720 C1500,890 1580,1000 1740,1080 L2000,1080 Z" fill="#18141F"/>
+          <path d="M1360,-60 C1420,170 1320,360 1370,500 L1405,475 C1365,350 1440,160 1390,-60 Z" fill="#D4AF37" opacity="0.65"/>
+          <!-- Gold Rim Highlight -->
+          <path d="M1360,-60 C1420,170 1320,360 1370,500 C1420,720 1500,890 1580,1000" fill="none" stroke="#F0D77A" stroke-width="3" opacity="0.75"/>
+        </g>
+      </svg>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- SCENE 02: THE FORK (Instinct) — Dividing Monolith & Sunbeam   -->
+    <!-- ============================================================= -->
+    <section class="scene" id="scene-1">
+      <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="skyForkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#0A0C14"/>
+            <stop offset="38%" stop-color="#141828"/>
+            <stop offset="72%" stop-color="#302636"/>
+            <stop offset="100%" stop-color="#B98A4E"/>
+          </linearGradient>
+
+          <linearGradient id="sunBeamCascade" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFFDF5" stop-opacity="0.85"/>
+            <stop offset="38%" stop-color="#F0D77A" stop-opacity="0.45"/>
+            <stop offset="100%" stop-color="#DE9A3E" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+
+        <rect width="1920" height="1080" fill="url(#skyForkGrad)"/>
+
+        <!-- Far Layer: Diverging Paths & Volumetric Sunbeam -->
+        <g class="layer far-layer">
+          <!-- Left Corridor (Deep Shadow) -->
+          <polygon points="120,1080 720,530 840,530 460,1080" fill="#0E0C14"/>
+          <polygon points="200,1080 740,530 800,530 400,1080" fill="#162E38" opacity="0.8"/>
+          <!-- Right Corridor (Sunlit Gold River) -->
+          <polygon points="1460,1080 1080,530 1220,530 1800,1080" fill="#241C26"/>
+          <polygon points="1520,1080 1120,530 1180,530 1720,1080" fill="#32B5C6" opacity="0.85"/>
+          <!-- Volumetric Sunbeam Shaft -->
+          <polygon points="1080,410 1800,1080 1420,1080 1030,410" fill="url(#sunBeamCascade)"/>
+        </g>
+
+        <!-- Mid Layer: Multi-Faceted Central Monolith (The Fork Island) -->
+        <g class="layer mid-layer">
+          <!-- Left Shadow Face -->
+          <polygon points="954,230 770,680 880,1080 954,1080" fill="#100E17"/>
+          <polygon points="954,230 880,1080 920,1080 954,720" fill="#1E1926"/>
+          <!-- Sharp Center Spine -->
+          <polygon points="954,230 954,720 970,1080 1020,700" fill="#3A2A2C"/>
+          <!-- Right Sunlit Face -->
+          <polygon points="954,230 1020,700 970,1080 1080,1080 1150,570" fill="#DE9A3E"/>
+          <polygon points="954,230 1150,570 1080,1080 1190,1080 1210,470" fill="#F0D77A" opacity="0.9"/>
+          <polygon points="1150,570 1210,470 1230,610 1190,1080" fill="#D4AF37" opacity="0.7"/>
+
+          <!-- Horizontal Geological Strata Lines on Monolith -->
+          <path d="M840,540 L1080,540 L1180,480" fill="none" stroke="#7A3D1E" stroke-width="3" opacity="0.75"/>
+          <path d="M800,660 L1040,660 L1160,600" fill="none" stroke="#7A3D1E" stroke-width="3" opacity="0.75"/>
+          <path d="M860,820 L1020,820 L1120,760" fill="none" stroke="#7A3D1E" stroke-width="3" opacity="0.75"/>
+        </g>
+
+        <!-- Near Layer: Outer Framing Cliffs with Warm Highlights -->
+        <g class="layer near-layer">
+          <path d="M-100,-80 L480,-80 C360,300 440,660 180,1080 L-100,1080 Z" fill="#0E0C14"/>
+          <path d="M2020,-80 L1520,-80 C1600,320 1480,720 1760,1080 L2020,1080 Z" fill="#1C1824"/>
+          <path d="M1520,-80 C1570,250 1470,540 1600,790 L1635,760 C1515,520 1600,240 1550,-80 Z" fill="#9C5F2C" opacity="0.6"/>
+          <!-- Gold Rim Highlight -->
+          <path d="M1520,-80 C1570,250 1470,540 1600,790" fill="none" stroke="#F0D77A" stroke-width="3" opacity="0.75"/>
+        </g>
+      </svg>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- SCENE 03: CAVE & STREAM (Curiosity) — Vault & Radiant Exit   -->
+    <!-- ============================================================= -->
+    <section class="scene" id="scene-2">
+      <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="portalGlow3" cx="49.7%" cy="51.2%" r="28%">
+            <stop offset="0%" stop-color="#FFFDF5"/>
+            <stop offset="20%" stop-color="#FFF0C8"/>
+            <stop offset="45%" stop-color="#DE9A3E" stop-opacity="0.85"/>
+            <stop offset="75%" stop-color="#4A3128" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#08070D" stop-opacity="0"/>
+          </radialGradient>
+
+          <linearGradient id="caveStreamGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFF0C8"/>
+            <stop offset="14%" stop-color="#DE9A3E"/>
+            <stop offset="40%" stop-color="#4A3128"/>
+            <stop offset="75%" stop-color="#1E1926"/>
+            <stop offset="100%" stop-color="#0E0C14"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Deep Obsidian Subterranean Vault -->
+        <rect width="1920" height="1080" fill="#08070D"/>
+
+        <!-- Radiant Cave Exit Portal Opening to Daylight -->
+        <g class="layer far-layer">
+          <circle cx="954" cy="553" r="430" fill="url(#portalGlow3)"/>
+          <ellipse cx="954" cy="553" rx="85" ry="48" fill="#FFFDF8"/>
+          <ellipse cx="954" cy="553" rx="150" ry="85" fill="#E8C88A" opacity="0.65"/>
+          <!-- Distant Sunlit Mountain Silhouette through Portal -->
+          <polygon points="900,553 935,510 954,530 975,500 1010,553" fill="#9C5F2C" opacity="0.75"/>
+        </g>
+
+        <!-- Reflective Subterranean Stream with Specular Ripples -->
+        <g class="layer mid-layer">
+          <polygon points="880,553 1028,553 1440,1080 480,1080" fill="url(#caveStreamGrad)"/>
+          <!-- Specular Light Shimmers & Ripples -->
+          <ellipse cx="954" cy="760" rx="200" ry="16" fill="none" stroke="#F0D77A" stroke-width="2.5" opacity="0.6"/>
+          <ellipse cx="954" cy="840" rx="320" ry="22" fill="none" stroke="#DE9A3E" stroke-width="2" opacity="0.45"/>
+          <path d="M935,560 L973,560 L995,620 L920,620 Z" fill="#FFF3D6" opacity="0.85"/>
+          <path d="M900,640 L1008,640 L1045,740 L860,740 Z" fill="#E8C88A" opacity="0.65"/>
+          <path d="M840,770 L1080,770 L1150,920 L770,920 Z" fill="#DE9A3E" opacity="0.5"/>
+        </g>
+
+        <!-- Cavern Archway, Stalactites & Natural Stone Ribs (Near Layer) -->
+        <g class="layer near-layer">
+          <path d="M-60,-60 L1980,-60 L1980,290 C1640,195 1420,370 1210,255 C1060,175 954,300 820,195 C640,320 340,135 -60,330 Z" fill="#0E0C14"/>
+          <!-- Detailed Stalactite Formations -->
+          <polygon points="380,260 400,390 420,260" fill="#1C1824"/>
+          <polygon points="740,210 760,410 780,210" fill="#1C1824"/>
+          <polygon points="1260,220 1280,400 1300,220" fill="#1C1824"/>
+          <polygon points="1560,240 1580,420 1600,240" fill="#1C1824"/>
+
+          <path d="M-60,180 C290,310 390,680 430,1080 L-60,1080 Z" fill="#14111C"/>
+          <path d="M1980,160 C1670,280 1570,690 1510,1080 L1980,1080 Z" fill="#120F1A"/>
+        </g>
+      </svg>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- SCENE 04: EMERGENCE (Kinetic) — Dusk Ocean & Sunset Horizon  -->
+    <!-- ============================================================= -->
+    <section class="scene" id="scene-3">
+      <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="skyDusk4" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#0B0F1A"/>
+            <stop offset="35%" stop-color="#141B2D"/>
+            <stop offset="65%" stop-color="#423E5C"/>
+            <stop offset="85%" stop-color="#A57A42"/>
+            <stop offset="100%" stop-color="#E8C88A"/>
+          </linearGradient>
+
+          <linearGradient id="oceanGrad4" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFF0C8"/>
+            <stop offset="8%" stop-color="#E8C88A"/>
+            <stop offset="25%" stop-color="#B98A4E"/>
+            <stop offset="55%" stop-color="#3A3C58"/>
+            <stop offset="100%" stop-color="#101524"/>
+          </linearGradient>
+        </defs>
+
+        <rect width="1920" height="553" fill="url(#skyDusk4)"/>
+        <rect y="553" width="1920" height="527" fill="url(#oceanGrad4)"/>
+
+        <!-- Horizon Solar Glow & Shimmer Trails -->
+        <g class="layer far-layer">
+          <line x1="0" y1="553" x2="1920" y2="553" stroke="#FFF5DC" stroke-width="2" opacity="0.95"/>
+          <ellipse cx="954" cy="553" rx="480" ry="110" fill="#E8C88A" opacity="0.4"/>
+          <!-- Drifting Horizontal Fog Strata -->
+          <ellipse cx="460" cy="565" rx="560" ry="24" fill="#E8C88A" opacity="0.25"/>
+          <ellipse cx="1460" cy="565" rx="560" ry="24" fill="#E8C88A" opacity="0.25"/>
+        </g>
+
+        <!-- Receding Coastal Headlands & Sea Stacks (Mid Layer) -->
+        <g class="layer mid-layer">
+          <polygon points="0,553 260,500 520,553" fill="#3E3C54" opacity="0.8"/>
+          <polygon points="1920,553 1640,480 1360,553" fill="#3E3C54" opacity="0.8"/>
+          <polygon points="0,553 140,520 280,553" fill="#5A5672" opacity="0.85"/>
+          <polygon points="1920,553 1780,505 1620,553" fill="#5A5672" opacity="0.85"/>
+        </g>
+
+        <!-- Peeling Cavern Mouth (Near Layer) -->
+        <g class="layer near-layer">
+          <path d="M-80,-60 L320,-60 C210,380 340,780 -80,1080 Z" fill="#0A090E"/>
+          <path d="M2000,-60 L1600,-60 C1710,380 1580,780 2000,1080 Z" fill="#0A090E"/>
+        </g>
+      </svg>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- SCENE 05: THE CITY (Yes) — Sunset Metropolis Skyline & Sun   -->
+    <!-- ============================================================= -->
+    <section class="scene" id="scene-4">
+      <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="citySkyGrad5" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#080A12"/>
+            <stop offset="30%" stop-color="#121828"/>
+            <stop offset="60%" stop-color="#3A3854"/>
+            <stop offset="82%" stop-color="#8A5A2B"/>
+            <stop offset="95%" stop-color="#D4AF37"/>
+            <stop offset="100%" stop-color="#FFF3D6"/>
+          </linearGradient>
+
+          <linearGradient id="harborWater5" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFF3D6"/>
+            <stop offset="6%" stop-color="#DE9A3E"/>
+            <stop offset="22%" stop-color="#4A3128"/>
+            <stop offset="55%" stop-color="#1E1926"/>
+            <stop offset="100%" stop-color="#08070D"/>
+          </linearGradient>
+        </defs>
+
+        <rect width="1920" height="553" fill="url(#citySkyGrad5)"/>
+        <rect y="553" width="1920" height="527" fill="url(#harborWater5)"/>
+
+        <!-- Solar Core on Horizon at [954, 553] -->
+        <circle cx="954" cy="553" r="135" fill="#FFFDF8" opacity="0.96"/>
+        <ellipse cx="954" cy="553" rx="550" ry="150" fill="#DE9A3E" opacity="0.48"/>
+
+        <!-- Far Skyline Spires, Suspension Bridges & Antennas -->
+        <g class="layer far-layer">
+          <rect x="360" y="440" width="50" height="113" fill="#585672" opacity="0.65"/>
+          <polygon points="440,553 440,370 465,330 490,370 490,553" fill="#585672" opacity="0.75"/>
+          <rect x="510" y="415" width="75" height="138" fill="#3A3854" opacity="0.8"/>
+          
+          <polygon points="850,553 850,380 865,310 880,380 880,553" fill="#4A3128" opacity="0.9"/>
+          <polygon points="1025,553 1025,350 1040,280 1055,350 1055,553" fill="#4A3128" opacity="0.9"/>
+          
+          <rect x="1340" y="405" width="90" height="148" fill="#3A3854" opacity="0.75"/>
+          <polygon points="1455,553 1455,330 1480,290 1505,330 1505,553" fill="#585672" opacity="0.65"/>
+        </g>
+
+        <!-- Midground Towers with Warm Amber Window Matrices -->
+        <g class="layer mid-layer">
+          <rect x="570" y="375" width="105" height="178" fill="#1C1824"/>
+          <polygon points="690,553 690,300 735,300 765,385 765,553" fill="#2E2432"/>
+          <rect x="785" y="425" width="60" height="128" fill="#181220"/>
+          
+          <rect x="1075" y="415" width="70" height="138" fill="#181220"/>
+          <polygon points="1160,553 1160,335 1205,275 1230,335 1230,553" fill="#2E2432"/>
+          <rect x="1250" y="365" width="85" height="188" fill="#1C1824"/>
+
+          <!-- Warm Amber Window Matrices -->
+          <circle cx="600" cy="405" r="1.8" fill="#FFF0C8"/>
+          <circle cx="625" cy="405" r="1.8" fill="#FFF0C8"/>
+          <circle cx="650" cy="405" r="1.8" fill="#FFF0C8"/>
+          <circle cx="600" cy="435" r="1.8" fill="#E8C88A"/>
+          <circle cx="625" cy="435" r="1.8" fill="#E8C88A"/>
+          <circle cx="650" cy="435" r="1.8" fill="#E8C88A"/>
+          
+          <circle cx="715" cy="340" r="1.8" fill="#FFF0C8"/>
+          <circle cx="715" cy="370" r="1.8" fill="#E8C88A"/>
+          <circle cx="715" cy="400" r="1.8" fill="#DE9A3E"/>
+          
+          <circle cx="1185" cy="350" r="1.8" fill="#FFF0C8"/>
+          <circle cx="1205" cy="350" r="1.8" fill="#FFF0C8"/>
+          <circle cx="1185" cy="380" r="1.8" fill="#E8C88A"/>
+          <circle cx="1205" cy="380" r="1.8" fill="#E8C88A"/>
+        </g>
+
+        <!-- Water Light Reflection Light Pillars -->
+        <g class="layer far-layer">
+          <rect x="850" y="553" width="35" height="150" fill="#DE9A3E" opacity="0.4"/>
+          <rect x="1025" y="553" width="35" height="150" fill="#DE9A3E" opacity="0.4"/>
+          <rect x="690" y="553" width="75" height="110" fill="#9C5F2C" opacity="0.35"/>
+          <rect x="1160" y="553" width="70" height="110" fill="#9C5F2C" opacity="0.35"/>
+        </g>
+      </svg>
+    </section>
+
+  </div>
+
+  <!-- The Moving Gold Core Dot -->
+  <div class="core-dot" id="coreDot" aria-hidden="true"></div>
+</main>
+
+<div id="veil"></div>
+
+<button id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+  <span></span><span></span>
+</button>
+
+<nav id="menu" aria-hidden="true">
+  <a href="#top" data-top>Top</a>
+  <a href="#contact" data-contact>Contact</a>
+  <a href="https://dotricky.me" target="_blank" rel="noopener">dotricky.me ↗</a>
+  <div class="sub">Unzip the vision</div>
+</nav>
+
+<div id="grid"></div>
+
+<!-- Live Site Chrome: Brand Wordmark with Beat Tracker + JNB Clock -->
+<div id="chrome">
+  <div class="bar top">
+    <div class="grp">
+      <a class="brand" href="#top" id="brand" aria-label=".ricky — top">
+        <span class="dot">.</span><i>r</i><i>i</i><i>c</i><i>k</i><i>y</i>
+      </a>
+    </div>
+    <div class="grp">
+      <span class="clock hide-s"><i class="pulse"></i><span id="jnb">JNB --:-- SAST</span></span>
+      <span style="width: 44px"></span>
+    </div>
+  </div>
+  <div class="bar bot">
+    <div class="grp"><span>&copy; .ricky</span><span class="ar">&middot;</span><span>All rights reserved</span></div>
+    <div class="grp hide-s"><span id="fno">SEQ 01 // 05</span></div>
+  </div>
+</div>
+
+<!-- Narrative Value Beats -->
+<div id="hud">
+  <div class="beat" data-b="0">
+    <div class="word">Restless</div>
+    <div class="line">Settling is the only real risk</div>
+  </div>
+  <div class="beat" data-b="1">
+    <div class="word">Instinct</div>
+    <div class="line">The first thing you notice is usually the real thing</div>
+  </div>
+  <div class="beat" data-b="2">
+    <div class="word">Curiosity</div>
+    <div class="line">Ask before you plan</div>
+  </div>
+  <div class="beat" data-b="3">
+    <div class="word">Kinetic</div>
+    <div class="line">Move, then find the direction</div>
+  </div>
+  <div class="beat" data-b="4">
+    <div class="word">Yes</div>
+    <div class="line">Say yes to the unknown</div>
+  </div>
+
+  <div id="end">
+    <div class="mark" id="mark"><span class="dot" id="dotdom">.<span id="base"></span></span>ricky</div>
+    <div class="tag">Unzip the vision.</div>
+    <div class="more">Keep scrolling</div>
+  </div>
+</div>
+
+<div id="cue">Scroll</div>
+
+<div id="top"></div>
+<div id="scroller"></div>
+
+<!-- Solid Ground Contact Stage (Exact dotricky.me Design) -->
+<section id="contact">
+  <div class="eyebrow"><i></i><span>Open for work</span></div>
+  <h2>Got something worth unzipping?</h2>
+  <p class="avail">Available for select cloud architecture, security advisory, and bespoke web builds.</p>
+  <div class="mailrow">
+    <a class="mail" href="mailto:hello@dotricky.me?subject=Inquiry%20via%20dotricky.me">hello@dotricky.me</a>
+    <button class="copy" id="copy" type="button">Copy address</button>
+  </div>
+  <a class="full" href="mailto:hello@dotricky.me?subject=Inquiry%20via%20dotricky.me">Full contact details →</a>
+  <div class="foot">
+    <span>.ricky — Unzip the vision</span>
+    <span>dotricky.me</span>
+  </div>
+</section>
+
+<script>
+/* ============================================================
+   .ricky — Pure Layered SVG Story Scrubbing Engine
+   Multi-depth parallax, exact sub-pixel dot kinematics,
+   calibrated cinematic scroll pacing, and live site chrome
+   ============================================================ */
+
+const scenes = [
+  document.getElementById('scene-0'),
+  document.getElementById('scene-1'),
+  document.getElementById('scene-2'),
+  document.getElementById('scene-3'),
+  document.getElementById('scene-4')
+];
+
+const scroller = document.getElementById('scroller');
+const beatEls = [...document.querySelectorAll('.beat')];
+const endEl = document.getElementById('end');
+const dotDom = document.getElementById('dotdom');
+const coreDot = document.getElementById('coreDot');
+const markEl = document.getElementById('mark');
+const baseEl = document.getElementById('base');
+const contact = document.getElementById('contact');
+const cue = document.getElementById('cue');
+const burger = document.getElementById('burger'), menu = document.getElementById('menu');
+const stripEls = [...document.querySelectorAll('#brand i')];
+const fnoEl = document.getElementById('fno');
+
+const SUN = { x: 49.7, y: 51.2 };   // Vanishing point coordinate
+const TOTAL_SCROLL = 7200;          // Calibrated luxurious travel for the 5 beats
+const END_PX = 2000;                // Coded closing contraction travel
+const BEATS = [
+  [0, 0.20],     // 01 Restless (Canyon)
+  [0.20, 0.40],  // 02 Instinct (The Fork)
+  [0.40, 0.60],  // 03 Curiosity (Cave & Stream)
+  [0.60, 0.80],  // 04 Kinetic (Emergence)
+  [0.80, 1.00]   // 05 Yes (The City)
+];
+
+/* Measure dot glyph metrics */
+let DOT_OFF = { x: 0, y: 0, r: 6 };
+function measureDot() {
+  const cs = getComputedStyle(dotDom);
+  const size = parseFloat(cs.fontSize) || 46;
+  const s = Math.ceil(size * 2.4);
+  const oc = document.createElement('canvas'); oc.width = s; oc.height = s;
+  const o = oc.getContext('2d', { willReadFrequently: true });
+  o.font = (cs.fontVariationSettings && cs.fontVariationSettings !== 'normal' ? '' : '') +
+           cs.fontWeight + ' ' + size + 'px ' + cs.fontFamily;
+  o.textBaseline = 'alphabetic'; o.fillStyle = '#fff';
+  const penX = size * 0.6, baseY = size * 1.5;
+  o.fillText('.', penX, baseY);
+  const d = o.getImageData(0, 0, s, s).data;
+  let x0 = s, x1 = -1, y0 = s, y1 = -1;
+  for (let y = 0; y < s; y++) for (let x = 0; x < s; x++) {
+    if (d[((y * s + x) << 2) + 3] > 40) {
+      if (x < x0) x0 = x; if (x > x1) x1 = x;
+      if (y < y0) y0 = y; if (y > y1) y1 = y;
+    }
+  }
+  if (x1 < 0) { DOT_OFF = { x: size * 0.15, y: -size * 0.07, r: size * 0.055 }; return; }
+  DOT_OFF = { x: (x0 + x1) / 2 - penX, y: (y0 + y1) / 2 - baseY, r: ((x1 - x0) + (y1 - y0)) / 4 };
+}
+
+function centreMark() {
+  markEl.style.transform = 'none';
+  const w = dotDom.getBoundingClientRect().width;
+  markEl.style.transform = 'translateX(' + (-w / 2).toFixed(2) + 'px)';
+}
+
+function setHeight() {
+  scroller.style.height = (TOTAL_SCROLL + END_PX + window.innerHeight) + 'px';
+}
+
+function resize() {
+  setHeight(); measureDot(); centreMark(); draw();
+}
+
+/* Live Johannesburg Clock */
+(function clock() {
+  const el = document.getElementById('jnb'); if (!el) return;
+  const tick = () => {
+    try {
+      el.textContent = 'JNB ' + new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Africa/Johannesburg', hour: '2-digit', minute: '2-digit', hour12: false
+      }).format(new Date()) + ' SAST';
+    } catch (e) { el.textContent = 'JNB UTC+2'; }
+  };
+  tick(); setInterval(tick, 15000);
+})();
+
+/* ============================================================
+   The Coded Closing Beat (Sun Contracts into Wordmark Dot)
+   ============================================================ */
+
+function ending(e) {
+  // 1. Drain world to dark obsidian
+  const drain = Math.min(1, e / 0.34);
+
+  // 2. Shrinking radius & position
+  const t = Math.min(1, e / 0.52);
+  const ease = 1 - Math.pow(1 - t, 3);
+  const scale = 70 * (1 - ease) + 1 * ease;
+
+  // 3. Exact target glyph coordinate
+  const rect = dotDom.getBoundingClientRect();
+  const baseY = baseEl.getBoundingClientRect().bottom;
+  const tx = rect.left + DOT_OFF.x;
+  const ty = baseY + DOT_OFF.y;
+
+  const sx = window.innerWidth * (SUN.x / 100);
+  const sy = window.innerHeight * (SUN.y / 100);
+
+  // 4. Vertical Lift & Glide
+  const lift = Math.max(0, Math.min(1, (e - 0.44) / 0.34));
+  const le = lift < 0.5 ? 4 * lift * lift * lift : 1 - Math.pow(-2 * lift + 2, 3) / 2;
+  const curX = sx + (tx - sx) * le;
+  const curY = sy + (ty - sy) * le;
+
+  const hand = Math.max(0, Math.min(1, (e - 0.72) / 0.16));
+
+  coreDot.style.opacity = (1 - hand).toFixed(3);
+  coreDot.style.left = curX + 'px';
+  coreDot.style.top = curY + 'px';
+  coreDot.style.transform = 'translate(-50%, -50%) scale(' + scale.toFixed(2) + ')';
+
+  dotDom.style.opacity = hand.toFixed(3);
+  return hand;
+}
+
+/* ============================================================
+   Telemetry & Chrome Updates
+   ============================================================ */
+
+let litLetter = -1;
+function chrome(beatIdx, inEnd) {
+  let cur = inEnd ? 4 : -1;
+  if (!inEnd && beatIdx >= 0 && beatIdx < 5) cur = beatIdx;
+
+  if (cur !== litLetter) {
+    litLetter = cur;
+    stripEls.forEach((s, i) => s.classList.toggle('on', i === cur));
+  }
+  if (fnoEl) {
+    if (inEnd) fnoEl.textContent = 'SEQ [END]';
+    else fnoEl.textContent = 'SEQ 0' + (Math.max(0, beatIdx) + 1) + ' // 05';
+  }
+}
+
+function beats(normP, inEnd) {
+  beatEls.forEach((el, i) => {
+    if (inEnd) { el.style.opacity = 0; return; }
+    const [a, b] = BEATS[i];
+    const p = (normP - a) / (b - a);
+    let o = 0;
+    if (p >= 0 && p <= 1) {
+      o = p < 0.20 ? p / 0.20 : (p > 0.78 ? Math.max(0, 1 - (p - 0.78) / 0.20) : 1);
+    }
+    el.style.opacity = o.toFixed(3);
+    el.style.transform = 'translateY(' + ((1 - o) * 10).toFixed(1) + 'px)';
+  });
+}
+
+/* ============================================================
+   Master Draw Loop (Continuous SVG Parallax Scrubbing)
+   ============================================================ */
+
+let raf = null;
+function draw() {
+  raf = null;
+  const y = window.scrollY || window.pageYOffset || 0;
+  const normP = Math.max(0, Math.min(1, y / TOTAL_SCROLL));
+
+  const totalScenes = scenes.length;
+  const rawIdx = normP * totalScenes;
+  const activeIdx = Math.min(totalScenes - 1, Math.floor(rawIdx));
+  const localP = rawIdx - activeIdx; // 0.0 to 1.0 within beat
+
+  // Update SVG Parallax Layers
+  scenes.forEach((scene, i) => {
+    if (i === activeIdx) {
+      scene.style.opacity = '1';
+
+      // Instinct Camera Lateral Tracking into Sunlit Channel
+      let camPanX = 0;
+      if (activeIdx === 1) {
+        camPanX = -localP * 45;
+      }
+
+      const nearScale = 1.0 + (localP * 2.2);
+      const midScale = 1.0 + (localP * 0.75);
+      const farScale = 1.0 + (localP * 0.20);
+
+      const nearLayers = scene.querySelectorAll('.near-layer');
+      const midLayers = scene.querySelectorAll('.mid-layer');
+      const farLayers = scene.querySelectorAll('.far-layer');
+
+      nearLayers.forEach(el => {
+        el.style.transform = 'translateX(' + (camPanX * 1.8).toFixed(1) + 'px) scale(' + nearScale.toFixed(3) + ')';
+        if (localP > 0.65) {
+          el.style.opacity = (1 - ((localP - 0.65) / 0.35)).toFixed(3);
+        } else {
+          el.style.opacity = '1';
+        }
+      });
+
+      midLayers.forEach(el => {
+        el.style.transform = 'translateX(' + (camPanX * 1.0).toFixed(1) + 'px) scale(' + midScale.toFixed(3) + ')';
+      });
+
+      farLayers.forEach(el => {
+        el.style.transform = 'translateX(' + (camPanX * 0.3).toFixed(1) + 'px) scale(' + farScale.toFixed(3) + ')';
+      });
+
+    } else if (i === activeIdx - 1 && localP < 0.25) {
+      scene.style.opacity = (1 - (localP / 0.25)).toFixed(3);
+    } else {
+      scene.style.opacity = '0';
+    }
+  });
+
+  // Coded closing beat
+  const past = y - TOTAL_SCROLL;
+  let vis = 0;
+  if (past > 0) {
+    vis = ending(Math.min(1, past / END_PX));
+    beats(normP, true);
+    chrome(activeIdx, true);
+  } else {
+    coreDot.style.opacity = 0;
+    dotDom.style.opacity = 0;
+    beats(normP, false);
+    chrome(activeIdx, false);
+  }
+
+  // Wordmark yields naturally as contact stage rolls up over it
+  const ct = contact.getBoundingClientRect().top;
+  const handoff = Math.max(0, Math.min(1, (ct - innerHeight * 0.35) / (innerHeight * 0.65)));
+  endEl.style.opacity = (vis * handoff).toFixed(3);
+  endEl.style.transform = 'translate(-50%, -50%) translateY(' + ((1 - vis) * 14).toFixed(1) + 'px)';
+
+  cue.style.opacity = y > 60 ? 0 : 1;
+  burger.style.opacity = (past > 0 || y < 60) ? 1 : 0.42;
+}
+
+function onScroll() {
+  if (!raf) raf = requestAnimationFrame(draw);
+}
+
+/* ============================================================
+   Menu & Interactive Handlers
+   ============================================================ */
+
+function setMenu(open) {
+  document.body.classList.toggle('menu', open);
+  burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  menu.setAttribute('aria-hidden', open ? 'false' : 'true');
+}
+
+burger.addEventListener('click', () => setMenu(!document.body.classList.contains('menu')));
+menu.addEventListener('click', (e) => { if (e.target.tagName === 'A') setMenu(false); });
+addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+
+document.querySelector('[data-top]').addEventListener('click', (e) => {
+  e.preventDefault(); setMenu(false); scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+document.querySelector('[data-contact]').addEventListener('click', (e) => {
+  e.preventDefault(); setMenu(false);
+  contact.scrollIntoView({ behavior: 'smooth' });
+});
+
+// Copy Email Address Button
+const copyBtn = document.getElementById('copy');
+copyBtn.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText('hello@dotricky.me');
+  } catch (err) { return; }
+  copyBtn.textContent = 'Copied';
+  copyBtn.classList.add('done');
+  setTimeout(() => {
+    copyBtn.textContent = 'Copy address';
+    copyBtn.classList.remove('done');
+  }, 2000);
+});
+
+// Event Listeners
+addEventListener('scroll', onScroll, { passive: true });
+addEventListener('resize', resize);
+
+// Boot
+resize();
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => {
+    measureDot(); centreMark(); draw();
+  });
+}
+</script>
+</body>
+</html>
