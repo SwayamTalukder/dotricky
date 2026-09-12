@@ -47,6 +47,27 @@ a{color:inherit}
     radial-gradient(78% 52% at 16% 86%,rgba(11,12,15,.62) 0%,rgba(11,12,15,.28) 46%,rgba(11,12,15,0) 76%);}
 #hud{position:fixed;inset:0;z-index:2;pointer-events:none}
 
+/* ══ radial vignette over the footage ══
+      #veil already carries a vignette, but it is tangled up with the
+      bottom gradient and the caption pool, so it cannot be tuned on its
+      own. This is a separate pass that only darkens the corners. Same
+      z-band as #veil: over the frames, under every piece of chrome. ══ */
+#vig{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 98% 84% at 50% 46%,
+    rgba(11,12,15,0) 40%,
+    rgba(11,12,15,.20) 72%,
+    rgba(11,12,15,.50) 100%)}
+
+/* ══ film grain ══
+      Above all chrome, because grain belongs to the print rather than to
+      the scene — it should sit on the type as well as the picture. Static,
+      not animated: an animated tile costs a full-viewport repaint every
+      frame for a texture nobody consciously registers. ══ */
+#grain{position:fixed;inset:0;z-index:60;pointer-events:none;
+  opacity:.045;mix-blend-mode:overlay;
+  background-repeat:repeat}
+
+
 /* ══ structural grid — lifted from dotricky.me, but inverted.
       There the grid sat under flat colour; here it must not sit on the
       footage. The mask keeps it in the margins so it frames the frame
@@ -396,6 +417,8 @@ body.menu #menu{opacity:1;pointer-events:auto}
 
 <div id="stage"><canvas id="c"></canvas></div>
 <div id="veil"></div>
+<div id="vig"></div>
+<div id="grain" aria-hidden="true"></div>
 
 <button id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
   <span></span><span></span>
@@ -838,6 +861,25 @@ function nearest(idx){
   return null;
 }
 
+/* ---- fractional paint ----
+   The follower below hands us a real number, not an integer, so the two
+   frames either side of it are both drawn and the nearer one is faded in
+   over the other. At 12% per frame the index spends most of its time
+   between frames, which is exactly where a hard round() shows as a step.
+   If the upper frame has not loaded, the lower one simply holds — the
+   no-degraded-loading rule still stands. */
+function paintPair(idx){
+  const lo=Math.max(1,Math.min(N,Math.floor(idx)));
+  const hi=Math.min(N,lo+1);
+  const f=Math.max(0,Math.min(1,idx-lo));
+  const a=imgs[lo-1], b=imgs[hi-1];
+
+  if(a){ held=false; ctx.globalAlpha=1; cover(a); }
+  else { const fb=nearest(idx); if(fb){ ctx.globalAlpha=1; cover(fb); } return; }
+
+  if(b && hi!==lo && f>0.002){ ctx.globalAlpha=f; cover(b); ctx.globalAlpha=1; }
+}
+
 /* ---- the coded closing beat ----
    The world drains to charcoal, the horizon glow contracts to a point,
    the point lifts, and the wordmark resolves around it. Done in code
@@ -961,14 +1003,30 @@ function beats(idx,inEnd,gate){
 }
 
 let raf=null;
+
+/* ---- damped follower ----
+   Scroll sets a target; the drawn index chases it by a fixed fraction
+   each frame. Weight of the camera rather than a cursor glued to the
+   wheel. Only the footage is damped — the dock and the closing beat stay
+   locked to the raw scroll position, so the chrome never feels laggy. */
+const EASE=0.12;
+const SNAP=0.004;                 // close enough to stop chasing
+let shownIdx=null;
+const noMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 function draw(){
   raf=null;
   if(!firstPaint) return;
   const y=window.scrollY||window.pageYOffset||0;
-  const idx=frameAt(y);
-  const im=nearest(idx);
+  const tIdx=frameAt(y);
+
+  if(shownIdx===null || noMotion){ shownIdx=tIdx; }
+  else if(Math.abs(tIdx-shownIdx)<=SNAP){ shownIdx=tIdx; }
+  else { shownIdx+=(tIdx-shownIdx)*EASE; }
+
+  const idx=shownIdx;
   ctx.fillStyle='#0B0C0F'; ctx.fillRect(0,0,cv.width,cv.height);
-  if(im) cover(im);
+  paintPair(idx);
 
   /* ---- the opening dock ----
      The mark stands centre, then travels into the corner slot and hands
@@ -1011,6 +1069,9 @@ function draw(){
   cue.style.opacity=Math.max(0,1-y/(INTRO_PX*0.55)).toFixed(3);
   burger.style.opacity=(past>0||ip<0.35)?1:0.42;
   updateChatBadge();
+
+  /* the follower has not arrived yet — keep painting without new input */
+  if(shownIdx!==tIdx && !raf) raf=requestAnimationFrame(draw);
 }
 function onScroll(){ if(!raf) raf=requestAnimationFrame(draw); }
 
@@ -1083,6 +1144,30 @@ addEventListener('resize',resize);
 resize();
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{measureDot();centreMark();measureDock();draw();});
 boot();
+
+/* ---- film grain tile ----
+   Generated once into a 128px canvas rather than declared in CSS. An SVG
+   feTurbulence tile cannot be forced opaque without the filter chain
+   un-premultiplying against a near-zero alpha, which renders flat white —
+   measured, not assumed. A canvas gives exact control of mean and spread:
+   centred on mid-grey so `overlay` stays luma-neutral, and wide enough
+   that 4.5% is actually visible on dark footage. */
+(function grain(){
+  const el=document.getElementById('grain'); if(!el) return;
+  const S=128, cv=document.createElement('canvas'); cv.width=cv.height=S;
+  const c=cv.getContext('2d'), im=c.createImageData(S,S), d=im.data;
+  let s=1337;                                    // fixed seed — same grain every load
+  const rnd=()=>{ s=(s*1664525+1013904223)>>>0; return s/4294967296; };
+  for(let i=0;i<S*S;i++){
+    // two samples averaged, so the distribution is tighter than uniform
+    const v=128+(rnd()+rnd()-1)*104;
+    const g=v<0?0:v>255?255:v;
+    d[i*4]=d[i*4+1]=d[i*4+2]=g; d[i*4+3]=255;
+  }
+  c.putImageData(im,0,0);
+  el.style.backgroundImage='url('+cv.toDataURL('image/png')+')';
+  el.style.backgroundSize=S+'px '+S+'px';
+})();
 </script>
 </body>
 </html>

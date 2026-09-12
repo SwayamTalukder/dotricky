@@ -199,9 +199,17 @@ footer .wrap {
 }
 footer a { text-decoration: none; transition: color 0.25s ease; }
 footer a:hover, footer a:focus-visible { color: var(--gold); }
+
+/* ══ film grain — same pass as the journey page, so the two read as one
+      surface when you cross between them. No vignette here: there is no
+      footage to vignette. ══ */
+#grain{position:fixed;inset:0;z-index:60;pointer-events:none;
+  opacity:.045;mix-blend-mode:overlay;
+  background-repeat:repeat}
 </style>
 </head>
 <body>
+<div id="grain" aria-hidden="true"></div>
 
 <header>
   <div class="wrap">
@@ -334,6 +342,30 @@ if (copyDirect) {
     setTimeout(() => { copyDirect.textContent = orig; }, 2000);
   });
 }
+
+/* ---- film grain tile ----
+   Generated once into a 128px canvas rather than declared in CSS. An SVG
+   feTurbulence tile cannot be forced opaque without the filter chain
+   un-premultiplying against a near-zero alpha, which renders flat white —
+   measured, not assumed. A canvas gives exact control of mean and spread:
+   centred on mid-grey so `overlay` stays luma-neutral, and wide enough
+   that 4.5% is actually visible on dark footage. */
+(function grain(){
+  const el=document.getElementById('grain'); if(!el) return;
+  const S=128, cv=document.createElement('canvas'); cv.width=cv.height=S;
+  const c=cv.getContext('2d'), im=c.createImageData(S,S), d=im.data;
+  let s=1337;                                    // fixed seed — same grain every load
+  const rnd=()=>{ s=(s*1664525+1013904223)>>>0; return s/4294967296; };
+  for(let i=0;i<S*S;i++){
+    // two samples averaged, so the distribution is tighter than uniform
+    const v=128+(rnd()+rnd()-1)*104;
+    const g=v<0?0:v>255?255:v;
+    d[i*4]=d[i*4+1]=d[i*4+2]=g; d[i*4+3]=255;
+  }
+  c.putImageData(im,0,0);
+  el.style.backgroundImage='url('+cv.toDataURL('image/png')+')';
+  el.style.backgroundSize=S+'px '+S+'px';
+})();
 </script>
 </body>
 </html>
