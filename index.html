@@ -64,8 +64,7 @@ a{color:inherit}
       not animated: an animated tile costs a full-viewport repaint every
       frame for a texture nobody consciously registers. ══ */
 #grain{position:fixed;inset:0;z-index:60;pointer-events:none;
-  opacity:.045;mix-blend-mode:overlay;
-  background-repeat:repeat}
+  width:100%;height:100%;opacity:.55;mix-blend-mode:screen}
 
 
 /* ══ structural grid — lifted from dotricky.me, but inverted.
@@ -418,7 +417,7 @@ body.menu #menu{opacity:1;pointer-events:auto}
 <div id="stage"><canvas id="c"></canvas></div>
 <div id="veil"></div>
 <div id="vig"></div>
-<div id="grain" aria-hidden="true"></div>
+<canvas id="grain" aria-hidden="true"></canvas>
 
 <button id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
   <span></span><span></span>
@@ -1145,28 +1144,85 @@ resize();
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{measureDot();centreMark();measureDock();draw();});
 boot();
 
-/* ---- film grain tile ----
-   Generated once into a 128px canvas rather than declared in CSS. An SVG
-   feTurbulence tile cannot be forced opaque without the filter chain
-   un-premultiplying against a near-zero alpha, which renders flat white —
-   measured, not assumed. A canvas gives exact control of mean and spread:
-   centred on mid-grey so `overlay` stays luma-neutral, and wide enough
-   that 4.5% is actually visible on dark footage. */
+/* ---- film dirt ----
+   Not noise. Even per-pixel noise is what a sensor or a codec produces,
+   so at low amplitude it reads as compression artifact rather than film.
+   What actually reads as stock is sparse: a mostly clean frame with dust
+   on it, clumped unevenly, plus the odd emulsion scratch.
+
+   Drawn at viewport size rather than tiled — sparse specks in a repeating
+   tile show up as a grid immediately. Blend is `screen`, because dirt only
+   ever adds light: black areas of this layer are a no-op, so the footage
+   keeps its blacks and the specks can be plainly visible. Static; it is
+   dirt in the gate, not a per-frame repaint. */
 (function grain(){
-  const el=document.getElementById('grain'); if(!el) return;
-  const S=128, cv=document.createElement('canvas'); cv.width=cv.height=S;
-  const c=cv.getContext('2d'), im=c.createImageData(S,S), d=im.data;
-  let s=1337;                                    // fixed seed — same grain every load
-  const rnd=()=>{ s=(s*1664525+1013904223)>>>0; return s/4294967296; };
-  for(let i=0;i<S*S;i++){
-    // two samples averaged, so the distribution is tighter than uniform
-    const v=128+(rnd()+rnd()-1)*104;
-    const g=v<0?0:v>255?255:v;
-    d[i*4]=d[i*4+1]=d[i*4+2]=g; d[i*4+3]=255;
+  const cv=document.getElementById('grain');
+  if(!cv||!cv.getContext) return;
+  const c=cv.getContext('2d');
+  let seed=1337;
+  const rnd=()=>{ seed=(seed*1664525+1013904223)>>>0; return seed/4294967296; };
+
+  function build(){
+    const W=cv.width=Math.max(1,innerWidth), H=cv.height=Math.max(1,innerHeight);
+    seed=1337;                                  // same dirt every load
+    c.clearRect(0,0,W,H);
+
+    /* coarse density field, so the dust clumps instead of spreading evenly —
+       this unevenness is the whole difference between film and sensor noise */
+    const GX=10, GY=7, f=[];
+    for(let i=0;i<(GX+1)*(GY+1);i++) f.push(rnd());
+    const at=(a,b)=>f[Math.min(GY,b)*(GX+1)+Math.min(GX,a)];
+    const dens=(x,y)=>{
+      const gx=x/W*GX, gy=y/H*GY;
+      const x0=Math.floor(gx), y0=Math.floor(gy);
+      const tx=gx-x0, ty=gy-y0;
+      const sx=tx*tx*(3-2*tx), sy=ty*ty*(3-2*ty);
+      return (at(x0,y0)*(1-sx)+at(x0+1,y0)*sx)*(1-sy)
+           + (at(x0,y0+1)*(1-sx)+at(x0+1,y0+1)*sx)*sy;
+    };
+
+    /* dust — sparse, and deliberately varied in size and shape. Uniform
+       small dots read as a starfield; dirt needs the odd bigger blot and
+       the odd elongated mark to stop looking like sky. */
+    const n=Math.round(W*H/1150);
+    for(let i=0;i<n;i++){
+      const x=rnd()*W, y=rnd()*H;
+      if(rnd() > 0.44+dens(x,y)*0.46) continue;   // clumps ~2x, not 20x
+      const r=rnd();
+      const a=0.08+Math.pow(rnd(),2.3)*0.82;
+      c.fillStyle='rgba(255,255,250,'+a.toFixed(3)+')';
+      if(r>0.988){                                 // rare soft blot
+        c.beginPath(); c.arc(x,y,2.0+rnd()*1.8,0,6.2832); c.fill();
+      }else if(r>0.955){                           // short lint fibre
+        c.save(); c.translate(x,y); c.rotate(rnd()*3.1416);
+        c.fillRect(-1.4-rnd()*3.4,-0.4,2.8+rnd()*6.8,0.8);
+        c.restore();
+      }else if(r>0.86){
+        c.beginPath(); c.arc(x,y,1.25,0,6.2832); c.fill();
+      }else{
+        c.fillRect(x,y,0.9,0.9);                   // most of it is this
+      }
+    }
+
+    /* emulsion scratches — broken vertical lines, never full height */
+    const sc=2+Math.round(rnd()*3);
+    for(let i=0;i<sc;i++){
+      const x=Math.round(rnd()*W)+0.5;
+      let y=rnd()*H*0.55;
+      const end=Math.min(H, y+H*(0.22+rnd()*0.6));
+      c.strokeStyle='rgba(255,255,255,'+(0.05+rnd()*0.14).toFixed(3)+')';
+      c.lineWidth=rnd()>0.7?1.4:0.8;
+      while(y<end){
+        const seg=10+rnd()*70;
+        c.beginPath(); c.moveTo(x,y); c.lineTo(x,Math.min(end,y+seg)); c.stroke();
+        y+=seg+rnd()*100;
+      }
+    }
   }
-  c.putImageData(im,0,0);
-  el.style.backgroundImage='url('+cv.toDataURL('image/png')+')';
-  el.style.backgroundSize=S+'px '+S+'px';
+
+  build();
+  let t=null;
+  addEventListener('resize',()=>{ clearTimeout(t); t=setTimeout(build,180); });
 })();
 </script>
 </body>
